@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<ui:include src="/mgt/modules/dialogHead.xhtml" />
+
+<style>
+.ui-autocomplete-input {
+	width: 40em;
+}
+</style>
+<f:view locale="#{operatorSession.locale}">
+	<h:body class="dialogBody" style="height: 32em !important; width: 58em !important;">
+		<span id="customheader"> 
+			<h:outputLabel class="far fa-question-circle dialogTitle"/>
+			<h:outputLabel value="#{viewNavigator.dialogTitle}"
+				styleClass="dialogTitle"/>
+		</span>
+		<p:messages showSummary="true" showDetail="false" closable="true" globalOnly="true">
+			<p:autoUpdate />
+		</p:messages>
+
+		<h:form id="userCreatedQuestionForm">
+			<p />
+			<h:panelGroup>
+				<p:outputLabel value="#{CoreMsg['loginId']}: " />
+				<p:outputLabel value="#{kbUserCreatedQuestionsDialog.kbUserEntity.dcemUser.loginId}" style="font-weight: bold;" />
+				<p:spacer width="14" />
+				<p />
+
+				<p />
+				<p:dataTable id="questionTable" var="question" widgetVar="questionTableVar" value="#{kbUserCreatedQuestionsDialog.createdQuestions}" selectionMode="multiple"
+					styleClass="memberTable" selection="#{kbUserCreatedQuestionsDialog.selectedQuestions}" scrollable="true" rowKey="#{question.id}" scrollHeight="300"
+					emptyMessage="#{CoreMsg['emptyTable']}">
+
+					<p:column headerText="#{KbMsg['KbQuestion.id']}" style="max-width:4em" width="4em" sortBy="#{question.id}" filterBy="#{question.id}"
+						filterMatchMode="contains">
+						<h:outputText value="#{question.id}" />
+					</p:column>
+					<p:column headerText="#{KbMsg['KbQuestion.title']}" sortBy="#{question.title}" filterBy="#{question.title}" filterMatchMode="contains">
+						<h:outputText value="#{question.title}" />
+					</p:column>
+					<p:column headerText="#{KbMsg['KbQuestion.status']}" width="9em" style="max-width:9em;" filterBy="#{question.status}" filterMatchMode="exact">
+						<f:facet name="filter">
+							<p:selectOneMenu onchange="PF('questionTableVar').filter()" style="vertical-align: middle; min-width: 5em !important">
+								<f:selectItems value="#{kbUserCreatedQuestionsDialog.questionStatusSelection}" />
+							</p:selectOneMenu>
+						</f:facet>
+						<h:outputText value="#{question.status.getLocaleText()}" />
+					</p:column>
+					<p:column headerText="#{KbMsg['KbQuestion.author']}" width="9em" style="max-width:9em;" sortBy="#{question.author.loginId}"
+						filterBy="#{question.author.loginId}" filterMatchMode="contains">
+						<h:outputText value="#{question.author.loginId}" />
+					</p:column>
+					<p:column headerText="#{KbMsg['KbQuestion.creationDate']}" width="13em" style="max-width:13em;" filterMatchMode="between" sortBy="#{question.creationDate}"
+						sortOrder="desc">
+						<!--  filterBy="#{question.creationDate}" -->
+						<!-- TODO fix Datepicker -->
+						<!-- <f:facet name="filter"> 
+							<p:datePicker showButtonBar="true" selectionMode="range" onchange="PF('questionTableVar').filter()" yearNavigator="true" />
+						</f:facet>
+						-->
+						<h:outputText value="#{question.creationDate}" converter="dcem.LocalDateTimeConverter" />
+					</p:column>
+				</p:dataTable>
+				<p />
+				<p:commandButton id="closeDialog" value="#{CoreMsg['close']}" icon="fa fa-close" immediate="true" action="#{viewNavigator.actionCloseDialog}" />
+				<p:outputLabel id="questionCount" style="float: right; font-size: small"
+					value="#{KbMsg['user.createdQuestionsDialog.totalQuestion']}: #{kbUserCreatedQuestionsDialog.createdQuestions.size()}" />
+			</h:panelGroup>
+		</h:form>
+	</h:body>
+</f:view>
+</html>

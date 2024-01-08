@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+	<f:view locale="#{operatorSession.locale}">
+		<h:form>
+
+			<p:commandButton id="newPost" styleClass="actionButton" value="#{KbMsg['AUTO_ACTION.newPost']}" rendered="#{kbDashboardView.newPostAction != null}"
+				action="#{viewNavigator.setActiveDialog(kbDashboardView.newPostAction)}" icon="#{kbDashboardView.newPostAction.rawAction.icon}"
+				ajax="#{kbDashboardView.newPostAction.rawAction.ajax}" >
+				<p:ajax event="dialogReturn" update="questions" />
+			</p:commandButton>
+
+			<br />
+			<br />
+
+
+			<p:commandButton id="settings" value="#{KbMsg['dashboard.view.filterCategories']}" type="button" icon="fa fa-filter" />
+			<p:overlayPanel for="settings" dismissable="true" showCloseIcon="true" widgetVar="overlayPanel">
+				<p:commandButton value="#{KbMsg['dashboard.view.selectAll']}" onclick="PF('selectManyCategory').selectAll()" />
+				<p:spacer width="20"/>
+				<p:commandButton value="#{KbMsg['dashboard.view.unselectAll']}" onclick="PF('selectManyCategory').unselectAll()" />
+				
+				<p:selectManyMenu id="categorySelection" widgetVar="selectManyCategory" value="#{kbDashboardView.selectedCategories}" var="selectedCategory" filter="true"
+					filterMatchMode="contains" style="width: 350px !important" filterNormalize="true" showCheckbox="true" styleClass="manymenu-advanced">
+					<f:selectItems value="#{kbDashboardView.accessibleCategories}" var="category" itemLabel="#{category.name}" itemValue="#{category}" />
+					<p:column>
+						<h:outputText value="#{selectedCategory.name}" />
+					</p:column>
+				</p:selectManyMenu>
+				<p:commandButton value="#{KbMsg['dashboard.view.save']}" onclick="PF('overlayPanel').hide()" action="#{kbDashboardView.actionSaveCategorySettings()}" update="questions" />
+			</p:overlayPanel>
+
+			<p:defaultCommand target="searchField" />
+			<p:inputText id="searchText" value="#{kbDashboardView.filterText}" size="40" style="margin-left: 1.5em" />
+			<p:commandButton id="searchField" value="#{KbMsg['dashboard.view.search']}" update="questions" actionListener="#{kbDashboardView.actionSearch}"
+				icon="fa fa-magnifying-glass" />
+			
+			<p:commandButton id="manageCategories" styleClass="actionButton" style="float:right" value="#{KbMsg['AUTO_ACTION.manageNotifications']}"
+				rendered="#{kbDashboardView.newPostAction != null}" action="#{viewNavigator.setActiveDialog(kbDashboardView.notificationAction)}"
+				icon="#{kbDashboardView.notificationAction.rawAction.icon}" ajax="#{kbDashboardView.notificationAction.rawAction.ajax}" >
+			</p:commandButton>
+
+			<br />
+			<br />
+
+			<p:dataView id="questions" var="question" value="#{kbDashboardView.lazyModel}" paginator="true" paginatorPosition="both" rowsPerPageTemplate="20,30,50,100"
+				rows="20" emptyMessage="#{KbMsg['dashboard.view.noQuestionsFound']}" lazy="true" layout="list"
+				paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+				currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} #{KbMsg['dashboard.view.questionRecord']}">
+
+				<p:dataViewListItem>
+					<div class="ui-g">
+						<div class="ui-g-8">
+							<div class="ui-g-12">
+								<p:commandLink style="font-size: 17.5px;font-weight: bold" action="#{kbDashboardView.openQuestion(question)}">#{question.title}</p:commandLink>
+								<br />
+								<h:outputText value="(ID: #{question.id} " style="font-size: 0.8em" />
+								<p:spacer width="3" />
+								<i class="far fa-folder-open" style="font-size: 0.7em" />
+								<p:spacer width="3" />
+								<h:outputText id="categorylabel" value=" #{question.category.name})" style="font-size: 0.8em" />
+								<p:tooltip for="categorylabel" value="#{question.category.description}" position="right" />
+							</div>
+
+							<div class="ui-g-12">
+								<h:outputText value="#{question.questionPreview}" style="word-wrap: break-word" />
+								<h:outputText value=" [...]" rendered="#{fn:length(question.questionPreview) == 255}" />
+							</div>
+
+							<div class="ui-g-12 tag-box">
+								<p:outputPanel rendered="#{not empty question.tags}" style="font-size:0.85em">
+									<i class="fas fa-tags" />
+									<h:outputText value=" #{KbMsg['KbQuestion.tags']}: " />
+									<ui:repeat value="#{question.tags}" var="tag">
+										<h:outputText id="tagbox" value="#{tag.name}" class="q-tag" />
+										<p:tooltip for="tagbox" value="#{tag.description}" position="right" />
+									</ui:repeat>
+								</p:outputPanel>
+							</div>
+						</div>
+						<div class="ui-g-1" align="right">
+							<p:commandButton id="followQuestion" icon="#{kbDashboardView.getFollowIcon(question)}" action="#{kbDashboardView.actionToggleFollowQuestion(question)}"
+								update="questions" />
+							<p:tooltip for="followQuestion" value="#{KbMsg['dashboard.view.toggleNotification']}" position="bottom" />
+						</div>
+
+						<div class="ui-g-3" style="border-left: 2px solid lightgray; font-size: 0.8em">
+							<div class="ui-g-12">
+								<h:outputText value="#{KbMsg['KbQuestion.author']}: #{question.author == null ? KbMsg['dashboard.view.deletedAuthor'] : question.author.displayName}" />
+								<p:spacer width="20" />
+								<p:avatar style=" vertical-align: middle;" styleClass="p-mr-2" size="xlarge" shape="circle">
+									<p:graphicImage value="#{kbDashboardView.getUserPhoto(question.author)}" stream="false" />
+								</p:avatar>
+							</div>
+							<div class="ui-g-12">
+								<h:outputText value="#{KbMsg['KbQuestion.status']}: #{question.status.name()}" />
+							</div>
+							<div class="ui-g-12">
+								<h:outputText value="#{KbMsg['KbQuestion.numberOfReplies']}: #{question.numberOfReplies}" />
+							</div>
+							<div class="ui-g-12">
+								<h:outputText value="#{KbMsg['KbQuestion.creationDate']}: " />
+								<h:outputText value="#{question.creationDate}" converter="dcem.LocalDateTimeConverter" />
+							</div>
+							<div class="ui-g-12">
+								<h:outputText value="#{KbMsg['KbQuestion.lastModifiedOn']}: " />
+								<h:outputText value="#{question.lastModifiedOn}" converter="dcem.LocalDateTimeConverter" />
+							</div>
+						</div>
+					</div>
+				</p:dataViewListItem>
+			</p:dataView>
+		</h:form>
+		<br />
+	</f:view>
+</ui:composition>

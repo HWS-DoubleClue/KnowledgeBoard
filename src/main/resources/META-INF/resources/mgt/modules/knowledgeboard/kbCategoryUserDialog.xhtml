@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<ui:include src="/mgt/modules/dialogHead.xhtml" />
+
+<f:view locale="#{operatorSession.locale}">
+	<h:body class="dialogBody" style="height: 32em !important; width: 73em !important;">
+		<span id="customheader"> <h:outputLabel class="fa fa-users dialogTitle" /> <h:outputLabel value="#{viewNavigator.dialogTitle}" styleClass="dialogTitle" />
+		</span>
+		<p:messages showSummary="true" showDetail="false" closable="true" globalOnly="true">
+			<p:autoUpdate />
+		</p:messages>
+
+		<h:form id="categoryMemberForm">
+			<p />
+			<h:panelGroup>
+				<p:outputLabel value="#{KbMsg['category']}: " />
+				<p:outputLabel value="#{kbCategoryMemberDialog.kbCategoryEntity.name}" style="font-weight: bold;" />
+				<p />
+				<h:panelGroup>
+					<p:commandButton id="addMember" icon="fa fa-user-plus" value="#{KbMsg['category.memberDialog.addMember']}" ajax="true"
+						oncomplete="PF('addMemberDialog').show();" action="#{kbCategoryMemberDialog.actionAddMember}" update="categoryMemberDialog:addEditDialog" />
+					<p:spacer width="30" />
+					<p:commandButton id="addGroup" icon="fa fa-users" value="#{KbMsg['category.memberDialog.addGroup']}" ajax="true"
+						oncomplete="PF('addGroupDialog').show();" update="categoryGroupDialog:groupDialog" />
+					<p:spacer width="30" />
+					<p:commandButton id="editMember" icon="fa fa-user-pen" value="#{KbMsg['category.memberDialog.editMember']}" ajax="true"
+						action="#{kbCategoryMemberDialog.actionEditMember}" update="categoryMemberDialog:addEditDialog" />
+					<p:spacer width="30" />
+					<p:commandButton id="removeMember" icon="fa fa-user-minus" value="#{KbMsg['category.memberDialog.removeMember']}" ajax="true"
+						action="#{kbCategoryMemberDialog.actionRemoveMember}" update="memberTable memberCount">
+						<p:confirm icon="pi pi-exclamation-triangle" message="#{KbMsg['category.memberDialog.removeMemberConfirmation']}" />
+					</p:commandButton>
+
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+						<f:facet name="header">
+							<h:outputLabel class="fa fa-trash-can dialogTitle" />
+							<p:spacer width="3" />
+							<h:outputLabel value="#{KbMsg['category.memberDialog.removeMember']}" styleClass="dialogTitle" />
+						</f:facet>
+						<p:commandButton value="#{DcupMsg['button.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-check" />
+						<p:spacer width="12" />
+						<p:commandButton value="#{DcupMsg['button.no']}" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-close" />
+					</p:confirmDialog>
+				</h:panelGroup>
+				<p />
+				<p:dataTable id="memberTable" var="member" widgetVar="memberTableVar" value="#{kbCategoryMemberDialog.members}" selectionMode="multiple"
+					styleClass="memberTable" selection="#{kbCategoryMemberDialog.selectedMember}" scrollable="true" rowKey="#{member.kbUser.id}" scrollHeight="300"
+					emptyMessage="#{CoreMsg['emptyTable']}">
+
+					<p:column sortOrder="asc" filterBy="#{member.kbUser.dcemUser.loginId}" headerText="#{CoreMsg['loginId']}" filterMatchMode="contains"
+						sortBy="#{member.kbUser.dcemUser.loginId}">
+						<h:outputText value="#{member.kbUser.dcemUser.loginId}" />
+					</p:column>
+
+					<p:column headerText="#{KbMsg['category.memberDialog.admin']}" filterBy="#{member.admin}" filterMatchMode="exact">
+						<f:facet name="filter">
+							<p:selectOneMenu style="vertical-align: middle;width: 3em !important" onchange="PF('memberTableVar').filter()">
+								<f:selectItems value="#{kbCategoryMemberDialog.booleanOperator}" />
+							</p:selectOneMenu>
+						</f:facet>
+						<h:outputText value="#{member.admin == true ? KbMsg['yes'] : KbMsg['no']}" />
+					</p:column>
+
+					<p:column headerText="#{KbMsg['category.memberDialog.followsAllTags']}" filterBy="#{member.followingAllTags}" filterMatchMode="exact">
+						<f:facet name="filter">
+							<p:selectOneMenu style="vertical-align: middle;width: 3em !important" onchange="PF('memberTableVar').filter()">
+								<f:selectItems value="#{kbCategoryMemberDialog.booleanOperator}" />
+							</p:selectOneMenu>
+						</f:facet>
+						<h:outputText value="#{member.followingAllTags == true ? KbMsg['yes'] : KbMsg['no']}" />
+					</p:column>
+
+					<p:column headerText="#{KbMsg['category.memberDialog.hiddenInDashboard']}" filterBy="#{member.hiddenInDashboard}" filterMatchMode="exact">
+						<f:facet name="filter">
+							<p:selectOneMenu style="vertical-align: middle;width: 3em !important" onchange="PF('memberTableVar').filter()">
+								<f:selectItems value="#{kbCategoryMemberDialog.booleanOperator}" />
+							</p:selectOneMenu>
+						</f:facet>
+						<h:outputText value="#{member.hiddenInDashboard == true ? KbMsg['yes'] : KbMsg['no']}" />
+					</p:column>
+
+					<p:column headerText="#{KbMsg['category.memberDialog.disabled']}" filterBy="#{member.disabled}" filterMatchMode="exact">
+						<f:facet name="filter">
+							<p:selectOneMenu style="vertical-align: middle;width: 3em !important" onchange="PF('memberTableVar').filter()">
+								<f:selectItems value="#{kbCategoryMemberDialog.booleanOperator}" />
+							</p:selectOneMenu>
+						</f:facet>
+						<h:outputText value="#{member.disabled == true ? KbMsg['yes'] : KbMsg['no']}" />
+					</p:column>
+				</p:dataTable>
+				<p />
+				<p:commandButton id="closeDialog" value="#{CoreMsg['close']}" icon="fa fa-close" style="width: 8em" immediate="true"
+					action="#{viewNavigator.actionCloseDialog}" />
+				<p:outputLabel id="memberCount" style="float: right; font-size: small"
+					value="#{KbMsg['category.memberDialog.totalMember']}: #{kbCategoryMemberDialog.members.size()}" />
+			</h:panelGroup>
+		</h:form>
+		
+		<h:form id="categoryMemberDialog">
+			<p:dialog widgetVar="addMemberDialog" modal="true" id="addEditDialog">
+				<f:facet name="header">
+					<h:outputText style="margin-right: 0.3em;" class="fa fa-user-plus" rendered="#{kbCategoryMemberDialog.editMode == false}" />
+					<h:outputText value="#{KbMsg['category.memberDialog.addMember']}" rendered="#{kbCategoryMemberDialog.editMode == false}" />
+					<h:outputText style="margin-right: 0.3em;" class="fa fa-user-pen" rendered="#{kbCategoryMemberDialog.editMode == true}" />
+					<h:outputText value="#{KbMsg['category.memberDialog.editMember']}" rendered="#{kbCategoryMemberDialog.editMode == true}" />
+				</f:facet>
+				<p:messages id="memberDialogMsg" layout="table" globalOnly="false" showSummary="true" closable="true">
+					<p:autoUpdate />
+				</p:messages>
+				<h:panelGroup id="memberDialog">
+					<h:panelGrid columns="2" cellpadding="4">
+						<p:outputLabel for="memberSearch" value="#{CoreMsg['loginId']}: " />
+						<p:autoComplete id="memberSearch" required="true" forceSelection="true" dropdown="true" value="#{kbCategoryMemberDialog.userLoginId}"
+							disabled="#{kbCategoryMemberDialog.editMode == true}" completeMethod="#{kbCategoryMemberDialog.actionCompleteMember}" effect="fade" size="30"
+							queryDelay="500" styleClass="autocompleteChangedDisabled" scrollHeight="250" />
+					</h:panelGrid>
+
+					<h:panelGrid columns="1" cellpadding="4" cellspacing="4">
+						<p:selectBooleanCheckbox value="#{kbCategoryMemberDialog.member.admin}" itemLabel="#{KbMsg['category.memberDialog.admin']}" />
+						<p:selectBooleanCheckbox value="#{kbCategoryMemberDialog.member.followingAllTags}" itemLabel="#{KbMsg['category.memberDialog.followsAllTags']}" />
+						<p:selectBooleanCheckbox value="#{kbCategoryMemberDialog.member.hiddenInDashboard}" itemLabel="#{KbMsg['category.memberDialog.hiddenInDashboard']}" />
+						<p:selectBooleanCheckbox value="#{kbCategoryMemberDialog.member.disabled}" itemLabel="#{KbMsg['category.memberDialog.disabled']}" rendered="#{kbCategoryMemberDialog.editMode == true}" />
+					</h:panelGrid>
+				</h:panelGroup>
+				<p />
+				<p:commandButton id="actionAddMember" value="#{KbMsg['category.memberDialog.save']}" ajax="true" icon="fa fa-save"
+					action="#{kbCategoryMemberDialog.actionAddOrUpdateMember}" update="categoryMemberForm:memberTable categoryMemberForm:memberCount memberDialog" />
+				<p:spacer width="12" />
+				<p:commandButton id="closeDialog2" value="#{CoreMsg['close']}" icon="fa fa-close" immediate="true" onclick="PF('addMemberDialog').hide();" />
+				<p />
+			</p:dialog>
+		</h:form>
+		
+		<h:form id="categoryGroupDialog">
+			<p:dialog widgetVar="addGroupDialog" modal="true" id="groupDialog">
+				<f:facet name="header">
+					<h:outputText style="margin-right: 0.3em;" class="fa fa-users" />
+					<h:outputText value="#{KbMsg['category.memberDialog.addGroup']}" />
+				</f:facet>
+				<p:messages id="memberDialogMsg" layout="table" globalOnly="false" showSummary="true" closable="true">
+					<p:autoUpdate />
+				</p:messages>
+				<h:panelGroup id="memberDialogGroup">
+					<h:panelGrid columns="2" cellpadding="4">
+						<p:outputLabel for="groupSearch" value="#{KbMsg['category.memberDialog.nameOfGroup']}: " />
+						<p:autoComplete id="groupSearch" required="true" forceSelection="true" dropdown="true" value="#{kbCategoryMemberDialog.groupName}"
+							completeMethod="#{kbCategoryMemberDialog.actionCompleteGroup}" effect="fade" size="30" queryDelay="500" scrollHeight="250" />
+					</h:panelGrid>
+				</h:panelGroup>
+				<p />
+				<p:commandButton id="actionAddMember" value="#{KbMsg['category.memberDialog.save']}" ajax="true" icon="fa fa-save"
+					action="#{kbCategoryMemberDialog.actionAddGroup}" update="categoryMemberForm:memberTable categoryMemberForm:memberCount memberDialogGroup"  />
+				<p:spacer width="12" />
+				<p:commandButton id="closeDialog2" value="#{CoreMsg['close']}" icon="fa fa-close" immediate="true" onclick="PF('addGroupDialog').hide();" />
+				<p />
+			</p:dialog>
+		</h:form>
+	</h:body>
+</f:view>
+</html>

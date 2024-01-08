@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<ui:include src="/mgt/modules/dialogHead.xhtml" />
+
+<f:view locale="#{operatorSession.locale}">
+	<h:body class="dialogBody">
+		
+		<span id="customheader"> 
+			<h:outputLabel class="fa fa-pen dialogTitle"/>
+			<h:outputLabel value="#{viewNavigator.dialogTitle}" styleClass="dialogTitle"/>
+		</span>
+
+
+		<p:messages showSummary="true" showDetail="false" closable="true">
+			<p:autoUpdate />
+		</p:messages>
+
+		<h:form id="replyForm">
+
+			<p:textEditor value="#{kbReplyDialog.kbReplyEntity.replyContent.content}" height="200" />
+
+
+			<div style="position: fixed; bottom: 1em; width: 100%;">
+				<p:commandButton id="ok" style="width: 8em" icon="fa fa-check" value="#{CoreMsg['ok']}" action="#{autoDialog.actionOk}" />
+				<p:spacer width="20" />
+				<p:commandButton id="closeDialog" value="#{CoreMsg['cancel']}" style="width: 8em" icon="fa fa-close" immediate="true"
+					action="#{viewNavigator.actionCloseDialog}" />
+			</div>
+		</h:form>
+	</h:body>
+</f:view>
+</html>

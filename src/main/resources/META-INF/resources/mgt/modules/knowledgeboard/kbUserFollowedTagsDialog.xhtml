@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<ui:include src="/mgt/modules/dialogHead.xhtml" />
+
+<style>
+.ui-autocomplete-input {
+	width: 40em;
+}
+</style>
+<f:view locale="#{operatorSession.locale}">
+	<h:body class="dialogBody" style="height: 32em !important; width: 58em !important;">
+		<span id="customheader"> 
+			<h:outputLabel class="fa fa-solid fa-bell dialogTitle"/>
+			<h:outputLabel value="#{viewNavigator.dialogTitle}" styleClass="dialogTitle"/>
+		</span>
+		<p:messages showSummary="true" showDetail="false" closable="true" globalOnly="true">
+			<p:autoUpdate />
+		</p:messages>
+
+		<h:form id="userFollowedTagsForm">
+			<p />
+			<h:panelGroup>
+				<p:outputLabel value="#{CoreMsg['loginId']}: " />
+				<p:outputLabel value="#{kbUserFollowedTagsDialog.kbUserEntity.dcemUser.loginId}" style="font-weight: bold;" />
+				<p:spacer width="14" />
+				<p />
+				<h:panelGroup>
+					<p:commandButton id="removeTag" icon="fa fa-minus" value="#{KbMsg['user.followedTagsDialog.removeTag']}" ajax="true"
+						action="#{kbUserFollowedTagsDialog.actionRemoveTag}" update="tagTable tagCount">
+						<p:confirm icon="pi pi-exclamation-triangle" message="#{KbMsg['user.followedTagsDialog.removeTagConfirmation']}" />
+					</p:commandButton>
+
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+						<f:facet name="header">
+							<h:outputLabel class="fa fa-trash-can dialogTitle" />
+							<p:spacer width="3" />
+							<h:outputLabel value="#{KbMsg['user.followedTagsDialog.removeTag']}" styleClass="dialogTitle" />
+						</f:facet>
+						<p:commandButton value="#{DcupMsg['button.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-check" />
+						<p:spacer width="12" />
+						<p:commandButton value="#{DcupMsg['button.no']}" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-close" />
+					</p:confirmDialog>
+				</h:panelGroup>
+				<p />
+				<p:dataTable id="tagTable" var="tag" widgetVar="tagTableVar" value="#{kbUserFollowedTagsDialog.followedTags}"
+					selectionMode="multiple" styleClass="memberTable" selection="#{kbUserFollowedTagsDialog.selectedTags}" scrollable="true" rowKey="#{tag.id}"
+					scrollHeight="300" emptyMessage="#{CoreMsg['emptyTable']}">
+					<p:column headerText="#{KbMsg['KbTag.name']}" width="11em" style="max-width:11em;" sortBy="#{tag.name}" filterBy="#{tag.name}" filterMatchMode="contains">
+						<h:outputText value="#{tag.name}" />
+					</p:column>
+					<p:column headerText="#{KbMsg['KbTag.description']}"  sortBy="#{tag.description}" filterBy="#{tag.descritpion}" filterMatchMode="contains">
+						<h:outputText value="#{tag.description}" />
+					</p:column>
+					<p:column headerText="#{KbMsg['category']}" width="11em" style="max-width:11em;" sortBy="#{tag.category.name}" filterBy="#{tag.category.name}" filterMatchMode="contains">
+						<h:outputText value="#{tag.category.name}" />
+					</p:column>
+				</p:dataTable>
+				<p />
+				<p:commandButton id="closeDialog" value="#{CoreMsg['close']}" icon="fa fa-close" immediate="true" action="#{viewNavigator.actionCloseDialog}" />
+				<p:outputLabel id="tagCount" style="float: right; font-size: small"
+					value="#{KbMsg['user.followedTagsDialog.totalTags']}: #{kbUserFollowedTagsDialog.followedTags.size()}" />
+			</h:panelGroup>
+		</h:form>
+	</h:body>
+</f:view>
+</html>

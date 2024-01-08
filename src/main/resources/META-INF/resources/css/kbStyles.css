@@ -1,0 +1,107 @@
+@CHARSET "ISO-8859-1";
+
+@media(max-width: 640px){
+    body .ui-dataview-layout-options>div.ui-button:not(:last-child){
+        border-bottom-width:1px;
+        border-right-width:0
+    }
+    body .ui-dataview-layout-options>div.ui-button:first-child{
+        border-top-left-radius:3px;
+        border-bottom-left-radius:3px;
+        border-top-right-radius:0;
+        border-bottom-right-radius:0
+    }
+    body .ui-dataview-layout-options>div.ui-button:last-child{
+        border-top-left-radius:0;
+        border-bottom-left-radius:0;
+        border-top-right-radius:3px;
+        border-bottom-right-radius:3px
+    }
+}
+
+body .ui-dataview .ui-paginator.ui-paginator-top{
+    border-width:1px 1px 0 1px;
+    border-radius:0
+}
+body .ui-dataview .ui-paginator.ui-paginator-bottom{
+    border-width:0 1px 1px 1px;
+    border-radius:0
+}
+body .ui-dataview .ui-dataview-header{
+    background:#f4f4f4;
+    color:#333;
+    padding:.857rem 1rem;
+    font-weight:700;
+    border:1px solid #c8c8c8;
+    border-width:1px 1px 0 1px
+}
+body .ui-dataview .ui-dataview-footer{
+    background:#fff;
+    color:#333;
+    border:1px solid #c8c8c8;
+    border-width:1px;
+    padding:.571rem 1rem;
+    font-weight:normal;
+    border-bottom-left-radius:3px;
+    border-bottom-right-radius:3px
+}
+body .ui-dataview .ui-dataview-content{
+    border:0 none;
+    background:#fff;
+    color:#333;
+    padding:0
+}
+body .ui-dataview.ui-dataview-list .ui-dataview-row{
+    border:1px solid #d8dae2;
+    border-width:1px
+}
+
+body .q-tag {
+	display: inline-block;
+	background-color: #f0f0f0;
+	padding: 5px;
+	margin-left: 3px;
+	margin-right: 3px;
+	margin-bottom: 6px;
+	border-radius: 5px;
+}
+
+body .ui-dataview-header {
+	display: none;
+}
+
+body .ui-commandlink, body .ui-link {
+	color: #116fbf !important;
+	transition: background-color .2s, color .2s, border-color .2s,
+		box-shadow .2s, opacity .2s !important
+}
+
+body .ui-commandlink:hover, body .ui-link:hover {
+	color: #5780ff !important;
+	text-decoration: underline !important
+}
+
+body .autocompleteChangedDisabled .ui-state-disabled {
+	opacity: 0.80;
+	font-weight: bold;
+}
+
+body .selectOneChangeDisabled .ui-selectonemenu-label {
+	opacity: 0.80;
+	font-weight: bold;
+	color: black;
+}
+
+body .tagButtonChangedDisabled .ui-state-disabled {
+	opacity: 1;
+}
+
+body .ui-selectonemenu-panel .ui-selectonemenu-filter-container .ui-icon{
+	display: none;
+}
+
+body .ui-picklist .ui-picklist-filter-container .ui-icon{
+	display: none;
+}
+
+

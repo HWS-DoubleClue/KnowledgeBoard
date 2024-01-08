@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<ui:include src="/mgt/modules/dialogHead.xhtml" />
+
+<style>
+.ui-autocomplete-input {
+	width: 40em;
+}
+</style>
+<f:view locale="#{operatorSession.locale}">
+	<h:body class="dialogBody" style="height: 32em !important; width: 58em !important;">
+		<span id="customheader">
+		<h:outputLabel class="far fa-question-circle dialogTitle"></h:outputLabel>
+		<h:outputLabel value="#{viewNavigator.dialogTitle}"
+				styleClass="dialogTitle"></h:outputLabel>
+		</span>
+		<p:messages showSummary="true" showDetail="false" closable="true" globalOnly="true">
+			<p:autoUpdate />
+		</p:messages>
+
+		<h:form id="tagQuestionForm">
+			<p />
+			<h:panelGroup>
+				<p:outputLabel value="#{KbMsg['tag']}: " />
+				<p:outputLabel value="#{kbTagQuestionDialog.kbTagEntity.name}" style="font-weight: bold;" />
+				<p:spacer width="14" />
+				<p:outputLabel value="(In #{KbMsg['category']}: #{kbTagQuestionDialog.kbTagEntity.category.name})" style="font-size: 0.9em" />
+				<p />
+				<h:panelGroup>
+					<p:commandButton id="addTag" icon="fa fa-tags" value="#{KbMsg['tag.questionDialog.addTag']}" ajax="true" oncomplete="PF('addTagDialog').show();"
+						update="tagQuestionDialog:addDialog" />
+					<p:spacer width="30" />
+					<p:commandButton id="removeTag" icon="fa fa-minus" value="#{KbMsg['tag.questionDialog.removeTag']}" ajax="true"
+						action="#{kbTagQuestionDialog.actionRemoveTag}" update="questionTable questionCount">
+						<p:confirm icon="pi pi-exclamation-triangle" message="#{KbMsg['tag.questionDialog.removeTagConfirmation']}" />
+					</p:commandButton>
+
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+						<f:facet name="header">
+							<h:outputLabel class="fa fa-trash-can dialogTitle" />
+							<p:spacer width="3" />
+							<h:outputLabel value="#{KbMsg['tag.questionDialog.removeTag']}" styleClass="dialogTitle" />
+						</f:facet>
+						<p:commandButton value="#{DcupMsg['button.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-check" />
+						<p:spacer width="12" />
+						<p:commandButton value="#{DcupMsg['button.no']}" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-close" />
+					</p:confirmDialog>
+				</h:panelGroup>
+				<p />
+				<p:dataTable id="questionTable" var="question" widgetVar="questionTableVar" value="#{kbTagQuestionDialog.questionsContainingTag}" selectionMode="multiple"
+					styleClass="memberTable" selection="#{kbTagQuestionDialog.selectedQuestions}" scrollable="true" rowKey="#{question.id}" scrollHeight="300"
+					emptyMessage="#{CoreMsg['emptyTable']}">
+
+					<p:column headerText="#{KbMsg['KbQuestion.id']}" style="max-width:4em" width="4em" sortBy="#{question.id}" filterBy="#{question.id}"
+						filterMatchMode="contains">
+						<h:outputText value="#{question.id}" />
+					</p:column>
+					<p:column headerText="#{KbMsg['KbQuestion.title']}" sortBy="#{question.title}" filterBy="#{question.title}" filterMatchMode="contains">
+						<h:outputText value="#{question.title}" />
+					</p:column>
+					<p:column headerText="#{KbMsg['KbQuestion.status']}" width="9em" style="max-width:9em;" filterBy="#{question.status}" filterMatchMode="exact">
+						<f:facet name="filter">
+							<p:selectOneMenu onchange="PF('questionTableVar').filter()" style="vertical-align: middle; min-width: 5em !important">
+								<f:selectItems value="#{kbTagQuestionDialog.questionStatusSelection}" />
+							</p:selectOneMenu>
+						</f:facet>
+						<h:outputText value="#{question.status.getLocaleText()}" />
+					</p:column>
+					<p:column headerText="#{KbMsg['KbQuestion.author']}" width="9em" style="max-width:9em;" sortBy="#{question.author.loginId}"
+						filterBy="#{question.author.loginId}" filterMatchMode="contains">
+						<h:outputText value="#{question.author.loginId}" />
+					</p:column>
+					<p:column headerText="#{KbMsg['KbQuestion.creationDate']}" width="13em" style="max-width:13em;" filterMatchMode="between" sortBy="#{question.creationDate}"
+						sortOrder="desc">
+						<!--  filterBy="#{question.creationDate}" -->
+						<!-- TODO fix Datepicker -->
+						<!-- <f:facet name="filter"> 
+							<p:datePicker showButtonBar="true" selectionMode="range" onchange="PF('questionTableVar').filter()" yearNavigator="true" />
+						</f:facet>
+						-->
+						<h:outputText value="#{question.creationDate}" converter="dcem.LocalDateTimeConverter" />
+					</p:column>
+				</p:dataTable>
+				<p />
+				<p:commandButton id="closeDialog" value="#{CoreMsg['close']}" icon="fa fa-close" immediate="true" action="#{viewNavigator.actionCloseDialog}" />
+				<p:outputLabel id="questionCount" style="float: right; font-size: small"
+					value="#{KbMsg['tag.questionDialog.totalQuestion']}: #{kbTagQuestionDialog.questionsContainingTag.size()}" />
+			</h:panelGroup>
+		</h:form>
+
+		<h:form id="tagQuestionDialog">
+			<p:dialog widgetVar="addTagDialog" modal="true" id="addDialog">
+				<f:facet name="header">
+					<h:outputText style="margin-right: 0.3em;" class="fa fa-tags" />
+					<h:outputText value="#{KbMsg['tag.questionDialog.addTag']}" />
+				</f:facet>
+				<p:messages id="addTagDialogMsg" layout="table" globalOnly="false" showSummary="true" closable="true">
+					<p:autoUpdate />
+				</p:messages>
+				<h:panelGrid columns="2" cellpadding="4" id="question">
+					<p:outputLabel for="questionSearch" value="#{KbMsg['question']}: " />
+					<p:autoComplete id="questionSearch" dropdown="true" value="#{kbTagQuestionDialog.questionInfo}"
+						completeMethod="#{kbTagQuestionDialog.actionCompleteQuestion}" var="question" itemLabel="#{question}" itemValue="#{question}" scrollHeight="250"
+						queryDelay="500" forceSelection="true" required="true" />
+				</h:panelGrid>
+				<p />
+				<p:commandButton id="actionAddTag" value="#{KbMsg['tag.questionDialog.save']}" ajax="true" icon="fa fa-save" action="#{kbTagQuestionDialog.actionAddTag}"
+					update="tagQuestionForm:questionTable tagQuestionForm:questionCount question" />
+				<p:spacer width="12" />
+				<p:commandButton id="closeDialog2" value="#{CoreMsg['close']}" icon="fa fa-close" immediate="true" onclick="PF('addTagDialog').hide();" />
+				<p />
+			</p:dialog>
+		</h:form>
+	</h:body>
+</f:view>
+</html>
