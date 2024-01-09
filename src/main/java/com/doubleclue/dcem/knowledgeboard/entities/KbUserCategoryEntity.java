@@ -94,24 +94,24 @@ public class KbUserCategoryEntity implements Serializable {
 
 	@Id
 	@ManyToOne
-	@JoinColumn(name = "user_id", updatable = false)
+	@JoinColumn(name = "user_id", updatable = false, nullable = false)
 	private KbUserEntity kbUser;
 
 	@Id
 	@ManyToOne
-	@JoinColumn(name = "category_id", updatable = false)
+	@JoinColumn(name = "category_id", updatable = false, nullable = false)
 	private KbCategoryEntity category;
 
-	@Column(name = "admin_in_category")
+	@Column(name = "admin_in_category", nullable = false)
 	private boolean admin = false;
 
-	@Column(name = "following_all_tags")
+	@Column(name = "following_all_tags", nullable = false)
 	private boolean followingAllTags = false;
 
-	@Column(name = "hidden_in_dashboard")
+	@Column(name = "hidden_in_dashboard", nullable = false)
 	private boolean hiddenInDashboard = false;
 
-	@Column(name = "user_disabled_in_category")
+	@Column(name = "user_disabled_in_category", nullable = false)
 	private boolean disabled = false;
 
 	@ManyToMany(fetch = FetchType.LAZY)

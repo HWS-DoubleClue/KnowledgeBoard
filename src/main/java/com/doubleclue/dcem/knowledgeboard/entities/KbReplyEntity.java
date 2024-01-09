@@ -40,7 +40,7 @@ public class KbReplyEntity extends EntityInterface {
 	@JoinColumn(name = "replycontent_id", referencedColumnName = "dc_id", foreignKey = @ForeignKey(name = "FK_KB_REPLY_TEXTCONTENT"), nullable = false)
 	private KbTextContentEntity replyContent;
 
-	@Column(name = "highlighted")
+	@Column(name = "highlighted", nullable = false)
 	private boolean highlighted;
 
 	@ManyToOne

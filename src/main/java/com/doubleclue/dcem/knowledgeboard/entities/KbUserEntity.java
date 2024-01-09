@@ -45,10 +45,10 @@ public class KbUserEntity extends EntityInterface implements Serializable, IPhot
 	private DcemUser dcemUser;
 
 	@DcemGui
-	@Column(name = "notification_disabled")
+	@Column(name = "notification_disabled", nullable = false)
 	boolean notificationDisabled = true;
 
-	@Column(name = "user_disabled")
+	@Column(name = "user_disabled", nullable = false)
 	boolean disabled = false;
 
 	@Version

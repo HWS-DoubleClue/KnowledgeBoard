@@ -42,56 +42,45 @@ import com.doubleclue.dcem.knowledgeboard.entities.enums.KbQuestionStatus;
 import com.doubleclue.dcem.knowledgeboard.logic.KbUtils;
 
 @NamedEntityGraphs({
-	@NamedEntityGraph(name = KbQuestionEntity.GRAPH_QUESTION_TAGS_AND_CONTENT, attributeNodes = { 
-		@NamedAttributeNode(value = "questionContent"),
-		@NamedAttributeNode(value = "category"), 
-		@NamedAttributeNode(value = "tags"),}),
-	@NamedEntityGraph(name = KbQuestionEntity.GRAPH_QUESTION_TAGS, attributeNodes = { 
-		@NamedAttributeNode(value = "tags"),
-		@NamedAttributeNode(value = "category"),}),
-	@NamedEntityGraph(name = KbQuestionEntity.GRAPH_QUESTION_REPLIES, attributeNodes = { 
-		@NamedAttributeNode(value = "replies"),
-		@NamedAttributeNode(value = "category"), }),
-	@NamedEntityGraph(name = KbQuestionEntity.GRAPH_QUESTION_REPLIES_AND_REPLYAUTHOR, attributeNodes = {
-		@NamedAttributeNode(value = "category"), 
-		@NamedAttributeNode(value = "replies", subgraph = "subgraph.replyContent"),}, 
-		subgraphs = {
-			@NamedSubgraph(name = "subgraph.replyContent", attributeNodes = { 
-				@NamedAttributeNode(value = "replyContent"),
-				@NamedAttributeNode(value = "author", subgraph = "subgraph.replyAuthor") }),
-				@NamedSubgraph(name = "subgraph.replyAuthor", attributeNodes = {
-					@NamedAttributeNode(value = "dcemUserExt"), }) }),
-})
+		@NamedEntityGraph(name = KbQuestionEntity.GRAPH_QUESTION_TAGS_AND_CONTENT, attributeNodes = { @NamedAttributeNode(value = "questionContent"),
+				@NamedAttributeNode(value = "category"), @NamedAttributeNode(value = "tags"), }),
+		@NamedEntityGraph(name = KbQuestionEntity.GRAPH_QUESTION_TAGS, attributeNodes = { @NamedAttributeNode(value = "tags"),
+				@NamedAttributeNode(value = "category"), }),
+		@NamedEntityGraph(name = KbQuestionEntity.GRAPH_QUESTION_REPLIES, attributeNodes = { @NamedAttributeNode(value = "replies"),
+				@NamedAttributeNode(value = "category"), }),
+		@NamedEntityGraph(name = KbQuestionEntity.GRAPH_QUESTION_REPLIES_AND_REPLYAUTHOR, attributeNodes = { @NamedAttributeNode(value = "category"),
+				@NamedAttributeNode(value = "replies", subgraph = "subgraph.replyContent"), }, subgraphs = {
+						@NamedSubgraph(name = "subgraph.replyContent", attributeNodes = { @NamedAttributeNode(value = "replyContent"),
+								@NamedAttributeNode(value = "author", subgraph = "subgraph.replyAuthor") }),
+						@NamedSubgraph(name = "subgraph.replyAuthor", attributeNodes = { @NamedAttributeNode(value = "dcemUserExt"), }) }), })
 
 @NamedQueries({
-	@NamedQuery(name = KbQuestionEntity.FIND_QUESTIONS_BY_IDS, query = "SELECT DISTINCT question FROM KbQuestionEntity question WHERE question.id in ?1 ORDER BY question.creationDate DESC"),
-	@NamedQuery(name = KbQuestionEntity.FIND_ALL_QUESTIONS_CONTAINING_TAGS, query = "SELECT DISTINCT question FROM KbQuestionEntity question JOIN question.tags tag WHERE tag in ?1 ORDER BY question.creationDate DESC"),
-	@NamedQuery(name = KbQuestionEntity.FIND_ALL_QUESTIONS_NOT_CONTAINING_TAG_AND_AUTOCOMPLETE_TITLE, query = "SELECT question FROM KbQuestionEntity question WHERE question.category = ?1 AND ?2 NOT MEMBER OF question.tags AND LOWER(question.title) LIKE ?3 ORDER BY question.title ASC"),
-	@NamedQuery(name = KbQuestionEntity.FIND_ALL_QUESTIONS_CREATED_BY, query = "SELECT question FROM KbQuestionEntity question WHERE question.author.id = ?1 ORDER BY question.creationDate DESC"),
-	@NamedQuery(name = KbQuestionEntity.FIND_ALL_DASHBOARD_QUESTIONS, query = "SELECT question.id FROM KbQuestionEntity question "
-			+ "LEFT JOIN KbUserCategoryEntity userCategory ON userCategory.category = question.category AND userCategory.kbUser.id = ?1 "
-			+ "WHERE (question.category.publicCategory = True AND (userCategory IS NULL OR (userCategory.disabled = False AND userCategory.hiddenInDashboard = False))) "
-			+ "OR (userCategory.disabled = False AND userCategory.hiddenInDashboard = False) "
-			+ "ORDER BY question.creationDate DESC"),
-	@NamedQuery(name = KbQuestionEntity.FIND_COUNT_OF_ALL_DASHBOARD_QUESTIONS, query = "SELECT COUNT(question) FROM KbQuestionEntity question "
-			+ "LEFT JOIN KbUserCategoryEntity userCategory ON userCategory.category = question.category AND userCategory.kbUser.id = ?1 "
-			+ "WHERE (question.category.publicCategory = True AND (userCategory IS NULL OR (userCategory.disabled = False AND userCategory.hiddenInDashboard = False))) "
-			+ "OR (userCategory.disabled = False AND userCategory.hiddenInDashboard = False)"),
-	@NamedQuery(name = KbQuestionEntity.FIND_ALL_DASHBOARD_QUESTIONS_FILTERED, query = "SELECT question.id FROM KbQuestionEntity question "
-			+ "LEFT JOIN KbUserCategoryEntity userCategory ON userCategory.category = question.category AND userCategory.kbUser.id = ?1 "
-			+ "LEFT JOIN question.tags tag "
-			+ "WHERE ((question.category.publicCategory = True AND (userCategory IS NULL OR (userCategory.disabled = False AND userCategory.hiddenInDashboard = False))) "
-			+ "OR (userCategory.disabled = False AND userCategory.hiddenInDashboard = False)) "
-			+ "AND (LOWER(question.title) LIKE(?2) OR LOWER(question.questionContent.content) LIKE LOWER(?2) OR LOWER(tag.name) LIKE LOWER(?2)) "
-			+ "ORDER BY question.creationDate DESC"),
-	@NamedQuery(name = KbQuestionEntity.FIND_COUNT_OF_ALL_DASHBOARD_QUESTIONS_FILTERED, query = "SELECT COUNT(question) FROM KbQuestionEntity question "
-			+ "LEFT JOIN KbUserCategoryEntity userCategory ON userCategory.category = question.category AND userCategory.kbUser.id = ?1 "
-			+ "LEFT JOIN question.tags tag "
-			+ "WHERE ((question.category.publicCategory = True AND (userCategory IS NULL OR (userCategory.disabled = False AND userCategory.hiddenInDashboard = False))) "
-			+ "OR (userCategory.disabled = False AND userCategory.hiddenInDashboard = False)) "
-			+ "AND (LOWER(question.title) LIKE(?2) OR LOWER(question.questionContent.content) LIKE LOWER(?2) OR LOWER(tag.name) LIKE LOWER(?2))"), 
-	@NamedQuery(name = KbQuestionEntity.FIND_ALL_QUESTIONS_CONTAINING_DCEMUSER, query = "SELECT question FROM KbQuestionEntity question WHERE question.author = ?1 OR question.lastModifiedBy = ?1"),
-})
+		@NamedQuery(name = KbQuestionEntity.FIND_QUESTIONS_BY_IDS, query = "SELECT DISTINCT question FROM KbQuestionEntity question WHERE question.id in ?1 ORDER BY question.creationDate DESC"),
+		@NamedQuery(name = KbQuestionEntity.FIND_ALL_QUESTIONS_CONTAINING_TAGS, query = "SELECT DISTINCT question FROM KbQuestionEntity question JOIN question.tags tag WHERE tag in ?1 ORDER BY question.creationDate DESC"),
+		@NamedQuery(name = KbQuestionEntity.FIND_ALL_QUESTIONS_NOT_CONTAINING_TAG_AND_AUTOCOMPLETE_TITLE, query = "SELECT question FROM KbQuestionEntity question WHERE question.category = ?1 AND ?2 NOT MEMBER OF question.tags AND LOWER(question.title) LIKE ?3 ORDER BY question.title ASC"),
+		@NamedQuery(name = KbQuestionEntity.FIND_ALL_QUESTIONS_CREATED_BY, query = "SELECT question FROM KbQuestionEntity question WHERE question.author.id = ?1 ORDER BY question.creationDate DESC"),
+		@NamedQuery(name = KbQuestionEntity.FIND_ALL_DASHBOARD_QUESTIONS, query = "SELECT question.id FROM KbQuestionEntity question "
+				+ "LEFT JOIN KbUserCategoryEntity userCategory ON userCategory.category = question.category AND userCategory.kbUser.id = ?1 "
+				+ "WHERE (question.category.publicCategory = True AND (userCategory IS NULL OR (userCategory.disabled = False AND userCategory.hiddenInDashboard = False))) "
+				+ "OR (userCategory.disabled = False AND userCategory.hiddenInDashboard = False) " + "ORDER BY question.creationDate DESC"),
+		@NamedQuery(name = KbQuestionEntity.FIND_COUNT_OF_ALL_DASHBOARD_QUESTIONS, query = "SELECT COUNT(question) FROM KbQuestionEntity question "
+				+ "LEFT JOIN KbUserCategoryEntity userCategory ON userCategory.category = question.category AND userCategory.kbUser.id = ?1 "
+				+ "WHERE (question.category.publicCategory = True AND (userCategory IS NULL OR (userCategory.disabled = False AND userCategory.hiddenInDashboard = False))) "
+				+ "OR (userCategory.disabled = False AND userCategory.hiddenInDashboard = False)"),
+		@NamedQuery(name = KbQuestionEntity.FIND_ALL_DASHBOARD_QUESTIONS_FILTERED, query = "SELECT question.id FROM KbQuestionEntity question "
+				+ "LEFT JOIN KbUserCategoryEntity userCategory ON userCategory.category = question.category AND userCategory.kbUser.id = ?1 "
+				+ "LEFT JOIN question.tags tag "
+				+ "WHERE ((question.category.publicCategory = True AND (userCategory IS NULL OR (userCategory.disabled = False AND userCategory.hiddenInDashboard = False))) "
+				+ "OR (userCategory.disabled = False AND userCategory.hiddenInDashboard = False)) "
+				+ "AND (LOWER(question.title) LIKE(?2) OR LOWER(question.questionContent.content) LIKE LOWER(?2) OR LOWER(tag.name) LIKE LOWER(?2)) "
+				+ "ORDER BY question.creationDate DESC"),
+		@NamedQuery(name = KbQuestionEntity.FIND_COUNT_OF_ALL_DASHBOARD_QUESTIONS_FILTERED, query = "SELECT COUNT(question) FROM KbQuestionEntity question "
+				+ "LEFT JOIN KbUserCategoryEntity userCategory ON userCategory.category = question.category AND userCategory.kbUser.id = ?1 "
+				+ "LEFT JOIN question.tags tag "
+				+ "WHERE ((question.category.publicCategory = True AND (userCategory IS NULL OR (userCategory.disabled = False AND userCategory.hiddenInDashboard = False))) "
+				+ "OR (userCategory.disabled = False AND userCategory.hiddenInDashboard = False)) "
+				+ "AND (LOWER(question.title) LIKE(?2) OR LOWER(question.questionContent.content) LIKE LOWER(?2) OR LOWER(tag.name) LIKE LOWER(?2))"),
+		@NamedQuery(name = KbQuestionEntity.FIND_ALL_QUESTIONS_CONTAINING_DCEMUSER, query = "SELECT question FROM KbQuestionEntity question WHERE question.author = ?1 OR question.lastModifiedBy = ?1"), })
 
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -134,7 +123,7 @@ public class KbQuestionEntity extends EntityInterface {
 	private List<KbReplyEntity> replies;
 
 	@DcemGui
-	@Column(name = "number_of_replies")
+	@Column(name = "number_of_replies", nullable = false)
 	private int numberOfReplies = 0;
 
 	@DcemGui(subClass = "displayName", ignoreCompare = true)
