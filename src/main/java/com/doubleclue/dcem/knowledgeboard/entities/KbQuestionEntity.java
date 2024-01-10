@@ -14,6 +14,7 @@ import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -84,7 +85,7 @@ import com.doubleclue.dcem.knowledgeboard.logic.KbUtils;
 
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Table(name = "kb_questions")
+@Table(name = "kb_questions", indexes = { @Index(name = "idx_kb_question_date", columnList = "creation_date") })
 public class KbQuestionEntity extends EntityInterface {
 
 	public static final String GRAPH_QUESTION_TAGS_AND_CONTENT = "knowledgeboard.question.withLazyTagsAndContent";
