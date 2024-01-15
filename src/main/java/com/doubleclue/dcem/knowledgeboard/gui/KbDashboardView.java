@@ -3,7 +3,6 @@ package com.doubleclue.dcem.knowledgeboard.gui;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -26,10 +25,8 @@ import com.doubleclue.dcem.core.gui.JsfUtils;
 import com.doubleclue.dcem.core.gui.ViewNavigator;
 import com.doubleclue.dcem.knowledgeboard.entities.KbCategoryEntity;
 import com.doubleclue.dcem.knowledgeboard.entities.KbQuestionEntity;
-import com.doubleclue.dcem.knowledgeboard.entities.KbTagEntity;
 import com.doubleclue.dcem.knowledgeboard.entities.KbUserCategoryEntity;
 import com.doubleclue.dcem.knowledgeboard.entities.KbUserEntity;
-import com.doubleclue.dcem.knowledgeboard.entities.enums.KbTagStatus;
 import com.doubleclue.dcem.knowledgeboard.logic.KbCategoryLogic;
 import com.doubleclue.dcem.knowledgeboard.logic.KbConstants;
 import com.doubleclue.dcem.knowledgeboard.logic.KbModule;
@@ -83,7 +80,6 @@ public class KbDashboardView extends DcemView {
 	public void init() {
 		subject = kbDashboardSubject;
 		ResourceBundle resourceBundle = JsfUtils.getBundle(KbModule.RESOURCE_NAME, operatorSessionBean.getLocale());
-
 		newPostAction = createAutoViewAction(KbConstants.KB_NEW_POST, resourceBundle, kbQuestionDialog, KbConstants.KB_QUESTION_DIALOG, null);
 		notificationAction = createAutoViewAction(KbConstants.KB_MANAGE_NOTIFICATIONS, resourceBundle, kbNotificationDialog, KbConstants.KB_NOTIFICATION_DIALOG,
 				null);
@@ -92,6 +88,7 @@ public class KbDashboardView extends DcemView {
 	@Override
 	public void reload() {
 		try {
+			lazyQuestions.setSearchTerm(null);
 			categoryMap = new HashMap<KbCategoryEntity, KbUserCategoryEntity>();
 			kbUserEntity = kbUserLogic.getKbUser(operatorSessionBean.getDcemUser().getId());
 			accessibleCategories = kbCategoryLogic.getAccessibleCategoriesWithOptionalAttribute(operatorSessionBean.getDcemUser().getId(), null);
@@ -125,6 +122,7 @@ public class KbDashboardView extends DcemView {
 			}
 			kbUserLogic.createOrUpdateUserCategories(categoryMap.values(), kbUserEntity);
 			reload();
+			lazyQuestions.setSearchTerm(filterText);
 		} catch (Exception e) {
 			kbUserEntity = null;
 			logger.error("Could not update userCategory from user: " + operatorSessionBean.getDcemUser().getLoginId(), e);
@@ -144,6 +142,7 @@ public class KbDashboardView extends DcemView {
 		if (filterText != null) {
 			filterText = filterText.trim();
 		}
+		lazyQuestions.setSearchTerm(filterText);
 	}
 
 	public void openQuestion(KbQuestionEntity kbQuestionEntity) {
@@ -155,7 +154,7 @@ public class KbDashboardView extends DcemView {
 		try {
 			kbUserEntity = kbUserLogic.getOrCreateKbUser(operatorSessionBean.getDcemUser());
 			KbUserCategoryEntity userCategory = categoryMap.get(kbQuestionEntity.getCategory());
-			if (userCategory == null) { // TODO neccessary?
+			if (userCategory == null) {
 				userCategory = kbUserLogic.getOrCreateKbUserCategory(operatorSessionBean.getDcemUser(), kbQuestionEntity.getCategory());
 			}
 			if (userCategory.getFollowedQuestions().contains(kbQuestionEntity)) {
