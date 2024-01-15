@@ -1,6 +1,5 @@
 package com.doubleclue.dcem.knowledgeboard.gui;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -13,8 +12,6 @@ import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.doubleclue.dcem.core.exceptions.DcemErrorCodes;
-import com.doubleclue.dcem.core.exceptions.DcemException;
 import com.doubleclue.dcem.core.gui.AutoViewAction;
 import com.doubleclue.dcem.core.gui.DcemDialog;
 import com.doubleclue.dcem.core.gui.DcemView;
@@ -62,12 +59,8 @@ public class KbUserCreatedQuestionsDialog extends DcemDialog {
 	}
 
 	@Override
-	public void show(DcemView dcemView, AutoViewAction autoViewAction) throws Exception { // TODO ACCESS RIGHTS?
+	public void show(DcemView dcemView, AutoViewAction autoViewAction) throws Exception {
 		kbUserEntity = (KbUserEntity) this.getActionObject();
-		if (kbUserView.isViewManager() == false) {
-			throw new DcemException(DcemErrorCodes.INSUFFICIENT_ACCESS_RIGHTS,
-					"Operating user does not have management rights for knowledgeboarduser:" + kbUserEntity.getDcemUser().getLoginId());
-		}
 		createdQuestions = kbQuestionLogic.getQuestionsCreatedBy(kbUserEntity.getId());
 	}
 

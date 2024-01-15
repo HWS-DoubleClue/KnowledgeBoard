@@ -81,7 +81,7 @@ public class KbQuestionDialog extends DcemDialog {
 	private DualListModel<String> tagDualList;
 	private Map<String, KbTagEntity> tagMapping;
 	private List<SelectItem> categoriesSelectOne;
-	private boolean editMode; // TODO viewmanager should still be able to change category of a question. Must remove all tags from the question
+	private boolean editMode;
 
 	@PostConstruct
 	public void init() {

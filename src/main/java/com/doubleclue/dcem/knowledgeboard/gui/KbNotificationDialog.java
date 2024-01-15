@@ -23,7 +23,7 @@ import com.doubleclue.dcem.knowledgeboard.logic.KbUserLogic;
 @Named("kbNotificationDialog")
 @SessionScoped
 public class KbNotificationDialog extends DcemDialog {
-
+	
 	// private Logger logger = LogManager.getLogger(KbNotificationDialog.class);
 
 	private static final long serialVersionUID = 1L;

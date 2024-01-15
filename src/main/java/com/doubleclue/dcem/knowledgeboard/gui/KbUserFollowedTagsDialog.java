@@ -12,8 +12,6 @@ import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.doubleclue.dcem.core.exceptions.DcemErrorCodes;
-import com.doubleclue.dcem.core.exceptions.DcemException;
 import com.doubleclue.dcem.core.gui.AutoViewAction;
 import com.doubleclue.dcem.core.gui.DcemDialog;
 import com.doubleclue.dcem.core.gui.DcemView;
@@ -80,11 +78,7 @@ public class KbUserFollowedTagsDialog extends DcemDialog {
 	}
 
 	@Override
-	public void show(DcemView dcemView, AutoViewAction autoViewAction) throws Exception {// TODO ACCESS RIGHTS?
-		if (kbUserView.isViewManager() == false) {
-			throw new DcemException(DcemErrorCodes.INSUFFICIENT_ACCESS_RIGHTS,
-					"Operating user does not have management rights for knowledgeboarduser:" + kbUserEntity.getDcemUser().getLoginId());
-		}
+	public void show(DcemView dcemView, AutoViewAction autoViewAction) throws Exception {
 		kbUserEntity = (KbUserEntity) this.getActionObject();
 		userCategories = kbUserLogic.getUserCategoriesByUserIdWithOptionalAttribute(kbUserEntity.getId(), KbUserCategoryEntity.GRAPH_USER_FOLLOWED_TAGS);
 		followedTags = new ArrayList<>();

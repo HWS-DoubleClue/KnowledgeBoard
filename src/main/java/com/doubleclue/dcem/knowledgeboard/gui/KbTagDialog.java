@@ -55,8 +55,8 @@ public class KbTagDialog extends DcemDialog {
 	private KbTagEntity tagEntity;
 	private List<KbCategoryEntity> editableCategories;
 	private List<SelectItem> categoriesSelectOne;
-	private boolean editMode; // TODO viewmanager should still be able to change category of a tag -> Must remove tag from all question in the previous category
-
+	private boolean editMode; 
+	
 	@PostConstruct
 	public void init() {
 	}

@@ -13,7 +13,6 @@ import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
 import com.doubleclue.dcem.core.entities.DcemAction;
-import com.doubleclue.dcem.core.entities.DcemGroup;
 import com.doubleclue.dcem.core.entities.DcemUser;
 import com.doubleclue.dcem.core.jpa.DcemTransactional;
 import com.doubleclue.dcem.core.logic.AuditingLogic;
@@ -74,7 +73,7 @@ public class KbUserLogic {
 	}
 
 	@DcemTransactional
-	public void updateKbUser(KbUserEntity kbUserEntity) { // TODO Auditing? Subject
+	public void updateKbUser(KbUserEntity kbUserEntity) {
 		em.merge(kbUserEntity);
 	}
 
@@ -128,19 +127,17 @@ public class KbUserLogic {
 	}
 
 	@DcemTransactional
-	public void addUserCategory(KbUserCategoryEntity kbUserCategoryEntity) { // TODO auditing + dcem action?
+	public void addUserCategory(KbUserCategoryEntity kbUserCategoryEntity) {
 		em.persist(kbUserCategoryEntity);
 	}
 
 	@DcemTransactional
 	public KbUserCategoryEntity updateUserCategory(KbUserCategoryEntity kbUserCategoryEntity) {
-		// TODO auditing + dcemaction?
 		return em.merge(kbUserCategoryEntity);
 	}
 
 	@DcemTransactional
 	public void updateUserCategories(List<KbUserCategoryEntity> selectedFollower, DcemAction dcemAction) {
-		// TODO Auditing
 		for (KbUserCategoryEntity follower : selectedFollower) {
 			em.merge(follower);
 		}
