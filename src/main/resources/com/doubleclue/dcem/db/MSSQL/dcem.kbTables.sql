@@ -13,7 +13,7 @@ dc_id int identity not null,
 creation_date datetime2 not null,
 jpaVersion int not null,
 last_modified_date datetime2 not null,
-number_of_replies int,
+number_of_replies int not null,
 question_preview varchar(255),
 dc_status int not null,
 dc_title varchar(111),
@@ -32,7 +32,7 @@ tag_id int not null
 create table kb_replies (
 dc_id int identity not null,
 creation_date datetime2 not null,
-highlighted bit,
+highlighted bit not null,
 jpaVersion int not null,
 last_modified_date datetime2 not null,
 author_id int,
@@ -62,10 +62,10 @@ primary key (dc_id)
 create table kb_usercategory (
 category_id int not null,
 user_id int not null,
-admin_in_category bit,
-user_disabled_in_category bit,
-following_all_tags bit,
-hidden_in_dashboard bit,
+admin_in_category bit not null,
+user_disabled_in_category bit not null,
+following_all_tags bit not null,
+hidden_in_dashboard bit not null,
 jpaVersion int not null,
 primary key (category_id, user_id)
 );
@@ -84,14 +84,16 @@ tag_id int not null
 
 create table kb_users (
 dc_id int not null,
-user_disabled bit,
+user_disabled bit not null,
 jpaVersion int not null,
-notification_disabled bit,
+notification_disabled bit not null,
 primary key (dc_id)
 );
 
 alter table kb_categories
 add constraint UK_KB_CATEGORIES unique (dc_name);
+
+create index idx_kb_question_date on kb_questions (creation_date);
 
 alter table kb_tags
 add constraint UK_KB_TAGS unique (dc_name, category_id);
