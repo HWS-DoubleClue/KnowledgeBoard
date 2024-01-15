@@ -69,7 +69,7 @@ public class KbCategoryEntity extends EntityInterface {
 	private String description;
 
 	@DcemGui
-	@Column(name = "dc_public")
+	@Column(name = "dc_public", nullable = false)
 	private boolean publicCategory;
 
 	@DcemGui(subClass = "name", displayMode = DisplayModes.NONE)

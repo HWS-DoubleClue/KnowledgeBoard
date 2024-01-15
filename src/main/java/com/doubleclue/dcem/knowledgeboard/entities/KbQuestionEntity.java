@@ -111,7 +111,7 @@ public class KbQuestionEntity extends EntityInterface {
 
 	@DcemGui
 	@Size(max = 111)
-	@Column(name = "dc_title", length = 111)
+	@Column(name = "dc_title", length = 111, nullable = false)
 	private String title;
 
 	@DcemGui
@@ -136,7 +136,7 @@ public class KbQuestionEntity extends EntityInterface {
 	@JoinColumn(name = "questioncontent_id", referencedColumnName = "dc_id", foreignKey = @ForeignKey(name = "FK_KB_QUESTION_TEXTCONTENT"), nullable = false)
 	private KbTextContentEntity questionContent;
 
-	@Column(name = "question_preview", length = 255)
+	@Column(name = "question_preview", length = 255, nullable = false)
 	private String questionPreview;
 
 	@DcemGui(sortOrder = SortOrder.DESCENDING, ignoreCompare = true)
