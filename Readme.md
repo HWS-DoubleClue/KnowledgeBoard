@@ -1,6 +1,6 @@
 # Knowledge Board
 
-KnowledgeBaord is a Plugin-Module for Doubleclue Enterprise Management ( **DCEM** ). 
+KnowledgeBoard is a Plugin-Module for Doubleclue Enterprise Management ( **DCEM** ). 
 See https://github.com/HWS-DoubleClue/IAM-Password-Manager. 
 
 It is a knowledge-base system intended for small and medium entrprises. 
@@ -12,8 +12,8 @@ For furter details [See Manual](https://doubleclue.com/files/DC_Knowledgeboard_M
 
 ### Categories
 
-Questions and answewrs are always assigned to a specific category. A category may be a **Public** or a **Private** category. 
-Every Categories have its own administrators. 
+Questions and answers are always assigned to a specific category. A category may be **Public** or **Private**. 
+Every Category has its own administrators. 
 
 #### Public Categories
 All DCEM users are eligible to participate in questions and answers of public categories. 
