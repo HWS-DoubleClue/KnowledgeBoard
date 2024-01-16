@@ -43,6 +43,7 @@
 			<p:commandButton id="manageCategories" styleClass="actionButton" style="float:right" value="#{KbMsg['AUTO_ACTION.manageNotifications']}"
 				rendered="#{kbDashboardView.newPostAction != null}" action="#{viewNavigator.setActiveDialog(kbDashboardView.notificationAction)}"
 				icon="#{kbDashboardView.notificationAction.rawAction.icon}" ajax="#{kbDashboardView.notificationAction.rawAction.ajax}" >
+				<p:ajax event="dialogReturn" listener="#{kbDashboardView.reload()}" />
 			</p:commandButton>
 
 			<br />
