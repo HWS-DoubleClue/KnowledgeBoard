@@ -23,13 +23,16 @@ import com.doubleclue.dcem.core.entities.EntityInterface;
 import com.doubleclue.dcem.core.gui.DcemGui;
 
 @NamedQueries({
-	@NamedQuery(name = KbReplyEntity.FIND_ALL_REPLIES_CONTAINING_DCEMUSER, query = "SELECT reply FROM KbReplyEntity reply WHERE reply.author = ?1 OR reply.lastModifiedBy = ?1"), })
+	@NamedQuery(name = KbReplyEntity.FIND_ALL_REPLIES_CONTAINING_DCEMUSER, query = "SELECT reply FROM KbReplyEntity reply WHERE reply.author = ?1 OR reply.lastModifiedBy = ?1"), 
+	@NamedQuery(name = KbReplyEntity.FIND_ALL_REPLIES_CONTAINING_DCEMUSER, query = "SELECT reply FROM KbReplyEntity reply WHERE reply.question = ?1 ORDER BY reply.creationDate ASC"), 
+	})
 
 @Entity
 @Table(name = "kb_replies")
 public class KbReplyEntity extends EntityInterface {
 
 	public static final String FIND_ALL_REPLIES_CONTAINING_DCEMUSER = "knowledgeboard.question.findAllRepliesContainingDcemuser";
+	public static final String FIND_ALL_REPLIES_FROM_QUESTION = "knowledgeboard.question.findAllRepliesFromQuestion";
 
 	@Id
 	@Column(name = "dc_id")

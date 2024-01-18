@@ -44,6 +44,10 @@ public class KbReplyLogic {
 			em.merge(replyEntity);
 		}
 	}
+	
+	public List<KbReplyEntity> getRepliesByQuestion(KbQuestionEntity kbQuestionEntity){
+		return null; // TODO
+	}
 
 	@DcemTransactional
 	public void removeReply(KbReplyEntity kbReplyEntity) throws Exception {
