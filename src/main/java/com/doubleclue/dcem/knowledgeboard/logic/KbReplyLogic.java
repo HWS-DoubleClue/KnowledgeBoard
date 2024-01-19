@@ -46,7 +46,10 @@ public class KbReplyLogic {
 	}
 	
 	public List<KbReplyEntity> getRepliesByQuestion(KbQuestionEntity kbQuestionEntity){
-		return null; // TODO
+		TypedQuery<KbReplyEntity> query = em.createNamedQuery(KbReplyEntity.FIND_ALL_REPLIES_FROM_QUESTION,KbReplyEntity.class);
+		query.setParameter(1, kbQuestionEntity);
+		query.setHint("javax.persistence.fetchgraph", em.getEntityGraph(KbReplyEntity.GRAPH_REPLIES_WITH_AUTHOR_AND_CONTENT));
+		return query.getResultList();
 	}
 
 	@DcemTransactional

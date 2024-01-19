@@ -52,11 +52,7 @@ import com.doubleclue.dcem.knowledgeboard.logic.KbUtils;
 				@NamedAttributeNode(value = "category"), }),
 		@NamedEntityGraph(name = KbQuestionEntity.GRAPH_QUESTION_REPLIES, attributeNodes = { @NamedAttributeNode(value = "replies"),
 				@NamedAttributeNode(value = "category"), }),
-		@NamedEntityGraph(name = KbQuestionEntity.GRAPH_QUESTION_REPLIES_AND_REPLYAUTHOR, attributeNodes = { @NamedAttributeNode(value = "category"),
-				@NamedAttributeNode(value = "replies", subgraph = "subgraph.replyContent"), }, subgraphs = {
-						@NamedSubgraph(name = "subgraph.replyContent", attributeNodes = { @NamedAttributeNode(value = "replyContent"),
-								@NamedAttributeNode(value = "author", subgraph = "subgraph.replyAuthor") }),
-						@NamedSubgraph(name = "subgraph.replyAuthor", attributeNodes = { @NamedAttributeNode(value = "dcemUserExt"), }) }), })
+})
 
 @NamedQueries({
 		@NamedQuery(name = KbQuestionEntity.FIND_QUESTIONS_BY_IDS, query = "SELECT DISTINCT question FROM KbQuestionEntity question WHERE question.id in ?1 ORDER BY question.creationDate DESC"),
@@ -94,7 +90,6 @@ public class KbQuestionEntity extends EntityInterface {
 	public static final String GRAPH_QUESTION_TAGS_AND_CONTENT = "knowledgeboard.question.withLazyTagsAndContent";
 	public static final String GRAPH_QUESTION_TAGS = "knowledgeboard.question.withLazyTagsAndCategories";
 	public static final String GRAPH_QUESTION_REPLIES = "knowledgeboard.question.withLazyReplies";
-	public static final String GRAPH_QUESTION_REPLIES_AND_REPLYAUTHOR = "knowledgeboard.question.withLazyRepliesAndReplyAuthor";
 
 	public static final String FIND_QUESTIONS_BY_IDS = "knowledgeboard.question.findQuestionsByIds";
 	public static final String FIND_ALL_QUESTIONS_CONTAINING_TAGS = "knowledgeboard.question.findAllQuestionsContainingTags";

@@ -96,12 +96,13 @@ public class KbReplyQuestionView extends DcemView {
 				if (kbQuestionEntity == null) {
 					JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "dashboard.error.questionNotFound");
 				} else {
-					KbQuestionEntity questionWithContentAndReplies = kbQuestionLogic.getQuestionWithOptionalAttribute(kbQuestionEntity.getId(),
-							KbQuestionEntity.GRAPH_QUESTION_REPLIES_AND_REPLYAUTHOR);
+//					KbQuestionEntity questionWithContentAndReplies = kbQuestionLogic.getQuestionWithOptionalAttribute(kbQuestionEntity.getId(),
+//							KbQuestionEntity.GRAPH_QUESTION_REPLIES_AND_REPLYAUTHOR);
+					List<KbReplyEntity> replies = kbReplyLogic.getRepliesByQuestion(kbQuestionEntity);
 //					for (KbReplyEntity reply : questionWithContentAndReplies.getReplies()) {
 //						reply.getReplyContent().getContent();
 //					}
-					kbQuestionEntity.setReplies(questionWithContentAndReplies.getReplies());
+					kbQuestionEntity.setReplies(replies);
 				}
 			} catch (Exception e) {
 				viewNavigator.setActiveView(KbModule.MODULE_ID + DcemConstants.MODULE_VIEW_SPLITTER + kbDashboardView.getSubject().getViewName());

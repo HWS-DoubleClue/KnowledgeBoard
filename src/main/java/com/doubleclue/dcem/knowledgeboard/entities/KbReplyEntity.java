@@ -12,8 +12,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedEntityGraphs;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
@@ -22,17 +26,27 @@ import com.doubleclue.dcem.core.entities.DcemUser;
 import com.doubleclue.dcem.core.entities.EntityInterface;
 import com.doubleclue.dcem.core.gui.DcemGui;
 
+@NamedEntityGraphs({
+	@NamedEntityGraph(name = KbReplyEntity.GRAPH_REPLIES_WITH_AUTHOR_AND_CONTENT, attributeNodes = { @NamedAttributeNode(value = "replyContent"),
+			@NamedAttributeNode(value = "author", subgraph = "subgraph.author"),}, subgraphs = {
+					@NamedSubgraph(name = "subgraph.author", attributeNodes = {
+							@NamedAttributeNode(value = "dcemUserExt"), }) 
+					}),
+})
+
+
 @NamedQueries({
 	@NamedQuery(name = KbReplyEntity.FIND_ALL_REPLIES_CONTAINING_DCEMUSER, query = "SELECT reply FROM KbReplyEntity reply WHERE reply.author = ?1 OR reply.lastModifiedBy = ?1"), 
-	@NamedQuery(name = KbReplyEntity.FIND_ALL_REPLIES_CONTAINING_DCEMUSER, query = "SELECT reply FROM KbReplyEntity reply WHERE reply.question = ?1 ORDER BY reply.creationDate ASC"), 
+	@NamedQuery(name = KbReplyEntity.FIND_ALL_REPLIES_FROM_QUESTION, query = "SELECT reply FROM KbReplyEntity reply WHERE reply.question = ?1 ORDER BY reply.creationDate ASC"), 
 	})
 
 @Entity
 @Table(name = "kb_replies")
 public class KbReplyEntity extends EntityInterface {
 
-	public static final String FIND_ALL_REPLIES_CONTAINING_DCEMUSER = "knowledgeboard.question.findAllRepliesContainingDcemuser";
-	public static final String FIND_ALL_REPLIES_FROM_QUESTION = "knowledgeboard.question.findAllRepliesFromQuestion";
+	public static final String GRAPH_REPLIES_WITH_AUTHOR_AND_CONTENT = "knowledgeboard.reply.withLazyAuthorAndContent";
+	public static final String FIND_ALL_REPLIES_CONTAINING_DCEMUSER = "knowledgeboard.reply.findAllRepliesContainingDcemuser";
+	public static final String FIND_ALL_REPLIES_FROM_QUESTION = "knowledgeboard.reply.findAllRepliesFromQuestion";
 
 	@Id
 	@Column(name = "dc_id")
