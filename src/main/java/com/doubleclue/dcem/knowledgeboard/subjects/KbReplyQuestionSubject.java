@@ -20,20 +20,20 @@ public class KbReplyQuestionSubject extends SubjectAbs {
 		setHiddenMenu(true);
 		
 		RawAction rawActionEditQuestion = new RawAction(DcemConstants.ACTION_EDIT,
-				new String[] {DcemConstants.SYSTEM_ROLE_USER, DcemConstants.SYSTEM_ROLE_SUPERADMIN, DcemConstants.SYSTEM_ROLE_ADMIN },
+				new String[] {DcemConstants.SYSTEM_ROLE_SUPERADMIN, DcemConstants.SYSTEM_ROLE_ADMIN },
 				ActionSelection.ONE_ONLY);
 		rawActionEditQuestion.setActionType(ActionType.DIALOG);
 		rawActionEditQuestion.setIcon("fa fa-pencil");
 		rawActions.add(rawActionEditQuestion);
 		
 		RawAction rawActionEditReply = new RawAction(KbConstants.KB_EDIT_REPLY,
-				new String[] {DcemConstants.SYSTEM_ROLE_USER, DcemConstants.SYSTEM_ROLE_SUPERADMIN, DcemConstants.SYSTEM_ROLE_ADMIN },
+				new String[] {DcemConstants.SYSTEM_ROLE_SUPERADMIN, DcemConstants.SYSTEM_ROLE_ADMIN },
 				ActionSelection.ONE_ONLY);
 		rawActionEditReply.setActionType(ActionType.DIALOG);
 		rawActionEditReply.setIcon("fa fa-pencil");
 		rawActions.add(rawActionEditReply);
 		
-		rawActions.add(new RawAction(DcemConstants.ACTION_DELETE, new String[] {DcemConstants.SYSTEM_ROLE_USER, DcemConstants.SYSTEM_ROLE_SUPERADMIN, DcemConstants.SYSTEM_ROLE_ADMIN },
+		rawActions.add(new RawAction(DcemConstants.ACTION_DELETE, new String[] {DcemConstants.SYSTEM_ROLE_SUPERADMIN, DcemConstants.SYSTEM_ROLE_ADMIN },
 				ActionSelection.ONE_OR_MORE));
 
 		rawActions.add(new RawAction(DcemConstants.ACTION_VIEW, null));
