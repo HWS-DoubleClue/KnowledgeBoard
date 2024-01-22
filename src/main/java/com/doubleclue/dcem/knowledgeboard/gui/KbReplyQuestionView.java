@@ -82,7 +82,6 @@ public class KbReplyQuestionView extends DcemView {
 	public void init() {
 		subject = kbReplyQuestionSubject;
 		ResourceBundle resourceBundle = JsfUtils.getBundle(KbModule.RESOURCE_NAME, operatorSessionBean.getLocale());
-		System.out.println("KbReplyQuestionView.init()");
 		editQuestion = createAutoViewAction(DcemConstants.ACTION_EDIT, resourceBundle, kbQuestionDialog, KbConstants.KB_QUESTION_DIALOG, null);
 		editReply = createAutoViewAction(KbConstants.KB_EDIT_REPLY, resourceBundle, kbReplyDialog, KbConstants.KB_REPLY_DIALOG, null);
 		removeReply = createAutoViewAction(DcemConstants.ACTION_DELETE, resourceBundle, kbReplyDialog, DcemConstants.AUTO_CONFIRM_DIALOG_PATH, null);
@@ -96,12 +95,7 @@ public class KbReplyQuestionView extends DcemView {
 				if (kbQuestionEntity == null) {
 					JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "dashboard.error.questionNotFound");
 				} else {
-//					KbQuestionEntity questionWithContentAndReplies = kbQuestionLogic.getQuestionWithOptionalAttribute(kbQuestionEntity.getId(),
-//							KbQuestionEntity.GRAPH_QUESTION_REPLIES_AND_REPLYAUTHOR);
 					List<KbReplyEntity> replies = kbReplyLogic.getRepliesByQuestion(kbQuestionEntity);
-//					for (KbReplyEntity reply : questionWithContentAndReplies.getReplies()) {
-//						reply.getReplyContent().getContent();
-//					}
 					kbQuestionEntity.setReplies(replies);
 				}
 			} catch (Exception e) {

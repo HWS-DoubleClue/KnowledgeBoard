@@ -44,14 +44,14 @@ public class KbQuestionSubject extends SubjectAbs {
 		rawActions.add(rawActionQuestion);
 
 		RawAction rawActionQuestionDetails = new RawAction(KbConstants.KB_SHOW_REPLYVIEW,
-				new String[] { DcemConstants.SYSTEM_ROLE_SUPERADMIN, DcemConstants.SYSTEM_ROLE_ADMIN, DcemConstants.SYSTEM_ROLE_USER },
+				new String[] { DcemConstants.SYSTEM_ROLE_SUPERADMIN, DcemConstants.SYSTEM_ROLE_ADMIN, DcemConstants.SYSTEM_ROLE_USER, DcemConstants.SYSTEM_ROLE_HELPDESK },
 				ActionSelection.ONE_ONLY);
 		rawActionQuestionDetails.setActionType(ActionType.EL_METHOD);
 		rawActionQuestionDetails.setElMethodExpression(KbConstants.KB_EL_METHOD_QUESTIONVIEW_GOTO_REPLYVIEW);
 		rawActionQuestionDetails.setIcon("fas fa-reply");
 		rawActions.add(rawActionQuestionDetails);
 
-		rawActions.add(new RawAction(DcemConstants.ACTION_VIEW, new String[] { DcemConstants.SYSTEM_ROLE_USER }));
+		rawActions.add(new RawAction(DcemConstants.ACTION_VIEW, new String[] { DcemConstants.SYSTEM_ROLE_USER, DcemConstants.SYSTEM_ROLE_HELPDESK, DcemConstants.SYSTEM_ROLE_VIEWER }));
 		rawActions.add(new RawAction(DcemConstants.ACTION_MANAGE, new String[] { DcemConstants.SYSTEM_ROLE_SUPERADMIN, DcemConstants.SYSTEM_ROLE_ADMIN }));
 	};
 
