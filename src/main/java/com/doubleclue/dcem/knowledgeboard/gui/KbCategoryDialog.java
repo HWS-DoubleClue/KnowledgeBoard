@@ -84,7 +84,7 @@ public class KbCategoryDialog extends DcemDialog {
 	}
 
 	public String getHeight() {
-		return "25em";
+		return "27em";
 	}
 
 	public KbCategoryEntity getCategoryEntity() {
