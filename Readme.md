@@ -1,6 +1,6 @@
 # Knowledge Board
 
-KnowledgeBoard is a Knowledge Base Tool and Question and Answer Platform for small and medium enterprises.
+KnowledgeBoard is a Knowledge Base Tool and Question & Answer Platform for small and medium enterprises.
 It runs as a Plugin Module in the Doubleclue Enterprise Management ( **DCEM** ). 
 You can find the DCEM repository at https://github.com/HWS-DoubleClue/IAM-Password-Manager. 
 
@@ -27,7 +27,7 @@ Users can attach Tags to their questions. Tags are category specific and can be 
 Users can follow questions, categories or tags and will be notified by e-mail whenever a new answer or question is posted.
 
 ### Search Engine
-Knowledge Board comes with a power search engine, which allows to search for question titles, content and tags. 
+Knowledge Board comes with a search engine, which allows to search for question titles, content and tags. 
 
 
 ## [Try it out for free](https://doubleclue.online/dcem/createTenant/index.xhtml)
