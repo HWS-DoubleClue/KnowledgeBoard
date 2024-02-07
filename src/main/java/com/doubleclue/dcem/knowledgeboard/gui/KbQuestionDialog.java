@@ -136,7 +136,6 @@ public class KbQuestionDialog extends DcemDialog {
 	@Override
 	public void show(DcemView dcemView, AutoViewAction autoViewAction) throws Exception {
 		questionEntity = (KbQuestionEntity) dcemView.getActionObject();
-		this.setActionObject(questionEntity);
 		categoriesSelectOne = new ArrayList<SelectItem>();
 
 		if (getAutoViewAction().getDcemAction().getAction().equals(DcemConstants.ACTION_ADD)
