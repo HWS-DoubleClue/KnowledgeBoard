@@ -98,6 +98,7 @@ public class KbReplyQuestionView extends DcemView {
 					List<KbReplyEntity> replies = kbReplyLogic.getRepliesByQuestion(kbQuestionEntity);
 					kbQuestionEntity.setReplies(replies);
 				}
+				loadLazyPhoto(kbQuestionEntity);
 			} catch (Exception e) {
 				viewNavigator.setActiveView(KbModule.MODULE_ID + DcemConstants.MODULE_VIEW_SPLITTER + kbDashboardView.getSubject().getViewName());
 				logger.error("Could not get question details of question: " + kbQuestionEntity.getId(), e);
@@ -105,6 +106,15 @@ public class KbReplyQuestionView extends DcemView {
 			}
 		} else {
 			viewNavigator.setActiveView(KbModule.MODULE_ID + DcemConstants.MODULE_VIEW_SPLITTER + kbDashboardView.getSubject().getViewName());
+		}
+	}
+	
+	private void loadLazyPhoto(KbQuestionEntity kbQuestionEntity) {
+		if (kbQuestionEntity.getAuthor() != null) {
+			kbQuestionEntity.getAuthor().getPhoto();
+		}
+		for (KbReplyEntity reply : kbQuestionEntity.getReplies()) {
+			reply.getAuthor().getPhoto();
 		}
 	}
 
