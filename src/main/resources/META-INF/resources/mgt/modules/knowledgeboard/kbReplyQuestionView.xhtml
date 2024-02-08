@@ -74,7 +74,7 @@ img {
 				</p:panel>
 				<p:spacer height="30" />
 				<div style="font-size: 1.7em; color: #005078">
-					<h:outputText
+					<h:outputText id="replyCount"
 						value="#{kbReplyQuestionView.kbQuestionEntity.replies.size()} #{kbReplyQuestionView.kbQuestionEntity.replies.size()==1 ? KbMsg['reply.view.reply'] : KbMsg['reply.view.replies']} " />
 				</div>
 				<p:spacer height="25" />
@@ -87,7 +87,7 @@ img {
 								<p:commandLink icon="pi pi-trash" styleClass="ui-panel-titlebar-icon " style="margin-bottom: 10px" action="#{kbReplyQuestionView.deleteReply(reply)}"
 									rendered="#{kbReplyQuestionView.hasReplyDeletePermission(reply)}">
 									<h:outputText styleClass="ui-icon pi pi-trash" style="border:1px solid #c8c8c8;" />
-									<p:ajax event="dialogReturn" update="replies" listener="#{kbReplyQuestionView.reload()}" />
+									<p:ajax event="dialogReturn" update="replies replyForm:replyCount" listener="#{kbReplyQuestionView.reload()}" />
 								</p:commandLink>
 								
 								<p:commandLink icon="pi pi-pencil" styleClass="ui-panel-titlebar-icon " style="margin-bottom: 10px" action="#{kbReplyQuestionView.editReply(reply)}"
