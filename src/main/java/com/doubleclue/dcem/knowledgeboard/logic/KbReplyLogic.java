@@ -6,6 +6,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
+import javax.persistence.NamedQuery;
 import javax.persistence.TypedQuery;
 
 import com.doubleclue.dcem.core.DcemConstants;
@@ -67,16 +68,7 @@ public class KbReplyLogic {
 
 	@DcemTransactional
 	public void removeUserFromReplies(DcemUser dcemUser) {
-		TypedQuery<KbReplyEntity> query = em.createNamedQuery(KbReplyEntity.FIND_ALL_REPLIES_CONTAINING_DCEMUSER, KbReplyEntity.class);
-		query.setParameter(1, dcemUser);
-		List<KbReplyEntity> replies = query.getResultList();
-		for (KbReplyEntity reply : replies) {
-			if (dcemUser.equals(reply.getAuthor())) {
-				reply.setAuthor(null);
-			}
-			if (dcemUser.equals(reply.getLastModifiedBy())) {
-				reply.setLastModifiedBy(null);
-			}
-		}
+		em.createQuery("UPDATE KbReplyEntity reply SET reply.author = null WHERE reply.author = ?1").setParameter(1, dcemUser).executeUpdate();
+		em.createQuery("UPDATE KbReplyEntity reply SET reply.lastModifiedBy = null WHERE reply.lastModifiedBy = ?1").setParameter(1, dcemUser).executeUpdate();
 	}
 }

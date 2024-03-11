@@ -20,7 +20,7 @@ public class KbTextContentEntity extends EntityInterface {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@Column(name = "content", nullable = false, length = 1024 * 1024 * 5)
+	@Column(name = "content", nullable = false, length = 1024 * 1024)
 	private String content;
 
 	@Version
