@@ -30,6 +30,8 @@ import com.doubleclue.dcem.knowledgeboard.entities.KbTagEntity;
 import com.doubleclue.dcem.knowledgeboard.entities.KbTextContentEntity;
 import com.doubleclue.dcem.knowledgeboard.entities.KbUserCategoryEntity;
 import com.doubleclue.dcem.knowledgeboard.entities.enums.KbQuestionStatus;
+import com.doubleclue.dcem.knowledgeboard.exceptions.KbErrorCodes;
+import com.doubleclue.dcem.knowledgeboard.exceptions.KbException;
 import com.doubleclue.dcem.knowledgeboard.logic.KbCategoryLogic;
 import com.doubleclue.dcem.knowledgeboard.logic.KbConstants;
 import com.doubleclue.dcem.knowledgeboard.logic.KbEmailLogic;
@@ -148,7 +150,7 @@ public class KbQuestionDialog extends DcemDialog {
 				accessibleCategories = kbCategoryLogic.getAccessibleCategoriesWithOptionalAttribute(operatorSessionBean.getDcemUser().getId(),
 						KbCategoryEntity.GRAPH_CATEGORIES_TAGS);
 				if (accessibleCategories.size() == 0) {
-					throw new DcemException(DcemErrorCodes.INSUFFICIENT_ACCESS_RIGHTS, "Operating user does not have management rights for any category.");
+					throw new KbException(KbErrorCodes.NO_ACCESS_TO_CATEGORY, "Operating user does not have management rights for any category.");
 				}
 			}
 			questionBody = new KbTextContentEntity();
