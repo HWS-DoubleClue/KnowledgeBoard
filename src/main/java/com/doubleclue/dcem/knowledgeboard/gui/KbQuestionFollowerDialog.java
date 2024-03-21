@@ -69,7 +69,7 @@ public class KbQuestionFollowerDialog extends DcemDialog {
 				return;
 			}
 			kbUserCategoryEntity.getFollowedQuestions().add(kbQuestionEntity);
-			// kbUserCategoryEntity = kbUserLogic.updateUserCategory(kbUserCategoryEntity);
+			kbUserCategoryEntity = kbUserLogic.updateUserCategory(kbUserCategoryEntity);
 			followers.add(kbUserCategoryEntity);
 			JsfUtils.addInfoMessageToComponentId(
 					String.format(JsfUtils.getStringSafely(resourceBundle, "question.followerDialog.success.addMember"), userLoginId),

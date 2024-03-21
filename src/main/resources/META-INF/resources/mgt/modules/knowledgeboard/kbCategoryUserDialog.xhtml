@@ -52,9 +52,9 @@
 					styleClass="memberTable" selection="#{kbCategoryMemberDialog.selectedMember}" scrollable="true" rowKey="#{member.kbUser.id}" scrollHeight="300"
 					emptyMessage="#{CoreMsg['emptyTable']}">
 
-					<p:column sortOrder="asc" filterBy="#{member.kbUser.dcemUser.loginId}" headerText="#{CoreMsg['loginId']}" filterMatchMode="contains"
-						sortBy="#{member.kbUser.dcemUser.loginId}">
-						<h:outputText value="#{member.kbUser.dcemUser.loginId}" />
+					<p:column sortOrder="asc" filterBy="#{member.kbUser.dcemUser.displayName}" headerText="#{CoreMsg['loginId']}" filterMatchMode="contains"
+						sortBy="#{member.kbUser.dcemUser.displayName}">
+						<h:outputText value="#{member.kbUser.dcemUser.displayName}" />
 					</p:column>
 
 					<p:column headerText="#{KbMsg['category.memberDialog.admin']}" filterBy="#{member.admin}" filterMatchMode="exact">
@@ -102,7 +102,7 @@
 		</h:form>
 		
 		<h:form id="categoryMemberDialog">
-			<p:dialog widgetVar="addMemberDialog" modal="true" id="addEditDialog">
+			<p:dialog widgetVar="addMemberDialog" modal="true" id="addEditDialog" style="min-width: 35em;max-width: 35em;min-height: 30em;max-height: 30em;">
 				<f:facet name="header">
 					<h:outputText style="margin-right: 0.3em;" class="fa fa-user-plus" rendered="#{kbCategoryMemberDialog.editMode == false}" />
 					<h:outputText value="#{KbMsg['category.memberDialog.addMember']}" rendered="#{kbCategoryMemberDialog.editMode == false}" />
@@ -114,10 +114,14 @@
 				</p:messages>
 				<h:panelGroup id="memberDialog">
 					<h:panelGrid columns="2" cellpadding="4">
-						<p:outputLabel for="memberSearch" value="#{CoreMsg['loginId']}: " />
+						<p:outputLabel for="memberSearch" value="#{CoreMsg['loginId']}: " rendered="#{kbCategoryMemberDialog.editMode == false}"/>
 						<p:autoComplete id="memberSearch" required="true" forceSelection="true" dropdown="true" value="#{kbCategoryMemberDialog.userLoginId}"
 							disabled="#{kbCategoryMemberDialog.editMode == true}" completeMethod="#{kbCategoryMemberDialog.actionCompleteMember}" effect="fade" size="30"
-							queryDelay="500" styleClass="autocompleteChangedDisabled" scrollHeight="250" />
+							queryDelay="500" styleClass="autocompleteChangedDisabled" scrollHeight="250" rendered="#{kbCategoryMemberDialog.editMode == false}" />
+							
+						<p:outputLabel for="memberDisplay" value="#{CoreMsg['loginId']}: " rendered="#{kbCategoryMemberDialog.editMode == true}" />
+						<h:outputText id="memberDisplay" value="#{kbCategoryMemberDialog.member.kbUser.dcemUser.displayName}" rendered="#{kbCategoryMemberDialog.editMode == true}" />
+							
 					</h:panelGrid>
 
 					<h:panelGrid columns="1" cellpadding="4" cellspacing="4">

@@ -69,7 +69,7 @@ public class KbUserCreatedQuestionsDialog extends DcemDialog {
 	}
 
 	public String getWidth() {
-		return "60em";
+		return "70em";
 	}
 
 	public void leavingDialog() {

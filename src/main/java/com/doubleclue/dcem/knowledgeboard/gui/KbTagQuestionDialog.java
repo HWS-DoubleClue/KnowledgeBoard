@@ -144,7 +144,7 @@ public class KbTagQuestionDialog extends DcemDialog {
 	}
 
 	public String getWidth() {
-		return "60em";
+		return "70em";
 	}
 
 	public void leavingDialog() {

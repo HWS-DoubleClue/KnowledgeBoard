@@ -53,9 +53,9 @@
 					selection="#{kbQuestionFollowerDialog.selectedFollower}" scrollable="true" rowKey="#{follower.kbUser.id}" scrollHeight="300"
 					emptyMessage="#{CoreMsg['emptyTable']}">
 
-					<p:column sortOrder="asc" filterBy="#{follower.kbUser.dcemUser.loginId}" headerText="#{CoreMsg['loginId']}" filterMatchMode="contains"
-						sortBy="#{follower.kbUser.dcemUser.loginId}">
-						<h:outputText value="#{follower.kbUser.dcemUser.loginId}" />
+					<p:column sortOrder="asc" filterBy="#{follower.kbUser.dcemUser.displayName}" headerText="#{CoreMsg['loginId']}" filterMatchMode="contains"
+						sortBy="#{follower.kbUser.dcemUser.displayName}">
+						<h:outputText value="#{follower.kbUser.dcemUser.displayName}" />
 					</p:column>
 				</p:dataTable>
 				<p />
