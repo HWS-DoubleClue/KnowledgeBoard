@@ -39,7 +39,7 @@ public class KbUserEntity extends EntityInterface implements Serializable, IPhot
 	byte[] photo;
 
 	@MapsId
-	@DcemGui(subClass = "loginId", ignoreCompare = true, sortOrder = SortOrder.ASCENDING)
+	@DcemGui(subClass = "displayName", ignoreCompare = true, sortOrder = SortOrder.ASCENDING)
 	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "dc_id", foreignKey = @ForeignKey(name = "FK_KB_USER"), nullable = false, updatable = false)
 	private DcemUser dcemUser;

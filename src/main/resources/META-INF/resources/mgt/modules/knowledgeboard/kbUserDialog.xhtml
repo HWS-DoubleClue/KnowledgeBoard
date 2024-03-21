@@ -9,9 +9,8 @@
 
 <f:view locale="#{operatorSession.locale}">
 	<h:body class="dialogBody">
-		<span id="customheader"> 
-			<h:outputLabel class="#{autoView.icon} dialogTitle"/>
-			<h:outputLabel value="#{viewNavigator.dialogTitle}" styleClass="dialogTitle"/>
+		<span id="customheader"> <h:outputLabel class="#{autoView.icon} dialogTitle" /> <h:outputLabel value="#{viewNavigator.dialogTitle}"
+				styleClass="dialogTitle" />
 		</span>
 
 		<p:messages showSummary="true" showDetail="false" closable="true">
@@ -20,11 +19,14 @@
 
 		<h:form id="kbuserUserForm">
 			<h:panelGrid columns="2" cellpadding="4" cellspacing="4">
-					
-				<p:outputLabel for="@next" value="#{CoreMsg['loginId']}" />
+
+				<p:outputLabel for="@next" value="#{CoreMsg['loginId']}" rendered="#{kbUserDialog.editMode == false}" />
 				<p:autoComplete id="userSearch" required="true" forceSelection="true" dropdown="true" scrollHeight="150" value="#{kbUserDialog.loginId}"
-							disabled="#{kbUserDialog.editMode == true}" completeMethod="#{kbUserDialog.actionCompleteUser}" effect="fade" size="27"
-							queryDelay="500" styleClass="autocompleteChangedDisabled" />
+					completeMethod="#{kbUserDialog.actionCompleteUser}" effect="fade" size="27" queryDelay="500" styleClass="autocompleteChangedDisabled"
+					rendered="#{kbUserDialog.editMode == false}" />
+
+				<p:outputLabel for="@next" value="#{CoreMsg['loginId']}" rendered="#{kbUserDialog.editMode == true}" />
+				<h:outputText id="user-name" value="#{kbUserDialog.kbUserEntity.dcemUser.displayName}" rendered="#{kbUserDialog.editMode == true}" />
 			</h:panelGrid>
 			<h:panelGrid columns="2" cellpadding="4" cellspacing="4">
 				<p:outputLabel for="@next" value="#{KbMsg['user.dialog.notificationsDisabled']} " />
