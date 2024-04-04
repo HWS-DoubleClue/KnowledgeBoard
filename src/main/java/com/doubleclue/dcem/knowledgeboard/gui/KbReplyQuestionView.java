@@ -108,13 +108,15 @@ public class KbReplyQuestionView extends DcemView {
 			viewNavigator.setActiveView(KbModule.MODULE_ID + DcemConstants.MODULE_VIEW_SPLITTER + kbDashboardView.getSubject().getViewName());
 		}
 	}
-	
+
 	private void loadLazyPhoto(KbQuestionEntity kbQuestionEntity) {
 		if (kbQuestionEntity.getAuthor() != null) {
 			kbQuestionEntity.getAuthor().getPhoto();
 		}
 		for (KbReplyEntity reply : kbQuestionEntity.getReplies()) {
-			reply.getAuthor().getPhoto();
+			if (reply.getAuthor() != null) {
+				reply.getAuthor().getPhoto();
+			}
 		}
 	}
 
