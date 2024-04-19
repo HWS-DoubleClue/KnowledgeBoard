@@ -1,6 +1,6 @@
 # Knowledge Board
 
-KnowledgeBoard is a Knowledge Base Tool and Question & Answer Platform for small and medium enterprises.
+KnowledgeBoard is a Knowledge Base Tool and Question & Answer Platform.
 It runs as a Plugin Module in the Doubleclue Enterprise Management ( **DCEM** ). 
 You can find the DCEM repository at https://github.com/HWS-DoubleClue/IAM-Password-Manager. 
 
