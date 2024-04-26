@@ -73,7 +73,7 @@ img {
 					</div>
 				</p:panel>
 				<p:spacer height="30" />
-				<div style="font-size: 1.7em; color: #005078">
+				<div style="font-size: 1.7em; color: #0075B1;">
 					<h:outputText id="replyCount"
 						value="#{kbReplyQuestionView.kbQuestionEntity.replies.size()} #{kbReplyQuestionView.kbQuestionEntity.replies.size()==1 ? KbMsg['reply.view.reply'] : KbMsg['reply.view.replies']} " />
 				</div>
@@ -130,7 +130,7 @@ img {
 				</p:dataView>
 				<h:panelGroup rendered="#{kbReplyQuestionView.kbQuestionEntity.status != kbReplyQuestionView.closedStatus}">
 					<p:spacer height="30" />
-					<div style="font-size: 2em; color: #005078">
+					<div style="font-size: 2em; color: #0075B1">
 						<h:outputText value="#{KbMsg['reply.view.addReply']}" />
 					</div>
 					<p:spacer height="25" />
