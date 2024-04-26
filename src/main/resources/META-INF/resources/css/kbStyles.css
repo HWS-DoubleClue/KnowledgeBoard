@@ -70,16 +70,16 @@ body .ui-dataview-header {
 	display: none;
 }
 
-body .ui-commandlink, body .ui-link {
-	color: #116fbf !important;
-	transition: background-color .2s, color .2s, border-color .2s,
-		box-shadow .2s, opacity .2s !important
-}
+/* body .ui-commandlink, body .ui-link { */
+/* 	color: #116fbf !important; */
+/* 	transition: background-color .2s, color .2s, border-color .2s, */
+/* 		box-shadow .2s, opacity .2s !important */
+/* } */
 
-body .ui-commandlink:hover, body .ui-link:hover {
-	color: #5780ff !important;
-	text-decoration: underline !important
-}
+/* body .ui-commandlink:hover, body .ui-link:hover { */
+/* 	color: #5780ff !important; */
+/* 	text-decoration: underline !important */
+/* } */
 
 body .autocompleteChangedDisabled .ui-state-disabled {
 	opacity: 0.80;
