@@ -23,6 +23,7 @@ import com.doubleclue.dcem.core.entities.EntityInterface;
 import com.doubleclue.dcem.core.gui.DcemGui;
 import com.doubleclue.dcem.core.gui.IPhoto;
 import com.doubleclue.dcem.core.jpa.VariableType;
+import com.doubleclue.dcem.core.utils.compare.DcemCompare;
 
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -38,8 +39,9 @@ public class KbUserEntity extends EntityInterface implements Serializable, IPhot
 	@Transient
 	byte[] photo;
 
+	@DcemCompare(ignore = true)
 	@MapsId
-	@DcemGui(subClass = "displayName", ignoreCompare = true, sortOrder = SortOrder.ASCENDING)
+	@DcemGui(subClass = "displayName", sortOrder = SortOrder.ASCENDING)
 	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "dc_id", foreignKey = @ForeignKey(name = "FK_KB_USER"), nullable = false, updatable = false)
 	private DcemUser dcemUser;

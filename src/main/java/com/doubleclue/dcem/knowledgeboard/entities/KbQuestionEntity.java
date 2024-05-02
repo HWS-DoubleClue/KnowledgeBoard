@@ -39,6 +39,7 @@ import org.primefaces.model.SortOrder;
 import com.doubleclue.dcem.core.entities.DcemUser;
 import com.doubleclue.dcem.core.entities.EntityInterface;
 import com.doubleclue.dcem.core.gui.DcemGui;
+import com.doubleclue.dcem.core.utils.compare.DcemCompare;
 import com.doubleclue.dcem.knowledgeboard.entities.enums.KbQuestionStatus;
 import com.doubleclue.dcem.knowledgeboard.logic.KbUtils;
 
@@ -125,7 +126,8 @@ public class KbQuestionEntity extends EntityInterface {
 	@Column(name = "number_of_replies", nullable = false)
 	private int numberOfReplies = 0;
 
-	@DcemGui(subClass = "displayName", ignoreCompare = true)
+	@DcemCompare(ignore = true)
+	@DcemGui(subClass = "displayName")
 	@ManyToOne
 	@JoinColumn(name = "author_id", foreignKey = @ForeignKey(name = "FK_KB_QUESTION_AUTHOR"))
 	private DcemUser author;
@@ -137,7 +139,8 @@ public class KbQuestionEntity extends EntityInterface {
 	@Column(name = "question_preview", length = 255, nullable = false)
 	private String questionPreview;
 
-	@DcemGui(sortOrder = SortOrder.DESCENDING, ignoreCompare = true)
+	@DcemCompare(ignore = true)
+	@DcemGui(sortOrder = SortOrder.DESCENDING)
 	@Column(name = "creation_date", updatable = false, nullable = false)
 	private LocalDateTime creationDate;
 
@@ -151,12 +154,14 @@ public class KbQuestionEntity extends EntityInterface {
 	@JoinTable(name = "kb_questions_tags", joinColumns = @JoinColumn(name = "question_id"), foreignKey = @ForeignKey(name = "FK_KB_QUESTIONS_TAGS"), inverseJoinColumns = @JoinColumn(name = "tag_id"), inverseForeignKey = @ForeignKey(name = "FK_KB_TAGS_QUESTIONS"))
 	private List<KbTagEntity> tags;
 
-	@DcemGui(subClass = "displayName", visible = false, ignoreCompare = true)
+	@DcemCompare(ignore = true)
+	@DcemGui(subClass = "displayName", visible = false)
 	@ManyToOne
 	@JoinColumn(name = "last_modified_by_id", foreignKey = @ForeignKey(name = "FK_KB_QUESTION_CREATOR"), referencedColumnName = "dc_id")
 	private DcemUser lastModifiedBy;
 
-	@DcemGui(visible = false, ignoreCompare = true)
+	@DcemCompare(ignore = true)
+	@DcemGui(visible = false)
 	@Column(name = "last_modified_date", nullable = false)
 	private LocalDateTime lastModifiedOn;
 

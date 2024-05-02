@@ -25,6 +25,7 @@ import javax.persistence.Version;
 import com.doubleclue.dcem.core.entities.DcemUser;
 import com.doubleclue.dcem.core.entities.EntityInterface;
 import com.doubleclue.dcem.core.gui.DcemGui;
+import com.doubleclue.dcem.core.utils.compare.DcemCompare;
 
 @NamedEntityGraphs({
 	@NamedEntityGraph(name = KbReplyEntity.GRAPH_REPLIES_WITH_AUTHOR_AND_CONTENT, attributeNodes = { @NamedAttributeNode(value = "replyContent"),
@@ -68,19 +69,23 @@ public class KbReplyEntity extends EntityInterface {
 	@JoinColumn(name = "question_id", foreignKey = @ForeignKey(name = "FK_KB_REPLIES_QUESTION"), nullable = false)
 	private KbQuestionEntity question;
 
+	@DcemCompare(ignore = true)
 	@ManyToOne
-	@DcemGui(subClass = "displayName", ignoreCompare = true)
+	@DcemGui(subClass = "displayName")
 	@JoinColumn(name = "author_id", foreignKey = @ForeignKey(name = "FK_KB_REPLIES_AUTHOR"))
 	private DcemUser author;
 
+	@DcemCompare(ignore = true)
 	@Column(name = "creation_date", nullable = false, updatable = false)
 	private LocalDateTime creationDate;
 
+	@DcemCompare(ignore = true)
 	@ManyToOne
-	@DcemGui(subClass = "displayName", visible = false, ignoreCompare = true)
+	@DcemGui(subClass = "displayName", visible = false)
 	@JoinColumn(name = "last_modified_by_id", foreignKey = @ForeignKey(name = "FK_KB_REPLIES_MODIFIEDBY"), referencedColumnName = "dc_id")
 	private DcemUser lastModifiedBy;
 
+	@DcemCompare(ignore = true)
 	@Column(name = "last_modified_date", nullable = false)
 	private LocalDateTime lastModifiedOn;
 
