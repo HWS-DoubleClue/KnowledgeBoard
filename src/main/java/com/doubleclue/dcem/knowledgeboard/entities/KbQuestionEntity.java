@@ -39,6 +39,7 @@ import org.primefaces.model.SortOrder;
 import com.doubleclue.dcem.core.entities.DcemUser;
 import com.doubleclue.dcem.core.entities.EntityInterface;
 import com.doubleclue.dcem.core.gui.DcemGui;
+import com.doubleclue.dcem.core.jpa.VariableType;
 import com.doubleclue.dcem.core.utils.compare.DcemCompare;
 import com.doubleclue.dcem.knowledgeboard.entities.enums.KbQuestionStatus;
 import com.doubleclue.dcem.knowledgeboard.logic.KbUtils;
@@ -149,6 +150,7 @@ public class KbQuestionEntity extends EntityInterface {
 	@JoinColumn(name = "category_id", foreignKey = @ForeignKey(name = "FK_KB_QUESTION_CATEGORY"), nullable = false)
 	private KbCategoryEntity category;
 
+	@DcemGui(visible = false, variableType = VariableType.LIST)
 	@ManyToMany(fetch = FetchType.LAZY)
 	@OrderBy("name ASC")
 	@JoinTable(name = "kb_questions_tags", joinColumns = @JoinColumn(name = "question_id"), foreignKey = @ForeignKey(name = "FK_KB_QUESTIONS_TAGS"), inverseJoinColumns = @JoinColumn(name = "tag_id"), inverseForeignKey = @ForeignKey(name = "FK_KB_TAGS_QUESTIONS"))

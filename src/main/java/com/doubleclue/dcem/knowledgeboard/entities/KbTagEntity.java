@@ -147,6 +147,14 @@ public class KbTagEntity extends EntityInterface {
 		return name;
 	}
 
+	public KbTagStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(KbTagStatus status) {
+		this.status = status;
+	}
+
 	public int getJpaVersion() {
 		return jpaVersion;
 	}

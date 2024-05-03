@@ -27,6 +27,7 @@ import org.primefaces.model.SortOrder;
 
 import com.doubleclue.dcem.core.entities.EntityInterface;
 import com.doubleclue.dcem.core.gui.DcemGui;
+import com.doubleclue.dcem.core.jpa.VariableType;
 import com.doubleclue.dcem.core.utils.DisplayModes;
 
 @NamedEntityGraphs({ @NamedEntityGraph(name = KbCategoryEntity.GRAPH_CATEGORIES_TAGS, attributeNodes = { @NamedAttributeNode(value = "tags") }) })
@@ -72,7 +73,7 @@ public class KbCategoryEntity extends EntityInterface {
 	@Column(name = "dc_public", nullable = false)
 	private boolean publicCategory;
 
-	@DcemGui(subClass = "name", displayMode = DisplayModes.NONE)
+	@DcemGui(subClass = "name", displayMode = DisplayModes.NONE, variableType = VariableType.LIST)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "category", orphanRemoval = true)
 	@OrderBy("name ASC")
 	private List<KbTagEntity> tags = new ArrayList<>();
