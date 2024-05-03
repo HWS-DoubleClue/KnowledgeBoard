@@ -16,7 +16,7 @@ img {
 			<h:form id="replyForm">
 				<p:commandButton value="#{KbMsg['kbDashboardView']}" action="#{kbReplyQuestionView.closeQuestion()}" style="margin-bottom:1em; width: auto"
 					icon="fa fa-solid fa-circle-chevron-left" />
-				<p:panel id="questionPanel" toggleable="true" style="word-wrap: break-word">
+				<p:panel id="questionPanel" toggleable="true" styleClass="question-panel">
 					<f:facet name="actions">
 						<p:commandLink icon="pi pi-pencil" styleClass="ui-panel-titlebar-icon " style="margin-bottom: 10px" action="#{kbReplyQuestionView.editQuestion()}"
 							rendered="#{kbReplyQuestionView.hasQuestionEditPermission()}">
