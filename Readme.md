@@ -1,7 +1,8 @@
 # Knowledge Board
 
-KnowledgeBoard is a Knowledge Base Tool and Question & Answer Platform for small and medium enterprises.
-It runs as a Plugin Module in the Doubleclue Enterprise Management ( **DCEM** ). 
+Knowledge Board is a Knowledge Base Tool and Question & Answer Platform. In Knowledge Board, your employees can ask their colleagues questions about their tasks. Team members will receive an automatic e-mail notification and can then publish answers and instruction on how to solve the problems. This way, the answers will be recorded and should another staff member have the same problem in the future, they can check out the solution. Alternatively, experienced staff members can publish guides for their colleagues to address regularly upcoming issues. The fine-grained distribution of access rights allows you to collect internal knowledge in a central location while ensuring that only authorized persons and groups can view it. The detailed search allows that already answered questions are easily found.
+
+Knowledge Board runs as a Plugin Module in the Doubleclue Enterprise Management ( **DCEM** ). 
 You can find the DCEM repository at https://github.com/HWS-DoubleClue/IAM-Password-Manager. 
 
 For further details, have a look at the [Knowledge Board Manual](https://doubleclue.com/files/DC_Knowledgeboard_Manual_en.pdf)
