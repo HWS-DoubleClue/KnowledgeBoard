@@ -48,7 +48,7 @@
 				</h:panelGroup>
 				<p />
 				<p:dataTable id="tagTable" var="tag" widgetVar="tagTableVar" value="#{kbUserFollowedTagsDialog.followedTags}"
-					selectionMode="multiple" styleClass="memberTable" selection="#{kbUserFollowedTagsDialog.selectedTags}" scrollable="true" rowKey="#{tag.id}"
+					selectionMode="multiple" styleClass="memberTable" selection="#{kbUserFollowedTagsDialog.selectedTags}" scrollable="false" rowKey="#{tag.id}"
 					scrollHeight="300" emptyMessage="#{CoreMsg['emptyTable']}">
 					<p:column headerText="#{KbMsg['KbTag.name']}" width="11em" style="max-width:11em;" sortBy="#{tag.name}" filterBy="#{tag.name}" filterMatchMode="contains">
 						<h:outputText value="#{tag.name}" />

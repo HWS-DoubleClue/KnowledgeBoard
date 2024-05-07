@@ -49,7 +49,7 @@
 				</h:panelGroup>
 				<p />
 				<p:dataTable id="memberTable" var="member" widgetVar="memberTableVar" value="#{kbCategoryMemberDialog.members}" selectionMode="multiple"
-					styleClass="memberTable" selection="#{kbCategoryMemberDialog.selectedMember}" scrollable="true" rowKey="#{member.kbUser.id}" scrollHeight="300"
+					styleClass="memberTable" selection="#{kbCategoryMemberDialog.selectedMember}" scrollable="false" rowKey="#{member.kbUser.id}" scrollHeight="300"
 					emptyMessage="#{CoreMsg['emptyTable']}">
 
 					<p:column sortOrder="asc" filterBy="#{member.kbUser.dcemUser.displayName}" headerText="#{CoreMsg['loginId']}" filterMatchMode="contains"

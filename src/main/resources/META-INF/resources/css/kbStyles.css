@@ -89,7 +89,7 @@ body .autocompleteChangedDisabled .ui-state-disabled {
 body .selectOneChangeDisabled .ui-selectonemenu-label {
 	opacity: 0.80;
 	font-weight: bold;
-	color: black;
+	color: var(--primary-text-color);
 }
 
 body .tagButtonChangedDisabled .ui-state-disabled {
@@ -113,4 +113,14 @@ body .kb-link {
 body .question-panel {
 	border: 1px solid #d8dae2;
 	word-wrap: break-word;
+}
+
+.memberTable .ui-datatable-tablewrapper {
+	max-height: 300px;
+}
+
+.memberTable .ui-datatable-tablewrapper thead th {
+	position: sticky;
+	top: 0;
+	z-index: 1;
 }

@@ -48,7 +48,7 @@
 				</h:panelGroup>
 				<p />
 				<p:dataTable id="questionTable" var="question" widgetVar="questionTableVar" value="#{kbUserFollowedQuestionsDialog.followedQuestions}"
-					selectionMode="multiple" styleClass="memberTable" selection="#{kbUserFollowedQuestionsDialog.selectedQuestions}" scrollable="true" rowKey="#{question.id}"
+					selectionMode="multiple" styleClass="memberTable" selection="#{kbUserFollowedQuestionsDialog.selectedQuestions}" scrollable="false" rowKey="#{question.id}"
 					scrollHeight="300" emptyMessage="#{CoreMsg['emptyTable']}">
 
 					<p:column headerText="#{KbMsg['KbQuestion.id']}" style="max-width:4em" width="4em" sortBy="#{question.id}" filterBy="#{question.id}"

@@ -53,7 +53,7 @@
 				</h:panelGroup>
 				<p />
 				<p:dataTable id="questionTable" var="question" widgetVar="questionTableVar" value="#{kbTagQuestionDialog.questionsContainingTag}" selectionMode="multiple"
-					styleClass="memberTable" selection="#{kbTagQuestionDialog.selectedQuestions}" scrollable="true" rowKey="#{question.id}" scrollHeight="300"
+					styleClass="memberTable" selection="#{kbTagQuestionDialog.selectedQuestions}" scrollable="false" rowKey="#{question.id}" scrollHeight="300"
 					emptyMessage="#{CoreMsg['emptyTable']}">
 
 					<p:column headerText="#{KbMsg['KbQuestion.id']}" style="max-width:4em" width="4em" sortBy="#{question.id}" filterBy="#{question.id}"
