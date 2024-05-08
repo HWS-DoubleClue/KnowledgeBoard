@@ -82,11 +82,11 @@ public class KbReplyDialog extends DcemDialog {
 
 	@Override
 	public String getHeight() {
-		return "25em";
+		return "85vh";
 	}
 
 	@Override
 	public String getWidth() {
-		return "75em";
+		return "85vw";
 	}
 }

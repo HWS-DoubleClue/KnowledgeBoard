@@ -233,11 +233,11 @@ public class KbQuestionDialog extends DcemDialog {
 	}
 
 	public String getWidth() {
-		return "75em";
+		return "85vw";
 	}
 
 	public String getHeight() {
-		return "40em";
+		return "85vh";
 	}
 
 	public void leavingDialog() {
