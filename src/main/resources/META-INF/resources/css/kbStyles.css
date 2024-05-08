@@ -124,3 +124,11 @@ body .question-panel {
 	top: 0;
 	z-index: 1;
 }
+
+.text-editor-read-only.ui-texteditor .ql-container .ql-editor {
+	background: transparent;
+	height: auto;
+}
+.text-editor-read-only.ui-texteditor .ql-container.ql-snow {
+	border: none;
+}

@@ -36,7 +36,8 @@ img {
 					<div class="ui-g">
 						<div style="word-wrap: break-word;" class="ui-g-9">
 							<div class="ui-g-12">
-								<h:outputText value="#{kbReplyQuestionView.kbQuestionEntity.questionContent.content}" escape="false" />
+<!-- 								<h:outputText value="#{kbReplyQuestionView.kbQuestionEntity.questionContent.content}" escape="false" /> -->
+								<p:textEditor value="#{kbReplyQuestionView.kbQuestionEntity.questionContent.content}" readonly="true" toolbarVisible="false" styleClass="text-editor-read-only"></p:textEditor>
 							</div>
 							<div class="ui-g-12 tag-box">
 								<p:outputPanel rendered="#{not empty kbReplyQuestionView.kbQuestionEntity.tags}" style="font-size:0.85em">
