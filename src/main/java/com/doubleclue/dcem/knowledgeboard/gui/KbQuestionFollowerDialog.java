@@ -69,7 +69,8 @@ public class KbQuestionFollowerDialog extends DcemDialog {
 				return;
 			}
 			kbUserCategoryEntity.getFollowedQuestions().add(kbQuestionEntity);
-			kbUserCategoryEntity = kbUserLogic.updateUserCategory(kbUserCategoryEntity);
+			kbUserLogic.detachUserCategory(kbUserCategoryEntity);
+			kbUserLogic.updateUserCategory(kbUserCategoryEntity, this.getAutoViewAction().getDcemAction());
 			followers.add(kbUserCategoryEntity);
 			JsfUtils.addInfoMessageToComponentId(
 					String.format(JsfUtils.getStringSafely(resourceBundle, "question.followerDialog.success.addMember"), userLoginId),
@@ -88,13 +89,12 @@ public class KbQuestionFollowerDialog extends DcemDialog {
 			return;
 		}
 		try {
-			for (int i = 0; i < selectedFollower.size(); i++) {
-				KbUserCategoryEntity kbUserCategoryEntity = kbUserLogic.getKbUserCategory(selectedFollower.get(i).getKbUser().getId(),
-						selectedFollower.get(i).getCategory().getId());
+			for (KbUserCategoryEntity userCategory : selectedFollower) {
+				KbUserCategoryEntity kbUserCategoryEntity = kbUserLogic.getKbUserCategory(userCategory.getKbUser().getId(), userCategory.getCategory().getId());
 				kbUserCategoryEntity.getFollowedQuestions().remove(kbQuestionEntity);
-				selectedFollower.set(i, kbUserCategoryEntity);
+				kbUserLogic.detachUserCategory(kbUserCategoryEntity);
+				kbUserLogic.updateUserCategory(kbUserCategoryEntity, this.getAutoViewAction().getDcemAction());
 			}
-			kbUserLogic.updateUserCategories(selectedFollower, getAutoViewAction().getDcemAction());
 			followers.removeAll(selectedFollower);
 			JsfUtils.addInfoMessage(KbModule.RESOURCE_NAME, "question.followerDialog.success.removeMember");
 		} catch (Exception e) {

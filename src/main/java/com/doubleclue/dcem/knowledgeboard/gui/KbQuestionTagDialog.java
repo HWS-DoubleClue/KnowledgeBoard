@@ -73,7 +73,8 @@ public class KbQuestionTagDialog extends DcemDialog {
 			}			
 			kbQuestionEntity = kbQuestionLogic.getQuestionWithOptionalAttribute(kbQuestionEntity.getId(),KbQuestionEntity.GRAPH_QUESTION_TAGS);
 			kbQuestionEntity.getTags().add(kbTagEntity);
-			kbQuestionEntity = kbQuestionLogic.updateQuestion(kbQuestionEntity);
+			kbQuestionLogic.detachEntity(kbQuestionEntity);
+			kbQuestionLogic.addOrUpdateQuestion(kbQuestionEntity, this.getAutoViewAction().getDcemAction());
 			JsfUtils.addInfoMessageToComponentId(String.format(JsfUtils.getStringSafely(resourceBundle, "question.tagDialog.success.addTag"), tagName),
 					"questionTagForm:addTagDialogMsg");
 		} catch (Exception e) {
@@ -92,7 +93,8 @@ public class KbQuestionTagDialog extends DcemDialog {
 		try {
 			kbQuestionEntity = kbQuestionLogic.getQuestionWithOptionalAttribute(kbQuestionEntity.getId(),KbQuestionEntity.GRAPH_QUESTION_TAGS);
 			kbQuestionEntity.getTags().removeAll(selectedTags);
-			kbQuestionEntity = kbQuestionLogic.updateQuestion(kbQuestionEntity);
+			kbQuestionLogic.detachEntity(kbQuestionEntity);
+			kbQuestionLogic.addOrUpdateQuestion(kbQuestionEntity, this.getAutoViewAction().getDcemAction());
 			JsfUtils.addInfoMessage(KbModule.RESOURCE_NAME, "question.tagDialog.success.removeTag");
 		} catch (Exception e) {
 			logger.error("Could not remove selected tags from question: " + kbQuestionEntity.getTitle(), e);
