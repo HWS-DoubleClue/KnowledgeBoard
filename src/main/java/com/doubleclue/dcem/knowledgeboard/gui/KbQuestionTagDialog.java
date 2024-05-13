@@ -61,16 +61,13 @@ public class KbQuestionTagDialog extends DcemDialog {
 	}
 
 	public void actionAddTag() {
-
 		try {
 			KbTagEntity kbTagEntity = kbTagLogic.getTagByNameAndCategoryId(tagName, kbQuestionEntity.getCategory().getId());
 			if (kbTagEntity == null) {
-				
 				JsfUtils.addErrorMessageToComponentId(JsfUtils.getStringSafely(resourceBundle, "question.tagDialog.invalid.tagName"), "questionTagForm:addTagDialogMsg");
 				return;
 			}
 			if (kbQuestionEntity.getTags().contains(kbTagEntity)) {
-				
 				JsfUtils.addErrorMessageToComponentId(JsfUtils.getStringSafely(resourceBundle, "question.tagDialog.invalid.duplicateTag"), "questionTagForm:addTagDialogMsg");
 				return;
 			}			

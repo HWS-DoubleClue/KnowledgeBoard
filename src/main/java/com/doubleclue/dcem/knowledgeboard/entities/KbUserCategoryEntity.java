@@ -243,4 +243,9 @@ public class KbUserCategoryEntity implements Serializable {
 	public void setHiddenInDashboard(boolean hiddenInDashboard) {
 		this.hiddenInDashboard = hiddenInDashboard;
 	}
+
+	@Override
+	public String toString() {
+		return "[kbUser=" + kbUser + ", category=" + category + "]";
+	}
 }

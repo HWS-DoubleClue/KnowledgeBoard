@@ -153,7 +153,7 @@ public class KbUserEntity extends EntityInterface implements Serializable, IPhot
 	@Override
 	public String toString() {
 		if (dcemUser != null) {
-			return "Knowledgeboard-User: " + dcemUser.getLoginId() + " (" + dcemUser.getDisplayName() + ")";
+			return "KB-User: " + dcemUser.getDisplayName() + " (" + dcemUser.getLoginId() + ")";
 		}
 		return "KbUserEntity has no dcemUser";
 	}

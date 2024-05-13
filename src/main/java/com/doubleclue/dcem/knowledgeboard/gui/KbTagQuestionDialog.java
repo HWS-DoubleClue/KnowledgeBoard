@@ -14,6 +14,7 @@ import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.doubleclue.dcem.core.entities.DcemAction;
 import com.doubleclue.dcem.core.exceptions.DcemErrorCodes;
 import com.doubleclue.dcem.core.exceptions.DcemException;
 import com.doubleclue.dcem.core.gui.AutoViewAction;
@@ -21,6 +22,7 @@ import com.doubleclue.dcem.core.gui.DcemDialog;
 import com.doubleclue.dcem.core.gui.DcemView;
 import com.doubleclue.dcem.core.gui.JsfUtils;
 import com.doubleclue.dcem.core.logic.OperatorSessionBean;
+import com.doubleclue.dcem.core.utils.compare.CompareUtils;
 import com.doubleclue.dcem.knowledgeboard.entities.KbQuestionEntity;
 import com.doubleclue.dcem.knowledgeboard.entities.KbTagEntity;
 import com.doubleclue.dcem.knowledgeboard.entities.KbUserCategoryEntity;
@@ -77,7 +79,8 @@ public class KbTagQuestionDialog extends DcemDialog {
 				return;
 			}
 			kbQuestionEntity.getTags().add(kbTagEntity);
-			kbQuestionEntity = kbQuestionLogic.updateQuestion(kbQuestionEntity);
+			kbQuestionLogic.detachEntity(kbQuestionEntity);
+			kbQuestionLogic.addOrUpdateQuestion(kbQuestionEntity, this.getAutoViewAction().getDcemAction());
 			questionsContainingTag.add(kbQuestionEntity);
 			JsfUtils.addInfoMessageToComponentId(String.format(JsfUtils.getStringSafely(resourceBundle, "tag.questionDialog.success.addTag"), questionInfo),
 					"tagQuestionDialog:addTagDialogMsg");
@@ -96,12 +99,12 @@ public class KbTagQuestionDialog extends DcemDialog {
 			return;
 		}
 		try {
-			for (int i = 0; i < selectedQuestions.size(); i++) {
-				KbQuestionEntity kbQuestionEntity = kbQuestionLogic.getQuestionById(selectedQuestions.get(i).getId());
+			for (KbQuestionEntity question : selectedQuestions) {
+				KbQuestionEntity kbQuestionEntity = kbQuestionLogic.getQuestionById(question.getId());
 				kbQuestionEntity.getTags().remove(kbTagEntity);
-				selectedQuestions.set(i, kbQuestionEntity);
+				kbQuestionLogic.detachEntity(kbQuestionEntity);
+				kbQuestionLogic.addOrUpdateQuestion(kbQuestionEntity, this.getAutoViewAction().getDcemAction());
 			}
-			kbQuestionLogic.updateQuestions(selectedQuestions);
 			questionsContainingTag.removeAll(selectedQuestions);
 			JsfUtils.addInfoMessage(KbModule.RESOURCE_NAME, "tag.questionDialog.success.removeTag");
 		} catch (Exception e) {

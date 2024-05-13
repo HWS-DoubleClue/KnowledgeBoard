@@ -21,7 +21,9 @@ import com.doubleclue.dcem.core.gui.JsfUtils;
 import com.doubleclue.dcem.core.logic.OperatorSessionBean;
 import com.doubleclue.dcem.knowledgeboard.entities.KbTagEntity;
 import com.doubleclue.dcem.knowledgeboard.entities.KbUserCategoryEntity;
+import com.doubleclue.dcem.knowledgeboard.logic.KbCategoryLogic;
 import com.doubleclue.dcem.knowledgeboard.logic.KbModule;
+import com.doubleclue.dcem.knowledgeboard.logic.KbQuestionLogic;
 import com.doubleclue.dcem.knowledgeboard.logic.KbUserLogic;
 import com.doubleclue.dcem.knowledgeboard.logic.KbUtils;
 
@@ -65,8 +67,7 @@ public class KbTagFollowerDialog extends DcemDialog {
 						"tagFollowerForm:addFollowerDialogMsg");
 				return;
 			}
-			kbUserCategoryEntity.getFollowedTags().add(kbTagEntity);
-			kbUserLogic.updateUserCategory(kbUserCategoryEntity);
+			kbUserLogic.addTagToUserCategory(kbUserCategoryEntity, kbTagEntity, this.getAutoViewAction().getDcemAction());
 			followers.add(kbUserCategoryEntity);
 			JsfUtils.addInfoMessageToComponentId(String.format(JsfUtils.getStringSafely(resourceBundle, "tag.followerDialog.success.addMember"), userLoginId),
 					"tagFollowerForm:addFollowerDialogMsg");

@@ -133,6 +133,7 @@ public class KbQuestionEntity extends EntityInterface {
 	@JoinColumn(name = "author_id", foreignKey = @ForeignKey(name = "FK_KB_QUESTION_AUTHOR"))
 	private DcemUser author;
 
+	@DcemCompare(ignore = true)
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "questioncontent_id", referencedColumnName = "dc_id", foreignKey = @ForeignKey(name = "FK_KB_QUESTION_TEXTCONTENT"), nullable = false)
 	private KbTextContentEntity questionContent;
@@ -352,7 +353,7 @@ public class KbQuestionEntity extends EntityInterface {
 
 	@Override
 	public String toString() {
-		return title;
+		return String.format("Questiontitle: \'%s\' in Category: \'%s\'", title, category);
 	}
 
 	public String getQuestionPreview() {

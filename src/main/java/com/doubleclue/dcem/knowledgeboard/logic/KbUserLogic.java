@@ -98,6 +98,10 @@ public class KbUserLogic {
 	public KbUserCategoryEntity getKbUserCategory(int userId, int categoryId) throws Exception {
 		return em.find(KbUserCategoryEntity.class, new KbUserCategoryKey(userId, categoryId));
 	}
+	
+	public void detachUserCategory(KbUserCategoryEntity userCategory) {
+		em.detach(userCategory);
+	}
 
 	public KbUserCategoryEntity getKbUserCategoryByLoginIdAndCategoryId(String dcemLoginId, int categoryId) throws Exception {
 		KbUserCategoryEntity result;
@@ -133,6 +137,13 @@ public class KbUserLogic {
 
 	@DcemTransactional
 	public KbUserCategoryEntity updateUserCategory(KbUserCategoryEntity kbUserCategoryEntity) {
+		return em.merge(kbUserCategoryEntity);
+	}
+	
+	@DcemTransactional
+	public KbUserCategoryEntity addTagToUserCategory(KbUserCategoryEntity kbUserCategoryEntity, KbTagEntity kbTagEntity, DcemAction dcemAction) {
+		kbUserCategoryEntity.getFollowedTags().add(kbTagEntity);
+		auditingLogic.addAudit(dcemAction, String.format("[%s]=[FollowedTags: +(%s)]", kbUserCategoryEntity, kbTagEntity));
 		return em.merge(kbUserCategoryEntity);
 	}
 
