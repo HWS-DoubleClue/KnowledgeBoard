@@ -101,7 +101,7 @@ public class KbCategoryMemberDialog extends DcemDialog {
 				}
 				member.setKbUser(kbUserLogic.getOrCreateKbUser(dcemUser));
 				member.setCategory(kbCategoryLogic.getCategoryById(kbCategoryEntity.getId()));
-				kbUserLogic.addUserCategory(member);
+				kbUserLogic.addUserCategory(member, this.getAutoViewAction().getDcemAction());
 				members.add(member);
 				JsfUtils.addInfoMessageToComponentId(
 						String.format(JsfUtils.getStringSafely(resourceBundle, "category.memberDialog.success.addMember"), userLoginId),

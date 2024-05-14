@@ -137,7 +137,8 @@ public class KbUserLogic {
 	}
 
 	@DcemTransactional
-	public void addUserCategory(KbUserCategoryEntity kbUserCategoryEntity) {
+	public void addUserCategory(KbUserCategoryEntity kbUserCategoryEntity, DcemAction dcemAction) {
+		auditingLogic.addAudit(dcemAction, kbUserCategoryEntity);
 		em.persist(kbUserCategoryEntity);
 	}
 
