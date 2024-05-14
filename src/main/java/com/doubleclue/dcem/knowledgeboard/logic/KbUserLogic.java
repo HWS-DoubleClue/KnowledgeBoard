@@ -15,6 +15,7 @@ import javax.persistence.TypedQuery;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.doubleclue.dcem.core.DcemConstants;
 import com.doubleclue.dcem.core.entities.DcemAction;
 import com.doubleclue.dcem.core.entities.DcemUser;
 import com.doubleclue.dcem.core.jpa.DcemTransactional;
@@ -61,9 +62,14 @@ public class KbUserLogic {
 	}
 
 	@DcemTransactional
-	public void addKbUser(KbUserEntity kbUserEntity) {
+	public void addOrUpdateKbUser(KbUserEntity kbUserEntity, DcemAction dcemAction) {
 		kbUserEntity.setId(kbUserEntity.getDcemUser().getId());
-		em.persist(kbUserEntity);
+		auditingLogic.addAudit(dcemAction, kbUserEntity);
+		if (DcemConstants.ACTION_ADD.equals(dcemAction.getAction())) {
+			em.persist(kbUserEntity);
+		} else {
+			em.merge(kbUserEntity);
+		}
 	}
 
 	@DcemTransactional
@@ -75,11 +81,6 @@ public class KbUserLogic {
 			em.persist(kbUser);
 		}
 		return kbUser;
-	}
-
-	@DcemTransactional
-	public void updateKbUser(KbUserEntity kbUserEntity) {
-		em.merge(kbUserEntity);
 	}
 
 	@DcemTransactional
@@ -154,13 +155,6 @@ public class KbUserLogic {
 	
 	@DcemTransactional
 	public KbUserCategoryEntity updateUserCategory(KbUserCategoryEntity kbUserCategoryEntity) {
-		return em.merge(kbUserCategoryEntity);
-	}
-	
-	@DcemTransactional
-	public KbUserCategoryEntity addTagToUserCategory(KbUserCategoryEntity kbUserCategoryEntity, KbTagEntity kbTagEntity, DcemAction dcemAction) {
-		kbUserCategoryEntity.getFollowedTags().add(kbTagEntity);
-		auditingLogic.addAudit(dcemAction, String.format("[%s]=[FollowedTags: +(%s)]", kbUserCategoryEntity, kbTagEntity));
 		return em.merge(kbUserCategoryEntity);
 	}
 

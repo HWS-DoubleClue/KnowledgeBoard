@@ -71,9 +71,9 @@ public class KbUserDialog extends DcemDialog {
 					return false;
 				}
 				kbUserEntity.setDcemUser(dcemUser);
-				kbUserLogic.addKbUser(kbUserEntity);
+				kbUserLogic.addOrUpdateKbUser(kbUserEntity, this.getAutoViewAction().getDcemAction());
 			} else {
-				kbUserLogic.updateKbUser(kbUserEntity);
+				kbUserLogic.addOrUpdateKbUser(kbUserEntity, this.getAutoViewAction().getDcemAction());
 			}
 			return true;
 		} catch (Exception e) {
