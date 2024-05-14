@@ -51,18 +51,14 @@ public class KbQuestionLogic {
 	}
 
 	@DcemTransactional
-	public KbQuestionEntity updateQuestion(KbQuestionEntity questionEntity) {
-		return em.merge(questionEntity);
-	}
-
-	@DcemTransactional
-	public void addOrUpdateQuestion(KbQuestionEntity questionEntity, DcemAction dcemAction) {
+	public KbQuestionEntity addOrUpdateQuestion(KbQuestionEntity questionEntity, DcemAction dcemAction) {
 		auditingLogic.addAudit(dcemAction, questionEntity);
 		if (dcemAction.getAction().equals(DcemConstants.ACTION_ADD) || dcemAction.getAction().equals(KbConstants.KB_NEW_POST)) {
 			em.persist(questionEntity);
 		} else {
-			em.merge(questionEntity);
+			questionEntity = em.merge(questionEntity);
 		}
+		return questionEntity;
 	}
 
 	public List<KbQuestionEntity> getAllQuestionsContainingOneOfTags(List<KbTagEntity> tags) throws Exception {

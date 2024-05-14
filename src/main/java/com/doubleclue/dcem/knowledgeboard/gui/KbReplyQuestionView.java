@@ -22,6 +22,7 @@ import com.doubleclue.dcem.core.entities.DcemUser;
 import com.doubleclue.dcem.core.gui.AutoViewAction;
 import com.doubleclue.dcem.core.gui.DcemView;
 import com.doubleclue.dcem.core.gui.JsfUtils;
+import com.doubleclue.dcem.core.logic.AuditingLogic;
 import com.doubleclue.dcem.knowledgeboard.entities.KbQuestionEntity;
 import com.doubleclue.dcem.knowledgeboard.entities.KbReplyEntity;
 import com.doubleclue.dcem.knowledgeboard.entities.KbTextContentEntity;
@@ -69,8 +70,12 @@ public class KbReplyQuestionView extends DcemView {
 
 	@Inject
 	KbEmailLogic kbEmailLogic;
+	
+	@Inject
+	AuditingLogic auditingLogic;
 
 	private AutoViewAction editQuestion;
+	private AutoViewAction addReply;
 	private AutoViewAction editReply;
 	private AutoViewAction removeReply;
 	// private boolean viewManager;
@@ -83,6 +88,7 @@ public class KbReplyQuestionView extends DcemView {
 		subject = kbReplyQuestionSubject;
 		ResourceBundle resourceBundle = JsfUtils.getBundle(KbModule.RESOURCE_NAME, operatorSessionBean.getLocale());
 		editQuestion = createAutoViewAction(DcemConstants.ACTION_EDIT, resourceBundle, kbQuestionDialog, KbConstants.KB_QUESTION_DIALOG, null);
+		addReply = createAutoViewAction(KbConstants.KB_ADD_REPLY, resourceBundle, null, null, null);
 		editReply = createAutoViewAction(KbConstants.KB_EDIT_REPLY, resourceBundle, kbReplyDialog, KbConstants.KB_REPLY_DIALOG, null);
 		removeReply = createAutoViewAction(DcemConstants.ACTION_DELETE, resourceBundle, kbReplyDialog, DcemConstants.AUTO_CONFIRM_DIALOG_PATH, null);
 	}
@@ -140,8 +146,9 @@ public class KbReplyQuestionView extends DcemView {
 			kbReplyEntity.setReplyContent(new KbTextContentEntity(replyText));
 			kbReplyEntity.setCreationDate(localDate);
 			kbReplyEntity.setLastModifiedOn(localDate);
+			auditingLogic.addAudit(addReply.getDcemAction(), kbReplyEntity);
 			kbQuestionEntity.addReply(kbReplyEntity);
-			kbQuestionEntity = kbQuestionLogic.updateQuestion(kbQuestionEntity);
+			kbQuestionEntity = kbQuestionLogic.addOrUpdateQuestion(kbQuestionEntity, addReply.getDcemAction());
 			kbEmailLogic.notifyNewReply(kbQuestionEntity, kbReplyEntity);
 			replyText = null;
 		} catch (Exception e) {
@@ -172,6 +179,22 @@ public class KbReplyQuestionView extends DcemView {
 		autoViewBean.setSelectedItems((List<Object>) reply);
 		setActionObject(kbReplyEntity);
 		viewNavigator.setActiveDialog(removeReply);
+	}
+
+	public boolean hasReplyPermission() {
+		if (kbQuestionEntity.getStatus() == KbQuestionStatus.Closed) {
+			return false;
+		}
+		try {
+			KbUserCategoryEntity operatorUserCategory = kbUserLogic.getKbUserCategory(operatorSessionBean.getDcemUser().getId(),
+					kbQuestionEntity.getCategory().getId());
+			return KbUtils.hasActionRights(operatorSessionBean, operatorUserCategory, addReply);
+		} catch (Exception e) {
+			logger.error("Could not check edit permission for user: " + operatorSessionBean.getDcemUser().getLoginId() + " and question: "
+					+ kbQuestionEntity.getId(), e);
+			return false;
+		}
+
 	}
 
 	public boolean hasQuestionEditPermission() {
@@ -260,9 +283,5 @@ public class KbReplyQuestionView extends DcemView {
 		} else {
 			return JsfUtils.getDefaultUserImage();
 		}
-	}
-
-	public KbQuestionStatus getClosedStatus() {
-		return KbQuestionStatus.Closed;
 	}
 }

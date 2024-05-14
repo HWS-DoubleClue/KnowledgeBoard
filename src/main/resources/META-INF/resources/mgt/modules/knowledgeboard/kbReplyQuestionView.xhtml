@@ -128,7 +128,7 @@ img {
 						</p:panel>
 					</p:dataViewListItem>
 				</p:dataView>
-				<h:panelGroup rendered="#{kbReplyQuestionView.kbQuestionEntity.status != kbReplyQuestionView.closedStatus}">
+				<h:panelGroup rendered="#{kbReplyQuestionView.hasReplyPermission()}">
 					<p:spacer height="30" />
 					<div style="font-size: 2em; color: #0075B1">
 						<h:outputText value="#{KbMsg['reply.view.addReply']}" />

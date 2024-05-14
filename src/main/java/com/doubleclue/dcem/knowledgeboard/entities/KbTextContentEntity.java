@@ -9,6 +9,7 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 import com.doubleclue.dcem.core.entities.EntityInterface;
+import com.doubleclue.dcem.knowledgeboard.logic.KbUtils;
 
 @Entity
 @Table(name = "kb_text_content")
@@ -91,5 +92,12 @@ public class KbTextContentEntity extends EntityInterface {
 
 	public void setJpaVersion(int jpaVersion) {
 		this.jpaVersion = jpaVersion;
+	}
+
+	@Override
+	public String toString() {
+		String preview = KbUtils.parseHtmlToString(content).trim();
+		preview = preview.substring(0, Math.min(255, preview.length()));
+		return preview;
 	}
 }
