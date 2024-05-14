@@ -6,7 +6,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
-import javax.persistence.NamedQuery;
 import javax.persistence.TypedQuery;
 
 import com.doubleclue.dcem.core.DcemConstants;
@@ -41,29 +40,27 @@ public class KbReplyLogic {
 		auditingLogic.addAudit(dcemAction, replyEntity);
 		if (dcemAction.getAction().equals(DcemConstants.ACTION_ADD)) {
 			em.persist(replyEntity);
-		} else if (dcemAction.getAction().equals(DcemConstants.ACTION_EDIT)) {
+		} else {
 			em.merge(replyEntity);
 		}
 	}
-	
-	public List<KbReplyEntity> getRepliesByQuestion(KbQuestionEntity kbQuestionEntity){
-		TypedQuery<KbReplyEntity> query = em.createNamedQuery(KbReplyEntity.FIND_ALL_REPLIES_FROM_QUESTION,KbReplyEntity.class);
+
+	public List<KbReplyEntity> getRepliesByQuestion(KbQuestionEntity kbQuestionEntity) {
+		TypedQuery<KbReplyEntity> query = em.createNamedQuery(KbReplyEntity.FIND_ALL_REPLIES_FROM_QUESTION, KbReplyEntity.class);
 		query.setParameter(1, kbQuestionEntity);
 		query.setHint("javax.persistence.fetchgraph", em.getEntityGraph(KbReplyEntity.GRAPH_REPLIES_WITH_AUTHOR_AND_CONTENT));
 		return query.getResultList();
 	}
 
 	@DcemTransactional
-	public void removeReply(KbReplyEntity kbReplyEntity) throws Exception {
+	public void removeReply(KbReplyEntity kbReplyEntity, DcemAction dcemAction) throws Exception {
 		kbReplyEntity = em.merge(kbReplyEntity);
 		KbQuestionEntity kbQuestionEntity = kbQuestionLogic.getQuestionWithOptionalAttribute(kbReplyEntity.getQuestion().getId(),
 				KbQuestionEntity.GRAPH_QUESTION_REPLIES);
 		kbQuestionEntity.removeReply(kbReplyEntity);
-		kbQuestionLogic.updateQuestion(kbQuestionEntity);
+		em.merge(kbQuestionEntity);
 		em.remove(kbReplyEntity);
-		String replyContent = KbUtils.parseHtmlToString(kbReplyEntity.toString());
-		auditingLogic.addAudit(new DcemAction(kbReplyQuestionSubject, DcemConstants.ACTION_DELETE),
-				replyContent.substring(0, Math.min(255, replyContent.length())));
+		auditingLogic.addAudit(dcemAction, kbReplyEntity.toString());
 	}
 
 	@DcemTransactional

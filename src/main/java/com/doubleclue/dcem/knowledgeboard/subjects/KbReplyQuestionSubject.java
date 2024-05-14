@@ -26,6 +26,12 @@ public class KbReplyQuestionSubject extends SubjectAbs {
 		rawActionEditQuestion.setIcon("fa fa-pencil");
 		rawActions.add(rawActionEditQuestion);
 		
+		RawAction rawActionAddReply = new RawAction(KbConstants.KB_ADD_REPLY,
+				new String[] {DcemConstants.SYSTEM_ROLE_SUPERADMIN, DcemConstants.SYSTEM_ROLE_ADMIN, DcemConstants.SYSTEM_ROLE_USER },
+				ActionSelection.ONE_ONLY);
+		rawActionAddReply.setActionType(ActionType.CREATE_OBJECT);
+		rawActions.add(rawActionAddReply);
+		
 		RawAction rawActionEditReply = new RawAction(KbConstants.KB_EDIT_REPLY,
 				new String[] {DcemConstants.SYSTEM_ROLE_SUPERADMIN, DcemConstants.SYSTEM_ROLE_ADMIN },
 				ActionSelection.ONE_ONLY);

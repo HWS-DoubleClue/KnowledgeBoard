@@ -26,22 +26,17 @@ import com.doubleclue.dcem.core.entities.DcemUser;
 import com.doubleclue.dcem.core.entities.EntityInterface;
 import com.doubleclue.dcem.core.gui.DcemGui;
 import com.doubleclue.dcem.core.utils.compare.DcemCompare;
+import com.doubleclue.dcem.knowledgeboard.logic.KbUtils;
 
-@NamedEntityGraphs({
-	@NamedEntityGraph(name = KbReplyEntity.GRAPH_REPLIES_WITH_AUTHOR_AND_CONTENT, attributeNodes = { @NamedAttributeNode(value = "replyContent"),
-			@NamedAttributeNode(value = "author", subgraph = "subgraph.author"),}, subgraphs = {
-					@NamedSubgraph(name = "subgraph.author", attributeNodes = {
-							@NamedAttributeNode(value = "dcemUserExt"), }) 
-					}),
-})
-
+@NamedEntityGraphs({ @NamedEntityGraph(name = KbReplyEntity.GRAPH_REPLIES_WITH_AUTHOR_AND_CONTENT, attributeNodes = {
+		@NamedAttributeNode(value = "replyContent"), @NamedAttributeNode(value = "author", subgraph = "subgraph.author"), }, subgraphs = {
+				@NamedSubgraph(name = "subgraph.author", attributeNodes = { @NamedAttributeNode(value = "dcemUserExt"), }) }), })
 
 @NamedQueries({
-	@NamedQuery(name = KbReplyEntity.FIND_ALL_REPLIES_CONTAINING_DCEMUSER, query = "SELECT reply FROM KbReplyEntity reply WHERE reply.author = ?1 OR reply.lastModifiedBy = ?1"), 
-	@NamedQuery(name = KbReplyEntity.FIND_ALL_REPLIES_FROM_QUESTION, query = "SELECT reply FROM KbReplyEntity reply WHERE reply.question = ?1 ORDER BY reply.creationDate ASC"), 
-	@NamedQuery(name = KbReplyEntity.REMOVE_USER_FROM_REPLY_AUTHOR, query = "UPDATE KbReplyEntity reply SET reply.author = null WHERE reply.author = ?1"), 
-	@NamedQuery(name = KbReplyEntity.REMOVE_USER_FROM_REPLY_LASTMODIFIED, query = "UPDATE KbReplyEntity reply SET reply.lastModifiedBy = null WHERE reply.lastModifiedBy = ?1"), 
-	})
+		@NamedQuery(name = KbReplyEntity.FIND_ALL_REPLIES_CONTAINING_DCEMUSER, query = "SELECT reply FROM KbReplyEntity reply WHERE reply.author = ?1 OR reply.lastModifiedBy = ?1"),
+		@NamedQuery(name = KbReplyEntity.FIND_ALL_REPLIES_FROM_QUESTION, query = "SELECT reply FROM KbReplyEntity reply WHERE reply.question = ?1 ORDER BY reply.creationDate ASC"),
+		@NamedQuery(name = KbReplyEntity.REMOVE_USER_FROM_REPLY_AUTHOR, query = "UPDATE KbReplyEntity reply SET reply.author = null WHERE reply.author = ?1"),
+		@NamedQuery(name = KbReplyEntity.REMOVE_USER_FROM_REPLY_LASTMODIFIED, query = "UPDATE KbReplyEntity reply SET reply.lastModifiedBy = null WHERE reply.lastModifiedBy = ?1"), })
 
 @Entity
 @Table(name = "kb_replies")
@@ -58,6 +53,7 @@ public class KbReplyEntity extends EntityInterface {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
+	@DcemCompare(withoutResult = true)
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "replycontent_id", referencedColumnName = "dc_id", foreignKey = @ForeignKey(name = "FK_KB_REPLY_TEXTCONTENT"), nullable = false)
 	private KbTextContentEntity replyContent;
@@ -171,11 +167,6 @@ public class KbReplyEntity extends EntityInterface {
 		return true;
 	}
 
-	@Override
-	public String toString() {
-		return replyContent.getContent();
-	}
-
 	public KbTextContentEntity getReplyContent() {
 		return replyContent;
 	}
@@ -206,5 +197,22 @@ public class KbReplyEntity extends EntityInterface {
 
 	public void setJpaVersion(int jpaVersion) {
 		this.jpaVersion = jpaVersion;
+	}
+
+	public String getAuditInfo() {
+		if (replyContent == null) {
+			return "Reply entity without content";
+		}
+		String preview = KbUtils.parseHtmlToString(replyContent.getContent()).trim();
+		preview = preview.substring(0, Math.min(255, preview.length()));
+		if (question == null) {
+			return "Reply with content: " + preview;
+		}
+		return "Reply to \"" + question.getTitle() + "\" with content: " + preview;
+	}
+
+	@Override
+	public String toString() {
+		return "Reply=[Preview='" + replyContent + "', question=" + question + "]";
 	}
 }

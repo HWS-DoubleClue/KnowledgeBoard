@@ -38,6 +38,7 @@ public class KbConstants {
 	public static final String KB_SHOW_CREATED_QUESTIONS = "showCreatedQuestions";
 	public static final String KB_SHOW_FOLLOWED_QUESTIONS = "showFollowedQuestions";
 	public static final String KB_SHOW_FOLLOWED_TAGS = "showFollowedTags";
+	public static final String KB_ADD_REPLY = "addReply";
 	public static final String KB_EDIT_REPLY = "editReply";
 	public static final String KB_EDIT_QUESTION = "editQuestion";
 

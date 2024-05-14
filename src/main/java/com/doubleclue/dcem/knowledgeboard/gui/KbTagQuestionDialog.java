@@ -14,7 +14,6 @@ import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.doubleclue.dcem.core.entities.DcemAction;
 import com.doubleclue.dcem.core.exceptions.DcemErrorCodes;
 import com.doubleclue.dcem.core.exceptions.DcemException;
 import com.doubleclue.dcem.core.gui.AutoViewAction;
@@ -22,7 +21,6 @@ import com.doubleclue.dcem.core.gui.DcemDialog;
 import com.doubleclue.dcem.core.gui.DcemView;
 import com.doubleclue.dcem.core.gui.JsfUtils;
 import com.doubleclue.dcem.core.logic.OperatorSessionBean;
-import com.doubleclue.dcem.core.utils.compare.CompareUtils;
 import com.doubleclue.dcem.knowledgeboard.entities.KbQuestionEntity;
 import com.doubleclue.dcem.knowledgeboard.entities.KbTagEntity;
 import com.doubleclue.dcem.knowledgeboard.entities.KbUserCategoryEntity;

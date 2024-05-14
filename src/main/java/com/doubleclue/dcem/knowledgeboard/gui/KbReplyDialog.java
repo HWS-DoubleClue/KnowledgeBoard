@@ -64,7 +64,7 @@ public class KbReplyDialog extends DcemDialog {
 
 	@Override
 	public void actionConfirm() throws Exception {
-		kbReplyLogic.removeReply(kbReplyEntity);
+		kbReplyLogic.removeReply(kbReplyEntity, getAutoViewAction().getDcemAction());
 	}
 
 	@Override

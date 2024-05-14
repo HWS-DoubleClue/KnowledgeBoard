@@ -106,7 +106,6 @@ public class KbCategoryMemberDialog extends DcemDialog {
 				JsfUtils.addInfoMessageToComponentId(
 						String.format(JsfUtils.getStringSafely(resourceBundle, "category.memberDialog.success.addMember"), userLoginId),
 						"categoryMemberDialog:memberDialogMsg");
-
 			}
 		} catch (Exception e) {
 			logger.error("User: " + userLoginId + " could not be edited/added to category: " + kbCategoryEntity.getName(), e);

@@ -119,6 +119,7 @@ public class KbQuestionEntity extends EntityInterface {
 	@Column(name = "dc_status", nullable = false)
 	private KbQuestionStatus status;
 
+	@DcemCompare(ignore = true)
 	@OrderBy("creationDate ASC")
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "question", cascade = CascadeType.ALL)
 	private List<KbReplyEntity> replies;
