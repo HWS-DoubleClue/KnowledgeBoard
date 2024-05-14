@@ -166,7 +166,7 @@ public class KbDashboardView extends DcemView {
 			userCategory.setCategory(category); // needs an attached category for persist
 			if (userCategory.getKbUser() == null) {
 				userCategory.setKbUser(kbUserEntity);
-				kbUserLogic.addUserCategory(userCategory);
+				kbUserLogic.addUserCategory(userCategory, notificationAction.getDcemAction());
 			} else {
 				userCategory = kbUserLogic.updateUserCategory(userCategory);
 			}
