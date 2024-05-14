@@ -27,7 +27,7 @@ public class KbUtils {
 			return false;
 		}
 		String zeroWidthNoBreakSpace = new String("\ufeff".getBytes("UTF-16"), "UTF-16"); // Primefaces gives a weird empty string...
-		String htmlReducedText = KbUtils.parseHtmlToString(text).trim();
+		String htmlReducedText = parseHtmlToString(text).trim();
 		htmlReducedText = htmlReducedText.replace(zeroWidthNoBreakSpace, "");
 		return htmlReducedText.isBlank();
 	}
