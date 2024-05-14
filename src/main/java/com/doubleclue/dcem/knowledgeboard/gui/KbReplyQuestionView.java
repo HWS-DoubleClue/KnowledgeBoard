@@ -134,7 +134,7 @@ public class KbReplyQuestionView extends DcemView {
 
 	public void actionCreateReply() {
 		try {
-			if (replyText == null || KbUtils.parseHtmlToString(replyText).trim().isEmpty()) {
+			if (KbUtils.invalidTextContent(replyText)) {
 				JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "reply.dialog.invalid.replyContent");
 				return;
 			}

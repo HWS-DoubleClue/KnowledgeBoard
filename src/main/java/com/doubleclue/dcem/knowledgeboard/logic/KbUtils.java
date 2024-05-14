@@ -21,6 +21,16 @@ public class KbUtils {
 	public static String parseHtmlToString(String html) {
 		return Jsoup.parse(html).text();
 	}
+	
+	public static boolean invalidTextContent(String text) throws Exception {
+		if (text == null) {
+			return false;
+		}
+		String zeroWidthNoBreakSpace = new String("\ufeff".getBytes("UTF-16"), "UTF-16"); // Primefaces gives a weird empty string...
+		String htmlReducedText = KbUtils.parseHtmlToString(text).trim();
+		htmlReducedText = htmlReducedText.replace(zeroWidthNoBreakSpace, "");
+		return htmlReducedText.isBlank();
+	}
 
 	public static Subquery<Integer> getUserAdminCategoryIds(CriteriaBuilder criteriaBuilder, DcemUser dcemUser) {
 		// Create subquery to retrieve all category IDs where the User is Member of
