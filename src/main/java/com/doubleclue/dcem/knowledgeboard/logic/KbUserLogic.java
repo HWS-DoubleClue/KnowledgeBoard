@@ -12,12 +12,17 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.doubleclue.dcem.core.entities.DcemAction;
 import com.doubleclue.dcem.core.entities.DcemUser;
 import com.doubleclue.dcem.core.jpa.DcemTransactional;
 import com.doubleclue.dcem.core.logic.AuditingLogic;
 import com.doubleclue.dcem.core.logic.GroupLogic;
 import com.doubleclue.dcem.core.logic.OperatorSessionBean;
+import com.doubleclue.dcem.core.utils.compare.CompareException;
+import com.doubleclue.dcem.core.utils.compare.CompareUtils;
 import com.doubleclue.dcem.knowledgeboard.entities.KbCategoryEntity;
 import com.doubleclue.dcem.knowledgeboard.entities.KbQuestionEntity;
 import com.doubleclue.dcem.knowledgeboard.entities.KbTagEntity;
@@ -29,7 +34,7 @@ import com.doubleclue.dcem.knowledgeboard.entities.KbUserEntity;
 @Named("kbUserLogic")
 public class KbUserLogic {
 
-	// private static final Logger logger = LogManager.getLogger(KbQuestionLogic.class);
+	private static final Logger logger = LogManager.getLogger(KbQuestionLogic.class);
 
 	@Inject
 	OperatorSessionBean operatorSessionBean;
@@ -95,8 +100,12 @@ public class KbUserLogic {
 
 	// ### KbUserCategory
 
-	public KbUserCategoryEntity getKbUserCategory(int userId, int categoryId) throws Exception {
+	public KbUserCategoryEntity getKbUserCategory(int userId, int categoryId) {
 		return em.find(KbUserCategoryEntity.class, new KbUserCategoryKey(userId, categoryId));
+	}
+	
+	public void detachUserCategory(KbUserCategoryEntity userCategory) {
+		em.detach(userCategory);
 	}
 
 	public KbUserCategoryEntity getKbUserCategoryByLoginIdAndCategoryId(String dcemLoginId, int categoryId) throws Exception {
@@ -132,7 +141,26 @@ public class KbUserLogic {
 	}
 
 	@DcemTransactional
+	public KbUserCategoryEntity updateUserCategory(KbUserCategoryEntity kbUserCategoryEntity, DcemAction dcemAction) {
+		KbUserCategoryEntity oldEntity = getKbUserCategory(kbUserCategoryEntity.getKbUser().getId(), kbUserCategoryEntity.getCategory().getId());
+		try {
+			String changes = CompareUtils.compareObjects(oldEntity, kbUserCategoryEntity);
+			auditingLogic.addAudit(dcemAction, changes);
+		} catch (CompareException e) {
+			logger.warn("Could not compare UserCategory", e);
+		}
+		return em.merge(kbUserCategoryEntity);
+	}
+	
+	@DcemTransactional
 	public KbUserCategoryEntity updateUserCategory(KbUserCategoryEntity kbUserCategoryEntity) {
+		return em.merge(kbUserCategoryEntity);
+	}
+	
+	@DcemTransactional
+	public KbUserCategoryEntity addTagToUserCategory(KbUserCategoryEntity kbUserCategoryEntity, KbTagEntity kbTagEntity, DcemAction dcemAction) {
+		kbUserCategoryEntity.getFollowedTags().add(kbTagEntity);
+		auditingLogic.addAudit(dcemAction, String.format("[%s]=[FollowedTags: +(%s)]", kbUserCategoryEntity, kbTagEntity));
 		return em.merge(kbUserCategoryEntity);
 	}
 

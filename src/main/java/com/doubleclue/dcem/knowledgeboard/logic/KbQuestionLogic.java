@@ -1,5 +1,6 @@
 package com.doubleclue.dcem.knowledgeboard.logic;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import javax.persistence.TypedQuery;
 import com.doubleclue.dcem.core.DcemConstants;
 import com.doubleclue.dcem.core.entities.DcemAction;
 import com.doubleclue.dcem.core.entities.DcemUser;
+import com.doubleclue.dcem.core.entities.EntityInterface;
 import com.doubleclue.dcem.core.jpa.DcemTransactional;
 import com.doubleclue.dcem.core.logic.AuditingLogic;
 import com.doubleclue.dcem.core.logic.OperatorSessionBean;
@@ -43,6 +45,10 @@ public class KbQuestionLogic {
 	public KbQuestionEntity getQuestionById(int id) throws Exception {
 		return em.find(KbQuestionEntity.class, id);
 	}
+	
+	public void detachEntity(EntityInterface entity) {
+		em.detach(entity);
+	}
 
 	@DcemTransactional
 	public KbQuestionEntity updateQuestion(KbQuestionEntity questionEntity) {
@@ -50,18 +56,11 @@ public class KbQuestionLogic {
 	}
 
 	@DcemTransactional
-	public void updateQuestions(List<KbQuestionEntity> selectedQuestions) {
-		for (KbQuestionEntity question : selectedQuestions) {
-			em.merge(question);
-		}
-	}
-
-	@DcemTransactional
 	public void addOrUpdateQuestion(KbQuestionEntity questionEntity, DcemAction dcemAction) {
-		// auditingLogic.addAudit(dcemAction, questionEntity)
+		auditingLogic.addAudit(dcemAction, questionEntity);
 		if (dcemAction.getAction().equals(DcemConstants.ACTION_ADD) || dcemAction.getAction().equals(KbConstants.KB_NEW_POST)) {
 			em.persist(questionEntity);
-		} else if (dcemAction.getAction().equals(DcemConstants.ACTION_EDIT)) {
+		} else {
 			em.merge(questionEntity);
 		}
 	}

@@ -97,7 +97,11 @@ public class KbQuestionDialog extends DcemDialog {
 			return false;
 		}
 		questionEntity.setQuestionContent(questionBody);
-		if (questionEntity.getQuestionPreview().trim().isEmpty()) {
+		
+		String previewString = questionEntity.getQuestionPreview();
+		String zeroWidthNoBreakSpace = new String("\ufeff".getBytes("UTF-16"), "UTF-16"); // Primefaces gives a weird empty string...
+		previewString = previewString.replace(zeroWidthNoBreakSpace, "");
+		if (previewString.isEmpty()) {
 			JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "question.dialog.invalid.questionContent");
 			return false;
 		}

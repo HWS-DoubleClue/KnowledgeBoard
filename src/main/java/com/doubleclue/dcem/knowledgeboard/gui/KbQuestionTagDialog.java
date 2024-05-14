@@ -61,22 +61,20 @@ public class KbQuestionTagDialog extends DcemDialog {
 	}
 
 	public void actionAddTag() {
-
 		try {
 			KbTagEntity kbTagEntity = kbTagLogic.getTagByNameAndCategoryId(tagName, kbQuestionEntity.getCategory().getId());
 			if (kbTagEntity == null) {
-				
 				JsfUtils.addErrorMessageToComponentId(JsfUtils.getStringSafely(resourceBundle, "question.tagDialog.invalid.tagName"), "questionTagForm:addTagDialogMsg");
 				return;
 			}
 			if (kbQuestionEntity.getTags().contains(kbTagEntity)) {
-				
 				JsfUtils.addErrorMessageToComponentId(JsfUtils.getStringSafely(resourceBundle, "question.tagDialog.invalid.duplicateTag"), "questionTagForm:addTagDialogMsg");
 				return;
 			}			
 			kbQuestionEntity = kbQuestionLogic.getQuestionWithOptionalAttribute(kbQuestionEntity.getId(),KbQuestionEntity.GRAPH_QUESTION_TAGS);
 			kbQuestionEntity.getTags().add(kbTagEntity);
-			kbQuestionEntity = kbQuestionLogic.updateQuestion(kbQuestionEntity);
+			kbQuestionLogic.detachEntity(kbQuestionEntity);
+			kbQuestionLogic.addOrUpdateQuestion(kbQuestionEntity, this.getAutoViewAction().getDcemAction());
 			JsfUtils.addInfoMessageToComponentId(String.format(JsfUtils.getStringSafely(resourceBundle, "question.tagDialog.success.addTag"), tagName),
 					"questionTagForm:addTagDialogMsg");
 		} catch (Exception e) {
@@ -95,7 +93,8 @@ public class KbQuestionTagDialog extends DcemDialog {
 		try {
 			kbQuestionEntity = kbQuestionLogic.getQuestionWithOptionalAttribute(kbQuestionEntity.getId(),KbQuestionEntity.GRAPH_QUESTION_TAGS);
 			kbQuestionEntity.getTags().removeAll(selectedTags);
-			kbQuestionEntity = kbQuestionLogic.updateQuestion(kbQuestionEntity);
+			kbQuestionLogic.detachEntity(kbQuestionEntity);
+			kbQuestionLogic.addOrUpdateQuestion(kbQuestionEntity, this.getAutoViewAction().getDcemAction());
 			JsfUtils.addInfoMessage(KbModule.RESOURCE_NAME, "question.tagDialog.success.removeTag");
 		} catch (Exception e) {
 			logger.error("Could not remove selected tags from question: " + kbQuestionEntity.getTitle(), e);

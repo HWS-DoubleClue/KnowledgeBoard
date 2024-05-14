@@ -27,6 +27,8 @@ import javax.persistence.Version;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.doubleclue.dcem.core.entities.EntityInterface;
+
 @NamedEntityGraphs({
 	@NamedEntityGraph(name = KbUserCategoryEntity.GRAPH_USER_FOLLOWED_QUESTIONS, attributeNodes = {
 		@NamedAttributeNode(value = "followedQuestions", subgraph = "subgraph.questionAuthor"),},
@@ -72,7 +74,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @IdClass(KbUserCategoryKey.class)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Table(name = "kb_usercategory")
-public class KbUserCategoryEntity implements Serializable {
+public class KbUserCategoryEntity extends EntityInterface implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -128,6 +130,20 @@ public class KbUserCategoryEntity implements Serializable {
 	private int jpaVersion;
 
 	public KbUserCategoryEntity() {
+	}
+	
+	@Override
+	public Number getId() {
+		if (kbUser == null || category == null) {
+			return null;
+		}
+		return 3*kbUser.getId() - 2*category.getId();
+	}
+
+	@Override
+	public void setId(Number id) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	public KbUserCategoryEntity(KbUserEntity kbUser, KbCategoryEntity category) {
@@ -243,4 +259,11 @@ public class KbUserCategoryEntity implements Serializable {
 	public void setHiddenInDashboard(boolean hiddenInDashboard) {
 		this.hiddenInDashboard = hiddenInDashboard;
 	}
+
+	@Override
+	public String toString() {
+		return "[kbUser=" + kbUser + ", category=" + category + "]";
+	}
+
+
 }

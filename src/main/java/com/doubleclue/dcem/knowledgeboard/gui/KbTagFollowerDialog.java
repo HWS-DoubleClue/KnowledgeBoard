@@ -19,9 +19,12 @@ import com.doubleclue.dcem.core.gui.DcemDialog;
 import com.doubleclue.dcem.core.gui.DcemView;
 import com.doubleclue.dcem.core.gui.JsfUtils;
 import com.doubleclue.dcem.core.logic.OperatorSessionBean;
+import com.doubleclue.dcem.knowledgeboard.entities.KbQuestionEntity;
 import com.doubleclue.dcem.knowledgeboard.entities.KbTagEntity;
 import com.doubleclue.dcem.knowledgeboard.entities.KbUserCategoryEntity;
+import com.doubleclue.dcem.knowledgeboard.logic.KbCategoryLogic;
 import com.doubleclue.dcem.knowledgeboard.logic.KbModule;
+import com.doubleclue.dcem.knowledgeboard.logic.KbQuestionLogic;
 import com.doubleclue.dcem.knowledgeboard.logic.KbUserLogic;
 import com.doubleclue.dcem.knowledgeboard.logic.KbUtils;
 
@@ -66,7 +69,8 @@ public class KbTagFollowerDialog extends DcemDialog {
 				return;
 			}
 			kbUserCategoryEntity.getFollowedTags().add(kbTagEntity);
-			kbUserLogic.updateUserCategory(kbUserCategoryEntity);
+			kbUserLogic.detachUserCategory(kbUserCategoryEntity);
+			kbUserLogic.updateUserCategory(kbUserCategoryEntity, this.getAutoViewAction().getDcemAction());
 			followers.add(kbUserCategoryEntity);
 			JsfUtils.addInfoMessageToComponentId(String.format(JsfUtils.getStringSafely(resourceBundle, "tag.followerDialog.success.addMember"), userLoginId),
 					"tagFollowerForm:addFollowerDialogMsg");
@@ -84,13 +88,12 @@ public class KbTagFollowerDialog extends DcemDialog {
 			return;
 		}
 		try {
-			for (int i = 0; i < selectedFollower.size(); i++) {
-				KbUserCategoryEntity kbUserCategoryEntity = kbUserLogic.getKbUserCategory(selectedFollower.get(i).getKbUser().getId(),
-						selectedFollower.get(i).getCategory().getId());
+			for (KbUserCategoryEntity userCategory : selectedFollower) {
+				KbUserCategoryEntity kbUserCategoryEntity = kbUserLogic.getKbUserCategory(userCategory.getKbUser().getId(), userCategory.getCategory().getId());
 				kbUserCategoryEntity.getFollowedTags().remove(kbTagEntity);
-				selectedFollower.set(i, kbUserCategoryEntity);
+				kbUserLogic.detachUserCategory(kbUserCategoryEntity);
+				kbUserLogic.updateUserCategory(kbUserCategoryEntity, this.getAutoViewAction().getDcemAction());
 			}
-			kbUserLogic.updateUserCategories(selectedFollower, getAutoViewAction().getDcemAction());
 			followers.removeAll(selectedFollower);
 			JsfUtils.addInfoMessage(KbModule.RESOURCE_NAME, "tag.followerDialog.success.removeMember");
 		} catch (Exception e) {
