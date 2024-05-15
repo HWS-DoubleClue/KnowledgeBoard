@@ -1,11 +1,11 @@
 @CHARSET "ISO-8859-1";
 
 :root {
-	--tag-text-color: #f0f0f0;
+	--tag-background-color: #f0f0f0;
 }
 
 :root.dark-theme {
-	--tag-text-color: #303030;
+	--tag-background-color: #303030;
 }
 
 @media ( max-width : 640px) {
@@ -69,7 +69,7 @@ body .ui-dataview.ui-dataview-list .ui-dataview-row {
 
 body .q-tag {
 	display: inline-block;
-	background-color: var(--tag-text-color);
+	background-color: var(--tag-background-color);
 	padding: 5px;
 	margin-left: 3px;
 	margin-right: 3px;
@@ -123,4 +123,13 @@ body .question-panel {
 	position: sticky;
 	top: 0;
 	z-index: 1;
+}
+
+.text-editor-read-only.ui-texteditor .ql-container .ql-editor {
+	background: transparent;
+	height: auto;
+	color: var(--primary-text-color);
+}
+.text-editor-read-only.ui-texteditor .ql-container.ql-snow {
+	border: none;
 }
