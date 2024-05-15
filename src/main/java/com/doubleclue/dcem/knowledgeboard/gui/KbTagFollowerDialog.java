@@ -19,12 +19,9 @@ import com.doubleclue.dcem.core.gui.DcemDialog;
 import com.doubleclue.dcem.core.gui.DcemView;
 import com.doubleclue.dcem.core.gui.JsfUtils;
 import com.doubleclue.dcem.core.logic.OperatorSessionBean;
-import com.doubleclue.dcem.knowledgeboard.entities.KbQuestionEntity;
 import com.doubleclue.dcem.knowledgeboard.entities.KbTagEntity;
 import com.doubleclue.dcem.knowledgeboard.entities.KbUserCategoryEntity;
-import com.doubleclue.dcem.knowledgeboard.logic.KbCategoryLogic;
 import com.doubleclue.dcem.knowledgeboard.logic.KbModule;
-import com.doubleclue.dcem.knowledgeboard.logic.KbQuestionLogic;
 import com.doubleclue.dcem.knowledgeboard.logic.KbUserLogic;
 import com.doubleclue.dcem.knowledgeboard.logic.KbUtils;
 
