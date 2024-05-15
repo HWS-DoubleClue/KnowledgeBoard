@@ -123,7 +123,7 @@ public class KbQuestionDialog extends DcemDialog {
 
 			KbUserCategoryEntity operatorUserCategory = kbUserLogic.getOrCreateKbUserCategory(operatorSessionBean.getDcemUser(), questionEntity.getCategory());
 			operatorUserCategory.getFollowedQuestions().add(questionEntity);
-			kbUserLogic.updateUserCategory(operatorUserCategory);
+			kbUserLogic.updateUserCategory(operatorUserCategory, this.getAutoViewAction().getDcemAction());
 
 			if (viewNavigator.getActiveView().equals(dashboardView)) {
 				dashboardView.getCategoryMap().put(operatorUserCategory.getCategory(), operatorUserCategory);

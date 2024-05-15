@@ -59,14 +59,14 @@ import com.doubleclue.dcem.core.entities.EntityInterface;
 				+ "WHERE userCategory.kbUser.dcemUser.id = ?1 AND userCategory.admin = True AND userCategory.disabled = False"),
 		@NamedQuery(name = KbUserCategoryEntity.FIND_ALL_USERCATEGORIES_BY_KBUSERS, query = "SELECT userCategory FROM KbUserCategoryEntity userCategory "
 				+ "WHERE userCategory.kbUser IN ?1 ORDER BY userCategory.category.name ASC"),
+		@NamedQuery(name = KbUserCategoryEntity.FIND_ALL_USERCATEGORIES_BY_USERS_AND_CATEGORY, query = "SELECT userCategory FROM KbUserCategoryEntity userCategory "
+				+ "WHERE userCategory.kbUser.dcemUser.id IN ?1 AND userCategory.category.id = ?2 "),
 		@NamedQuery(name = KbUserCategoryEntity.FIND_ALL_FOLLOWER_OF_QUESTION_FOR_EMAILTASK, query = "SELECT userCategory FROM KbUserCategoryEntity userCategory "
 				+ "JOIN userCategory.kbUser kbUser "
 				+ "WHERE ?1 MEMBER OF userCategory.followedQuestions AND kbUser.notificationDisabled = False AND userCategory.disabled = False "),
 		@NamedQuery(name = KbUserCategoryEntity.FIND_ALL_FOLLOWER_OF_TAGS_FOR_EMAILTASK, query = "SELECT userCategory FROM KbUserCategoryEntity userCategory "
 				+ "JOIN userCategory.kbUser kbUser JOIN userCategory.category category LEFT JOIN userCategory.followedTags tag "
 				+ "WHERE category = ?1 AND (userCategory.followingAllTags = True OR tag IN ?2) AND kbUser.notificationDisabled = False AND userCategory.disabled = False "),
-//		@NamedQuery(name = KbUserCategoryEntity.FIND_DCEMUSER_NOT_IN_CATEGORY_BY_GROUPNAME, query = "SELECT dcemUser FROM DcemUser dcemUser LEFT JOIN KbUserCategoryEntity userCategory ON dcemUser.id = userCategory.kbUser.id AND userCategory.category = ?1 " +
-//                "WHERE userCategory.category.id IS NULL AND dcemUser IN ?2"),
 
 })
 
@@ -90,9 +90,10 @@ public class KbUserCategoryEntity extends EntityInterface implements Serializabl
 	public final static String FIND_ALL_FOLLOWER_OF_TAGS = "knowledgeboard.usercategory.findAllUsersFollowingTags";
 	public final static String FIND_ALL_USERCATEGORIES_WHERE_USER_IS_NOT_DISABLED_ADMIN = "knowledgeboard.usercategory.findAllUsercategoriesWhereUserIsNotDisabledAdmin";
 	public final static String FIND_ALL_USERCATEGORIES_BY_KBUSERS = "knowledgeboard.usercategory.findAllUsercategoriesByKbUsers";
+	public static final String FIND_ALL_USERCATEGORIES_BY_USERS_AND_CATEGORY = "knowledgeboard.usercategory.findAllUsercategoriesByUsersAndCategory";
 	public final static String FIND_ALL_FOLLOWER_OF_QUESTION_FOR_EMAILTASK = "knowledgeboard.usercategory.findAllUsersFollowingQuestionForEmailtask";
 	public final static String FIND_ALL_FOLLOWER_OF_TAGS_FOR_EMAILTASK = "knowledgeboard.usercategory.findAllUsersFollowingTagsForEmailtask";
-//	public final static String FIND_DCEMUSER_NOT_IN_CATEGORY_BY_GROUPNAME = "knowledgeboard.usercategory.findDcemUserNotInCategoryByGroupname";
+
 
 	@Id
 	@ManyToOne
