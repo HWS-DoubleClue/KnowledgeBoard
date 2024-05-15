@@ -173,10 +173,11 @@ public class KbUserLogic {
 	@DcemTransactional
 	public void removeUserCategories(List<KbUserCategoryEntity> kbUserCategories, DcemAction dcemAction) {
 		StringBuffer auditInformation = new StringBuffer();
+		auditInformation.append("Removed: ");
 		for (KbUserCategoryEntity kbUserCategory : kbUserCategories) {
 			kbUserCategory = em.merge(kbUserCategory);
 			em.remove(kbUserCategory);
-			auditInformation.append(kbUserCategory.getKbUser().getDcemUser().getLoginId() + " (" + kbUserCategory.getCategory().getName() + "); ");
+			auditInformation.append(kbUserCategory.getKbUser().getDcemUser().getLoginId() + " from category: '" + kbUserCategory.getCategory().getName() + "'; ");
 		}
 		if (dcemAction != null) {
 			auditingLogic.addAudit(dcemAction, auditInformation.toString());
