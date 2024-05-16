@@ -1,10 +1,8 @@
 package com.doubleclue.dcem.knowledgeboard.gui;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
@@ -16,7 +14,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.primefaces.PrimeFaces;
 
-import com.doubleclue.dcem.core.entities.DcemGroup;
 import com.doubleclue.dcem.core.entities.DcemUser;
 import com.doubleclue.dcem.core.gui.AutoViewAction;
 import com.doubleclue.dcem.core.gui.DcemDialog;
@@ -81,7 +78,7 @@ public class KbCategoryMemberDialog extends DcemDialog {
 	public void actionAddOrUpdateMember() {
 		try {
 			if (editMode == true) {
-				member = kbUserLogic.updateUserCategory(member);
+				member = kbUserLogic.updateUserCategory(member, this.getAutoViewAction().getDcemAction());
 				members.set(members.indexOf(member), member);
 				PrimeFaces.current().executeScript("PF('addMemberDialog').hide();");
 				JsfUtils.addInfoMessage(KbModule.RESOURCE_NAME, "category.memberDialog.success.editMember");
@@ -118,18 +115,7 @@ public class KbCategoryMemberDialog extends DcemDialog {
 	
 	public void actionAddGroup() {
 		try {
-			Set<DcemUser> dcemMembers = new HashSet<DcemUser>(members.size());
-			for (KbUserCategoryEntity userCategory : members) {
-				dcemMembers.add(userCategory.getKbUser().getDcemUser());
-			}
-			DcemGroup group = groupLogic.getGroup(groupName);
-			List<DcemUser> newDcemUserMembers = new ArrayList<DcemUser>(group.getMembers().size());
-			for (DcemUser groupMember : group.getMembers()) {
-				if (dcemMembers.contains(groupMember) == false) {
-					newDcemUserMembers.add(groupMember);
-				}
-			}
-			List<KbUserCategoryEntity> newCategoryMembers = kbUserLogic.addGroupToCategory(newDcemUserMembers, kbCategoryEntity);
+			List<KbUserCategoryEntity> newCategoryMembers = kbUserLogic.addGroupToCategory(groupName, kbCategoryEntity, this.getAutoViewAction().getDcemAction());
 			members.addAll(newCategoryMembers);
 			JsfUtils.addInfoMessageToComponentId(
 					String.format(JsfUtils.getStringSafely(resourceBundle, "category.memberDialog.success.addGroup"), groupName),

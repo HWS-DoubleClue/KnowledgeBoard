@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -17,6 +19,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.doubleclue.dcem.core.DcemConstants;
 import com.doubleclue.dcem.core.entities.DcemAction;
+import com.doubleclue.dcem.core.entities.DcemGroup;
 import com.doubleclue.dcem.core.entities.DcemUser;
 import com.doubleclue.dcem.core.jpa.DcemTransactional;
 import com.doubleclue.dcem.core.logic.AuditingLogic;
@@ -51,7 +54,7 @@ public class KbUserLogic {
 
 	@Inject
 	KbReplyLogic kbReplyLogic;
-	
+
 	@Inject
 	GroupLogic groupLogic;
 
@@ -104,7 +107,7 @@ public class KbUserLogic {
 	public KbUserCategoryEntity getKbUserCategory(int userId, int categoryId) {
 		return em.find(KbUserCategoryEntity.class, new KbUserCategoryKey(userId, categoryId));
 	}
-	
+
 	public void detachUserCategory(KbUserCategoryEntity userCategory) {
 		em.detach(userCategory);
 	}
@@ -138,7 +141,7 @@ public class KbUserLogic {
 
 	@DcemTransactional
 	public void addUserCategory(KbUserCategoryEntity kbUserCategoryEntity, DcemAction dcemAction) {
-		auditingLogic.addAudit(dcemAction, kbUserCategoryEntity);
+		auditingLogic.addAudit(dcemAction, kbUserCategoryEntity.toString());
 		em.persist(kbUserCategoryEntity);
 	}
 
@@ -153,16 +156,11 @@ public class KbUserLogic {
 		}
 		return em.merge(kbUserCategoryEntity);
 	}
-	
-	@DcemTransactional
-	public KbUserCategoryEntity updateUserCategory(KbUserCategoryEntity kbUserCategoryEntity) {
-		return em.merge(kbUserCategoryEntity);
-	}
 
 	@DcemTransactional
 	public void updateUserCategories(List<KbUserCategoryEntity> selectedFollower, DcemAction dcemAction) {
 		for (KbUserCategoryEntity follower : selectedFollower) {
-			em.merge(follower);
+			updateUserCategory(follower, dcemAction);
 		}
 	}
 
@@ -175,10 +173,11 @@ public class KbUserLogic {
 	@DcemTransactional
 	public void removeUserCategories(List<KbUserCategoryEntity> kbUserCategories, DcemAction dcemAction) {
 		StringBuffer auditInformation = new StringBuffer();
+		auditInformation.append("Removed: ");
 		for (KbUserCategoryEntity kbUserCategory : kbUserCategories) {
 			kbUserCategory = em.merge(kbUserCategory);
 			em.remove(kbUserCategory);
-			auditInformation.append(kbUserCategory.getKbUser().getDcemUser().getLoginId() + " (" + kbUserCategory.getCategory().getName() + "); ");
+			auditInformation.append(kbUserCategory.getKbUser().getDcemUser().getLoginId() + " from category: '" + kbUserCategory.getCategory().getName() + "'; ");
 		}
 		if (dcemAction != null) {
 			auditingLogic.addAudit(dcemAction, auditInformation.toString());
@@ -224,7 +223,7 @@ public class KbUserLogic {
 		query.setMaxResults(max);
 		return query.getResultList();
 	}
-	
+
 	public List<KbUserCategoryEntity> getUserCategoriesByUserIdWithOptionalAttribute(Integer userId, String graphName) {
 		TypedQuery<KbUserCategoryEntity> query = em.createNamedQuery(KbUserCategoryEntity.FIND_ALL_CATEGORIES_OF_MEMBER, KbUserCategoryEntity.class);
 		if (graphName != null) {
@@ -246,6 +245,7 @@ public class KbUserLogic {
 		query.setParameter(1, kbUsers);
 		return query.getResultList();
 	}
+	
 
 	@DcemTransactional
 	public void createOrUpdateUserCategories(Collection<KbUserCategoryEntity> userCategories, KbUserEntity kbUserEntity) {
@@ -271,27 +271,27 @@ public class KbUserLogic {
 		kbReplyLogic.removeUserFromReplies(dcemUser);
 		kbQuestionLogic.removeUserFromQuestions(dcemUser);
 	}
-	
+
 	@DcemTransactional
-	public List<KbUserCategoryEntity> addGroupToCategory(List<DcemUser> newDcemUserMembers, KbCategoryEntity kbCategoryEntity) throws Exception {
+	public List<KbUserCategoryEntity> addGroupToCategory(String groupName, KbCategoryEntity kbCategoryEntity, DcemAction dcemAction) throws Exception {
+		DcemGroup group = groupLogic.getGroup(groupName);
+		List<KbUserCategoryEntity> existingMemberCategories = getUserCategoriesByDcemUsersAndCategory(group.getMembers(), kbCategoryEntity);
+		Set<DcemUser> alreadyMembers = existingMemberCategories.stream().map(member -> member.getKbUser().getDcemUser()).collect(Collectors.toSet());
 		List<KbUserCategoryEntity> newCategoryMembers = new ArrayList<KbUserCategoryEntity>();
-		for (DcemUser newMember : newDcemUserMembers) {
-			KbUserCategoryEntity newCategoryMember = getOrCreateKbUserCategory(newMember, kbCategoryEntity);
-			newCategoryMembers.add(newCategoryMember);
+		for (DcemUser newMember : group.getMembers()) {
+			if (alreadyMembers.contains(newMember) == false) {
+				KbUserCategoryEntity newCategoryMember = getOrCreateKbUserCategory(newMember, kbCategoryEntity);
+				newCategoryMembers.add(newCategoryMember);
+			}
 		}
+		auditingLogic.addAudit(dcemAction, String.format("Added group: '%s' to category: '%s'", groupName, kbCategoryEntity.getName()));
 		return newCategoryMembers;
 	}
 
-	//#### gets dcemUser
-	
-//	public List<DcemUser> getDcemUserOfGroupNotInCategory(KbCategoryEntity kbCategoryEntity, List<DcemUser> groupMembers) {
-//		TypedQuery<DcemUser> query = em.createNamedQuery(KbUserCategoryEntity.FIND_DCEMUSER_NOT_IN_CATEGORY_BY_GROUPNAME,
-//				DcemUser.class);
-//		query.setParameter(1, kbCategoryEntity);
-//		query.setParameter(2, groupMembers);
-//		return query.getResultList();
-//	}
-
-
+	private List<KbUserCategoryEntity> getUserCategoriesByDcemUsersAndCategory(List<DcemUser> users, KbCategoryEntity kbCategoryEntity) throws Exception {
+		TypedQuery<KbUserCategoryEntity> query = em.createNamedQuery(KbUserCategoryEntity.FIND_ALL_USERCATEGORIES_BY_USERS_AND_CATEGORY, KbUserCategoryEntity.class);
+		List<Integer> userIds = users.stream().map(user -> user.getId()).collect(Collectors.toList());
+		return query.setParameter(1, userIds).setParameter(2, kbCategoryEntity.getId()).getResultList();
+	}
 
 }

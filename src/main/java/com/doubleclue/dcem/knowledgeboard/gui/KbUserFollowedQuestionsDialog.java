@@ -3,7 +3,6 @@ package com.doubleclue.dcem.knowledgeboard.gui;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
@@ -42,7 +41,6 @@ public class KbUserFollowedQuestionsDialog extends DcemDialog {
 	@Inject
 	OperatorSessionBean operatorSessionBean;
 
-	private ResourceBundle resourceBundle;
 	private SelectItem[] questionStatusSelection;
 	private KbUserEntity kbUserEntity;
 	private List<KbQuestionEntity> followedQuestions;
@@ -51,7 +49,6 @@ public class KbUserFollowedQuestionsDialog extends DcemDialog {
 
 	@PostConstruct
 	private void init() {
-		resourceBundle = JsfUtils.getBundle(KbModule.RESOURCE_NAME, operatorSessionBean.getLocale());
 	}
 
 	public void actionRemoveQuestion() {

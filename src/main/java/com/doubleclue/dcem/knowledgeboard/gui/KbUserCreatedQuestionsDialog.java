@@ -1,7 +1,6 @@
 package com.doubleclue.dcem.knowledgeboard.gui;
 
 import java.util.List;
-import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
@@ -15,12 +14,10 @@ import org.apache.logging.log4j.Logger;
 import com.doubleclue.dcem.core.gui.AutoViewAction;
 import com.doubleclue.dcem.core.gui.DcemDialog;
 import com.doubleclue.dcem.core.gui.DcemView;
-import com.doubleclue.dcem.core.gui.JsfUtils;
 import com.doubleclue.dcem.core.logic.OperatorSessionBean;
 import com.doubleclue.dcem.knowledgeboard.entities.KbQuestionEntity;
 import com.doubleclue.dcem.knowledgeboard.entities.KbUserEntity;
 import com.doubleclue.dcem.knowledgeboard.entities.enums.KbQuestionStatus;
-import com.doubleclue.dcem.knowledgeboard.logic.KbModule;
 import com.doubleclue.dcem.knowledgeboard.logic.KbQuestionLogic;
 import com.doubleclue.dcem.knowledgeboard.subjects.KbUserSubject;
 
@@ -28,6 +25,8 @@ import com.doubleclue.dcem.knowledgeboard.subjects.KbUserSubject;
 @SessionScoped
 public class KbUserCreatedQuestionsDialog extends DcemDialog {
 
+	
+	@SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger(KbUserCreatedQuestionsDialog.class);
 	private static final long serialVersionUID = 1L;
 
@@ -43,7 +42,6 @@ public class KbUserCreatedQuestionsDialog extends DcemDialog {
 	@Inject
 	OperatorSessionBean operatorSessionBean;
 
-	private ResourceBundle resourceBundle;
 	private KbUserEntity kbUserEntity;
 	private List<KbQuestionEntity> createdQuestions;
 	private List<KbQuestionEntity> selectedQuestions;
@@ -51,7 +49,6 @@ public class KbUserCreatedQuestionsDialog extends DcemDialog {
 
 	@PostConstruct
 	private void init() {
-		resourceBundle = JsfUtils.getBundle(KbModule.RESOURCE_NAME, operatorSessionBean.getLocale());
 	}
 
 	@Override

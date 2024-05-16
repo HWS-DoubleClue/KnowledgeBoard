@@ -168,7 +168,7 @@ public class KbDashboardView extends DcemView {
 				userCategory.setKbUser(kbUserEntity);
 				kbUserLogic.addUserCategory(userCategory, notificationAction.getDcemAction());
 			} else {
-				userCategory = kbUserLogic.updateUserCategory(userCategory);
+				userCategory = kbUserLogic.updateUserCategory(userCategory, notificationAction.getDcemAction());
 			}
 			categoryMap.put(category, userCategory);
 		} catch (Exception e) {
