@@ -18,7 +18,7 @@ img {
 					icon="fa fa-solid fa-circle-chevron-left" />
 				<p:panel id="questionPanel" toggleable="true" styleClass="question-panel">
 					<f:facet name="actions">
-						<p:commandLink icon="pi pi-pencil" styleClass="ui-panel-titlebar-icon " style="margin-bottom: 10px" action="#{kbReplyQuestionView.editQuestion()}"
+						<p:commandLink icon="pi pi-pencil" styleClass="ui-panel-titlebar-icon " style="margin-bottom: 10px; margin-top: 10px;" action="#{kbReplyQuestionView.editQuestion()}"
 							rendered="#{kbReplyQuestionView.hasQuestionEditPermission()}">
 							<h:outputText styleClass="ui-icon pi pi-pencil" />
 							<p:ajax event="dialogReturn" update="replyForm" listener="#{kbReplyQuestionView.reload()}" />
