@@ -11,7 +11,7 @@
 
 			<p:commandButton id="newPost" styleClass="actionButton" value="#{KbMsg['AUTO_ACTION.newPost']}" rendered="#{kbDashboardView.newPostAction != null}"
 				action="#{viewNavigator.setActiveDialog(kbDashboardView.newPostAction)}" icon="#{kbDashboardView.newPostAction.rawAction.icon}"
-				ajax="#{kbDashboardView.newPostAction.rawAction.ajax}" >
+				ajax="#{kbDashboardView.newPostAction.rawAction.ajax}">
 				<p:ajax event="dialogReturn" update="questions" />
 			</p:commandButton>
 
@@ -22,9 +22,9 @@
 			<p:commandButton id="settings" value="#{KbMsg['dashboard.view.filterCategories']}" type="button" icon="fa fa-filter" />
 			<p:overlayPanel for="settings" dismissable="true" showCloseIcon="true" widgetVar="overlayPanel">
 				<p:commandButton value="#{KbMsg['dashboard.view.selectAll']}" onclick="PF('selectManyCategory').selectAll()" />
-				<p:spacer width="20"/>
+				<p:spacer width="20" />
 				<p:commandButton value="#{KbMsg['dashboard.view.unselectAll']}" onclick="PF('selectManyCategory').unselectAll()" />
-				
+
 				<p:selectManyMenu id="categorySelection" widgetVar="selectManyCategory" value="#{kbDashboardView.selectedCategories}" var="selectedCategory" filter="true"
 					filterMatchMode="contains" style="width: 350px !important" filterNormalize="true" showCheckbox="true" styleClass="manymenu-advanced">
 					<f:selectItems value="#{kbDashboardView.accessibleCategories}" var="category" itemLabel="#{category.name}" itemValue="#{category}" />
@@ -32,17 +32,18 @@
 						<h:outputText value="#{selectedCategory.name}" />
 					</p:column>
 				</p:selectManyMenu>
-				<p:commandButton value="#{KbMsg['dashboard.view.save']}" onclick="PF('overlayPanel').hide()" action="#{kbDashboardView.actionSaveCategorySettings()}" update="questions" />
+				<p:commandButton value="#{KbMsg['dashboard.view.save']}" onclick="PF('overlayPanel').hide()" action="#{kbDashboardView.actionSaveCategorySettings()}"
+					update="questions" />
 			</p:overlayPanel>
 
 			<p:defaultCommand target="searchField" />
 			<p:inputText id="searchText" value="#{kbDashboardView.filterText}" size="40" style="margin-left: 1.5em" />
 			<p:commandButton id="searchField" value="#{KbMsg['dashboard.view.search']}" update="questions" actionListener="#{kbDashboardView.actionSearch}"
 				icon="fa fa-magnifying-glass" />
-			
+
 			<p:commandButton id="manageCategories" styleClass="actionButton" style="float:right" value="#{KbMsg['AUTO_ACTION.manageNotifications']}"
 				rendered="#{kbDashboardView.newPostAction != null}" action="#{viewNavigator.setActiveDialog(kbDashboardView.notificationAction)}"
-				icon="#{kbDashboardView.notificationAction.rawAction.icon}" ajax="#{kbDashboardView.notificationAction.rawAction.ajax}" >
+				icon="#{kbDashboardView.notificationAction.rawAction.icon}" ajax="#{kbDashboardView.notificationAction.rawAction.ajax}">
 				<p:ajax event="dialogReturn" listener="#{kbDashboardView.reload()}" />
 			</p:commandButton>
 
@@ -108,10 +109,16 @@
 								<h:outputText value="#{KbMsg['KbQuestion.creationDate']}: " />
 								<h:outputText value="#{question.creationDate}" converter="dcem.LocalDateTimeConverter" />
 							</div>
-							<div class="ui-g-12">
-								<h:outputText value="#{KbMsg['KbQuestion.lastModifiedOn']}: " />
-								<h:outputText value="#{question.lastModifiedOn}" converter="dcem.LocalDateTimeConverter" />
-							</div>
+							<p:card rendered="#{question.lastModifiedOn != question.creationDate}">
+								<div class="ui-g-12">
+									<h:outputText
+										value="#{KbMsg['KbQuestion.lastModifiedBy']}: #{question.lastModifiedBy == null ? KbMsg['dashboard.view.deletedAuthor'] : question.lastModifiedBy.displayName}" />
+								</div>
+								<div class="ui-g-12">
+									<h:outputText value="#{KbMsg['KbQuestion.lastModifiedOn']}: " />
+									<h:outputText value="#{question.lastModifiedOn}" converter="dcem.LocalDateTimeConverter" />
+								</div>
+							</p:card>
 						</div>
 					</div>
 				</p:dataViewListItem>

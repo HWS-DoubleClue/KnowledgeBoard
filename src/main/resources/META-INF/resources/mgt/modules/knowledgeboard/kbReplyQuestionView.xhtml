@@ -18,8 +18,8 @@ img {
 					icon="fa fa-solid fa-circle-chevron-left" />
 				<p:panel id="questionPanel" toggleable="true" styleClass="question-panel">
 					<f:facet name="actions">
-						<p:commandLink icon="pi pi-pencil" styleClass="ui-panel-titlebar-icon " style="margin-bottom: 10px; margin-top: 10px;" action="#{kbReplyQuestionView.editQuestion()}"
-							rendered="#{kbReplyQuestionView.hasQuestionEditPermission()}">
+						<p:commandLink icon="pi pi-pencil" styleClass="ui-panel-titlebar-icon " style="margin-bottom: 10px; margin-top: 10px;"
+							action="#{kbReplyQuestionView.editQuestion()}" rendered="#{kbReplyQuestionView.hasQuestionEditPermission()}">
 							<h:outputText styleClass="ui-icon pi pi-pencil" />
 							<p:ajax event="dialogReturn" update="replyForm" listener="#{kbReplyQuestionView.reload()}" />
 						</p:commandLink>
@@ -36,8 +36,9 @@ img {
 					<div class="ui-g">
 						<div style="word-wrap: break-word;" class="ui-g-9">
 							<div class="ui-g-12">
-							<!-- <h:outputText value="#{kbReplyQuestionView.kbQuestionEntity.questionContent.content}" escape="false" /> -->
-								<p:textEditor value="#{kbReplyQuestionView.kbQuestionEntity.questionContent.content}" readonly="true" toolbarVisible="false" styleClass="text-editor-read-only"></p:textEditor>
+								<!-- <h:outputText value="#{kbReplyQuestionView.kbQuestionEntity.questionContent.content}" escape="false" /> -->
+								<p:textEditor value="#{kbReplyQuestionView.kbQuestionEntity.questionContent.content}" readonly="true" toolbarVisible="false"
+									styleClass="text-editor-read-only"></p:textEditor>
 							</div>
 							<div class="ui-g-12 tag-box">
 								<p:outputPanel rendered="#{not empty kbReplyQuestionView.kbQuestionEntity.tags}" style="font-size:0.85em">
@@ -66,10 +67,16 @@ img {
 								<h:outputText value="#{KbMsg['KbQuestion.creationDate']}: " />
 								<h:outputText value="#{kbReplyQuestionView.kbQuestionEntity.creationDate}" converter="dcem.LocalDateTimeConverter" />
 							</div>
-							<div class="ui-g-12">
-								<h:outputText value="#{KbMsg['KbQuestion.lastModifiedOn']}: " />
-								<h:outputText value="#{kbReplyQuestionView.kbQuestionEntity.lastModifiedOn}" converter="dcem.LocalDateTimeConverter" />
-							</div>
+							<p:card rendered="#{kbReplyQuestionView.kbQuestionEntity.lastModifiedOn != kbReplyQuestionView.kbQuestionEntity.creationDate}">
+								<div class="ui-g-12">
+									<h:outputText
+										value="#{KbMsg['KbQuestion.lastModifiedBy']}: #{kbReplyQuestionView.kbQuestionEntity.lastModifiedBy == null ? KbMsg['dashboard.view.deletedAuthor'] : kbReplyQuestionView.kbQuestionEntity.lastModifiedBy.displayName}" />
+								</div>
+								<div class="ui-g-12">
+									<h:outputText value="#{KbMsg['KbQuestion.lastModifiedOn']}: " />
+									<h:outputText value="#{kbReplyQuestionView.kbQuestionEntity.lastModifiedOn}" converter="dcem.LocalDateTimeConverter" />
+								</div>
+							</p:card>
 						</div>
 					</div>
 				</p:panel>
@@ -84,16 +91,16 @@ img {
 						<p:panel toggleable="true"
 							header="#{kbReplyQuestionView.kbQuestionEntity.replies.indexOf(reply)+1}# #{KbMsg['reply.view.replyFrom']} '#{reply.author == null ? KbMsg['dashboard.view.deletedAuthor'] : reply.author.displayName}'">
 							<f:facet name="actions">
-								
+
 								<p:commandLink icon="pi pi-trash" styleClass="ui-panel-titlebar-icon " style="margin-bottom: 10px" action="#{kbReplyQuestionView.deleteReply(reply)}"
 									rendered="#{kbReplyQuestionView.hasReplyDeletePermission(reply)}">
 									<h:outputText styleClass="ui-icon pi pi-trash" />
 									<p:ajax event="dialogReturn" update="replies replyForm:replyCount" listener="#{kbReplyQuestionView.reload()}" />
 								</p:commandLink>
-								
+
 								<p:commandLink icon="pi pi-pencil" styleClass="ui-panel-titlebar-icon " style="margin-bottom: 10px" action="#{kbReplyQuestionView.editReply(reply)}"
 									rendered="#{kbReplyQuestionView.hasReplyEditPermission(reply)}">
-									<h:outputText styleClass="ui-icon pi pi-pencil"  />
+									<h:outputText styleClass="ui-icon pi pi-pencil" />
 									<p:ajax event="dialogReturn" update="replies" />
 								</p:commandLink>
 
@@ -119,11 +126,16 @@ img {
 										<h:outputText value="#{KbMsg['KbReply.creationDate']}: " />
 										<h:outputText value="#{reply.creationDate}" converter="dcem.LocalDateTimeConverter" />
 									</div>
-									<div class="ui-g-12">
-										<h:outputText value="#{KbMsg['KbReply.lastModifiedOn']}: " />
-										<h:outputText value="#{reply.lastModifiedOn}" converter="dcem.LocalDateTimeConverter" />
-									</div>
-
+									<p:card rendered="#{reply.lastModifiedOn != reply.creationDate}">
+										<div class="ui-g-12">
+											<h:outputText
+												value="#{KbMsg['KbReply.lastModifiedBy']}: #{reply.lastModifiedBy == null ? KbMsg['dashboard.view.deletedAuthor'] : reply.lastModifiedBy.displayName}" />
+										</div>
+										<div class="ui-g-12">
+											<h:outputText value="#{KbMsg['KbReply.lastModifiedOn']}: " />
+											<h:outputText value="#{reply.lastModifiedOn}" converter="dcem.LocalDateTimeConverter" />
+										</div>
+									</p:card>
 								</div>
 							</div>
 
