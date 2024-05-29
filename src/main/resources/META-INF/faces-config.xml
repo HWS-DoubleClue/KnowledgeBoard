@@ -6,7 +6,7 @@
 
 	<application>
 		<resource-bundle>
-			<base-name>com.doubleclue.dcem.knowledgeboard.resources.KbMsg</base-name>
+			<base-name>com.doubleclue.dcem.knowledgeboard.resources.Messages</base-name>
 			<var>KbMsg</var>
 		</resource-bundle>
 	</application>
