@@ -1,4 +1,11 @@
-/bin/
-/target/
-/testbin/
-/.factorypath
+**/bin/
+**/testbin/
+**/target/
+**/testLogs/
+**/.settings/
+**/work/
+.factorypath
+.classpath
+.project
+derby.log
+hs_err_pid*
