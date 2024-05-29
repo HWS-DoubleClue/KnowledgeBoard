@@ -54,7 +54,7 @@ primary key (dc_id)
 
 create table kb_text_content (
 dc_id  serial not null,
-content varchar(5242880) not null,
+content varchar(1048576) not null,
 jpaVersion int4 not null,
 primary key (dc_id)
 );
