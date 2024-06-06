@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
@@ -140,8 +142,8 @@ public class KbQuestionDialog extends DcemDialog {
 		questionEntity = (KbQuestionEntity) dcemView.getActionObject();
 		categoriesSelectOne = new ArrayList<SelectItem>();
 
-		if (getAutoViewAction().getDcemAction().getAction().equals(DcemConstants.ACTION_ADD)
-				|| getAutoViewAction().getDcemAction().getAction().equals(KbConstants.KB_NEW_POST)) {
+		if (autoViewAction.getDcemAction().getAction().equals(DcemConstants.ACTION_ADD)
+				|| autoViewAction.getDcemAction().getAction().equals(KbConstants.KB_NEW_POST)) {
 			List<KbCategoryEntity> accessibleCategories;
 			editMode = false;
 			if (viewNavigator.getActiveView().equals(kbQuestionView) && kbQuestionView.isViewManager()) {
@@ -161,17 +163,15 @@ public class KbQuestionDialog extends DcemDialog {
 			initDualList(questionEntity.getTags());
 			return;
 		}
-
-		KbUserCategoryEntity operatorUserCategory = kbUserLogic.getKbUserCategory(operatorSessionBean.getDcemUser().getId(),
-				questionEntity.getCategory().getId());
-		if (KbUtils.hasActionRights(operatorSessionBean, operatorUserCategory, autoViewAction) == false) {
-			if ((questionEntity.getAuthor() != null && questionEntity.getAuthor().equals(operatorSessionBean.getDcemUser())) == false) {
-				throw new DcemException(DcemErrorCodes.INSUFFICIENT_ACCESS_RIGHTS,
-						"Operating user does not have management rights for tags of category: " + questionEntity.getCategory().getName());
-			}
-		}
-
 		if (autoViewAction.getDcemAction().getAction().equals(DcemConstants.ACTION_EDIT)) {
+			KbUserCategoryEntity operatorUserCategory = kbUserLogic.getKbUserCategory(operatorSessionBean.getDcemUser().getId(),
+					questionEntity.getCategory().getId());
+			if (KbUtils.hasActionRights(operatorSessionBean, operatorUserCategory, autoViewAction) == false) {
+				if ((questionEntity.getAuthor() != null && questionEntity.getAuthor().equals(operatorSessionBean.getDcemUser())) == false) {
+					throw new DcemException(DcemErrorCodes.INSUFFICIENT_ACCESS_RIGHTS,
+							"Operating user does not have management rights for tags of category: " + questionEntity.getCategory().getName());
+				}
+			}
 			editMode = true;
 			categoryId = questionEntity.getCategory().getId();
 			questionEntity = kbQuestionLogic.getQuestionWithOptionalAttribute(questionEntity.getId(), KbQuestionEntity.GRAPH_QUESTION_TAGS_AND_CONTENT);
@@ -181,8 +181,17 @@ public class KbQuestionDialog extends DcemDialog {
 			initDualList(questionEntity.getTags());
 			return;
 		}
-
 		if (autoViewAction.getDcemAction().getAction().equals(DcemConstants.ACTION_DELETE)) {
+			List<Object> selectedQuestions = autoViewBean.getSelectedItems();
+			Set<KbCategoryEntity> categories = selectedQuestions.stream().map(question -> ((KbQuestionEntity) question).getCategory())
+					.collect(Collectors.toSet());
+			for (KbCategoryEntity category : categories) {
+				KbUserCategoryEntity operatorUserCategory = kbUserLogic.getKbUserCategory(operatorSessionBean.getDcemUser().getId(), category.getId());
+				if (KbUtils.hasActionRights(operatorSessionBean, operatorUserCategory, autoViewAction) == false) {
+					throw new DcemException(DcemErrorCodes.INSUFFICIENT_ACCESS_RIGHTS,
+							"Operating user does not have management rights for tags of category: " + category.getName());
+				}
+			}
 			return;
 		}
 	}

@@ -2,6 +2,8 @@ package com.doubleclue.dcem.knowledgeboard.gui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
@@ -55,8 +57,8 @@ public class KbTagDialog extends DcemDialog {
 	private KbTagEntity tagEntity;
 	private List<KbCategoryEntity> editableCategories;
 	private List<SelectItem> categoriesSelectOne;
-	private boolean editMode; 
-	
+	private boolean editMode;
+
 	@PostConstruct
 	public void init() {
 	}
@@ -95,20 +97,28 @@ public class KbTagDialog extends DcemDialog {
 			}
 			return;
 		}
-
-		KbUserCategoryEntity operatorUserCategory = kbUserLogic.getKbUserCategory(operatorSessionBean.getDcemUser().getId(), tagEntity.getCategory().getId());
-		if (KbUtils.hasActionRights(operatorSessionBean, operatorUserCategory, autoViewAction) == false) {
-			throw new DcemException(DcemErrorCodes.INSUFFICIENT_ACCESS_RIGHTS,
-					"Operating user does not have management rights for tags of category: " + tagEntity.getCategory().getName());
-		}
-
-		if (autoViewAction.getDcemAction().getAction().equals(DcemConstants.ACTION_DELETE)) {
-			return;
-		}
-
 		if (autoViewAction.getDcemAction().getAction().equals(DcemConstants.ACTION_EDIT)) {
+			KbUserCategoryEntity operatorUserCategory = kbUserLogic.getKbUserCategory(operatorSessionBean.getDcemUser().getId(),
+					tagEntity.getCategory().getId());
+			if (KbUtils.hasActionRights(operatorSessionBean, operatorUserCategory, autoViewAction) == false) {
+				throw new DcemException(DcemErrorCodes.INSUFFICIENT_ACCESS_RIGHTS,
+						"Operating user does not have management rights for tags of category: " + tagEntity.getCategory().getName());
+			}
 			editMode = true;
 			categoriesSelectOne.add(new SelectItem(tagEntity.getCategory().getId(), tagEntity.getCategory().getName()));
+			return;
+		}
+		if (autoViewAction.getDcemAction().getAction().equals(DcemConstants.ACTION_DELETE)) {
+			List<Object> selectedTags = autoViewBean.getSelectedItems();
+			Set<KbCategoryEntity> categories = selectedTags.stream().map(tag -> ((KbTagEntity) tag).getCategory()).collect(Collectors.toSet());
+			for (KbCategoryEntity category : categories) {
+				KbUserCategoryEntity operatorUserCategory = kbUserLogic.getKbUserCategory(operatorSessionBean.getDcemUser().getId(),
+						category.getId());
+				if (KbUtils.hasActionRights(operatorSessionBean, operatorUserCategory, autoViewAction) == false) {
+					throw new DcemException(DcemErrorCodes.INSUFFICIENT_ACCESS_RIGHTS,
+							"Operating user does not have management rights for tags of category: " + category.getName());
+				}
+			}
 			return;
 		}
 	}
