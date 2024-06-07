@@ -65,11 +65,11 @@ public class KbTagDialog extends DcemDialog {
 
 	@Override
 	public boolean actionOk() throws Exception {
-		if (tagEntity.getName() == null || tagEntity.getName().isEmpty()) {
-			JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "tag.dialog.invalid.name");
+		tagEntity.setName(tagEntity.getName().trim());        
+		if (tagEntity.getName().length() < 2) {
+			JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "question.dialog.invalid.title");
 			return false;
 		}
-		tagEntity.setName(tagEntity.getName().trim());
 		if (editMode == false) {
 			tagEntity.setCategory(retrieveCategoryById(categoryId));
 		}
