@@ -25,7 +25,7 @@
 					<p:selectOneMenu id="category" value="#{kbQuestionDialog.categoryId}" required="true" filter="true" disabled="#{kbQuestionDialog.editMode == true}"
 						styleClass="#{kbQuestionDialog.editMode == true ? 'selectOneChangeDisabled' : ''}" filterNormalize="true">
 						<f:selectItems value="#{kbQuestionDialog.categoriesSelectOne}" />
-						<p:ajax listener="#{kbQuestionDialog.actionUpdateTags}" update="updatePickList listSelectedTags" resetValues="true" />
+						<p:ajax listener="#{kbQuestionDialog.actionUpdateTags}" update="updatePickList listSelectedTags listNewTags" resetValues="true" />
 					</p:selectOneMenu>
 				</h:panelGrid>
 

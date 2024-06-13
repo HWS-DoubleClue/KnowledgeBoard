@@ -3,6 +3,7 @@ package com.doubleclue.dcem.knowledgeboard.gui;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -230,12 +231,22 @@ public class KbQuestionDialog extends DcemDialog {
 		try {
 			List<KbTagEntity> tagList = kbTagLogic.getTagsByCategoryId(categoryId);
 			tagMapping = convertTagsToMap(tagList);
-			tagDualList = new DualListModel<String>(convertTagsToStrings(tagList), new ArrayList<String>());
-			for (KbTagEntity test : toBeAddedTags) {
-				if (tagList.contains(test)) {
-					toBeAddedTags.remove(test);
+
+			List<String> alreadyExistingCategoryTags = new ArrayList<String>();
+
+			Iterator<KbTagEntity> itr = toBeAddedTags.iterator();
+			while (itr.hasNext()) {
+				KbTagEntity addedTag = itr.next();
+				if (tagMapping.get(addedTag.getName()) != null) {
+					itr.remove();
+					alreadyExistingCategoryTags.add(addedTag.getName());
 				}
 			}
+			List<String> remainingCategoryTags = new ArrayList<String>();
+			remainingCategoryTags = convertTagsToStrings(tagList);
+			remainingCategoryTags.removeAll(alreadyExistingCategoryTags);
+			tagDualList = new DualListModel<String>(remainingCategoryTags, alreadyExistingCategoryTags);
+
 		} catch (Exception e) {
 			logger.error("Could not get Tags from Category: " + categoryId, e);
 			JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "error.global");
