@@ -2,21 +2,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml" 
-	xmlns:h="http://java.sun.com/jsf/html" 
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:ui="http://java.sun.com/jsf/facelets" 
-	xmlns:p="http://primefaces.org/ui" 
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 <ui:include src="/mgt/modules/dialogHead.xhtml" />
 
 <f:view locale="#{operatorSession.locale}">
 
 	<h:body class="dialogBody">
-		<span id="customheader"> 
-			<h:outputLabel class="far fa-question-circle dialogTitle"/>
-			<h:outputLabel value="#{viewNavigator.dialogTitle}" styleClass="dialogTitle"/>
+		<span id="customheader"> <h:outputLabel class="far fa-question-circle dialogTitle" /> <h:outputLabel value="#{viewNavigator.dialogTitle}"
+				styleClass="dialogTitle" />
 		</span>
 
 		<p:messages showSummary="true" showDetail="false" closable="true">
@@ -51,9 +46,14 @@
 			</h:panelGrid>
 
 			<br />
-			<p:textEditor id="question" value="#{kbQuestionDialog.questionBody.content}" placeholder="#{KbMsg['question.dialog.enterYourText']}"
-				required="true" requiredMessage="#{KbMsg['question.dialog.requiredQuestionBody']}" />
+			<p:textEditor id="question" value="#{kbQuestionDialog.questionBody.content}" placeholder="#{KbMsg['question.dialog.enterYourText']}" required="true"
+				requiredMessage="#{KbMsg['question.dialog.requiredQuestionBody']}" />
 			<br />
+
+
+
+
+
 
 			<h:panelGroup id="updatePickList">
 				<p:commandButton id="displayTags" value="#{KbMsg['question.dialog.selectTags']}" type="button" style="margin-left: 1.5em; height: 2em;" icon="fas fa-tags" />
@@ -71,10 +71,30 @@
 
 			<h:panelGroup id="listSelectedTags">
 				<ui:repeat value="#{kbQuestionDialog.selectedTags}" var="tag">
-					<p:button value="#{tag}" disabled="true" style="opacity: 1 !important;"/>
+					<p:button value="#{tag}" disabled="true" style="opacity: 1 !important;" />
 					<p:spacer width="5" height="30" />
 				</ui:repeat>
 			</h:panelGroup>
+
+
+
+
+
+ 			<h:panelGroup id="newTagList">
+				<p:commandButton id="addNewTag" value="#{KbMsg['question.dialog.addNewTag']}" type="button" style="margin-left: 1.5em; height: 2em;"
+					icon="fa fa-solid fa-plus" action="#{KbQuestionDialog.prepareAddNewTag}" />
+				
+			</h:panelGroup>
+			<p:spacer width="20" />
+
+			<h:panelGroup id="listNewTags">
+				<ui:repeat value="#{kbQuestionDialog.toBeAddedTags}" var="newTag">
+					<p:button value="#{newTag.name}" disabled="true" style="opacity: 1 !important;" />
+					<p:spacer width="5" height="30" />
+				</ui:repeat>
+			</h:panelGroup> 
+
+
 
 			<div style="position: fixed; bottom: 1em; width: 100%;">
 				<p:commandButton id="ok" style="width: 8em" icon="fa fa-check" value="#{CoreMsg['ok']}" action="#{autoDialog.actionOk}" />
@@ -84,6 +104,27 @@
 					action="#{viewNavigator.actionCloseDialog}" />
 			</div>
 		</h:form>
+
+		<h:form id="overlayForm">
+			<p:overlayPanel for="questionForm:addNewTag" showCloseIcon="true" widgetVar="overlayTagPanelVar" >
+				<h:panelGrid id="addNewTagGrid" columns="2" cellpadding="2" cellspacing="2">
+
+					<p:outputLabel for="tagname" value="#{KbMsg['tag.dialog.tagname']}" />
+					<p:inputText id="tagname" value="#{kbQuestionDialog.toBeAddedTag.name}" required="true" maxlength="63" style="width: 18em;">
+					</p:inputText>
+					<p:outputLabel for="desc" value="#{KbMsg['KbTag.description']}" />
+					<p:inputTextarea id="desc" value="#{kbQuestionDialog.toBeAddedTag.description}" rows="4" required="false" maxlength="111" style="width: 18em; "
+						autoResize="false">
+					</p:inputTextarea>
+				</h:panelGrid>
+				<p:commandButton id="okNewTag" style="width: 8em" icon="fa fa-check" value="#{KbMsg['question.dialog.addTag']}" action="#{kbQuestionDialog.actionNewTag()}" update="questionForm:listNewTags addNewTagGrid" process="@form">
+				</p:commandButton>
+				<p:spacer width="20" />
+
+			</p:overlayPanel>
+		</h:form>
+
+
 	</h:body>
 </f:view>
 </html>

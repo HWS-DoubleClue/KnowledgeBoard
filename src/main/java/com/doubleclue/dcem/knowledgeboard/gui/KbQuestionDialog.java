@@ -85,10 +85,16 @@ public class KbQuestionDialog extends DcemDialog {
 	private DualListModel<String> tagDualList;
 	private Map<String, KbTagEntity> tagMapping;
 	private List<SelectItem> categoriesSelectOne;
+	private List<KbTagEntity> toBeAddedTags;
+	private KbTagEntity toBeAddedTag;
+
 	private boolean editMode;
 
 	@PostConstruct
 	public void init() {
+	}
+
+	public void prepareAddNewTag() {
 	}
 
 	@Override
@@ -141,6 +147,8 @@ public class KbQuestionDialog extends DcemDialog {
 	public void show(DcemView dcemView, AutoViewAction autoViewAction) throws Exception {
 		questionEntity = (KbQuestionEntity) dcemView.getActionObject();
 		categoriesSelectOne = new ArrayList<SelectItem>();
+		toBeAddedTags = new ArrayList<KbTagEntity>();
+		toBeAddedTag = new KbTagEntity();
 
 		if (autoViewAction.getDcemAction().getAction().equals(DcemConstants.ACTION_ADD)
 				|| autoViewAction.getDcemAction().getAction().equals(KbConstants.KB_NEW_POST)) {
@@ -194,6 +202,7 @@ public class KbQuestionDialog extends DcemDialog {
 			}
 			return;
 		}
+
 	}
 
 	@Override
@@ -212,6 +221,7 @@ public class KbQuestionDialog extends DcemDialog {
 		if (currentTags == null) {
 			currentTags = new ArrayList<>();
 		}
+
 		tagList.removeAll(currentTags);
 		tagDualList = new DualListModel<String>(convertTagsToStrings(tagList), convertTagsToStrings(currentTags));
 	}
@@ -221,10 +231,32 @@ public class KbQuestionDialog extends DcemDialog {
 			List<KbTagEntity> tagList = kbTagLogic.getTagsByCategoryId(categoryId);
 			tagMapping = convertTagsToMap(tagList);
 			tagDualList = new DualListModel<String>(convertTagsToStrings(tagList), new ArrayList<String>());
+			for (KbTagEntity test : toBeAddedTags) {
+				if (tagList.contains(test)) {
+					toBeAddedTags.remove(test);
+				}
+			}
 		} catch (Exception e) {
 			logger.error("Could not get Tags from Category: " + categoryId, e);
 			JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "error.global");
 		}
+	}
+
+	public void actionNewTag() {
+		toBeAddedTag.setName(toBeAddedTag.getName().trim());
+		if (toBeAddedTag.getName() != null && newTagAlreadyExists(toBeAddedTags, toBeAddedTag) == false && toBeAddedTag.getName().isEmpty() == false) {
+			toBeAddedTags.add(toBeAddedTag);
+		}
+		toBeAddedTag = new KbTagEntity();
+	}
+
+	public boolean newTagAlreadyExists(List<KbTagEntity> tagList, KbTagEntity tag) {
+		for (KbTagEntity newTag : tagList) {
+			if (newTag.getName().toLowerCase().equals(tag.getName().toLowerCase())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private List<String> convertTagsToStrings(List<KbTagEntity> tagList) {
@@ -331,4 +363,21 @@ public class KbQuestionDialog extends DcemDialog {
 	public void setQuestionStatus(KbQuestionStatus questionStatus) {
 		this.questionStatus = questionStatus;
 	}
+
+	public List<KbTagEntity> getToBeAddedTags() {
+		return toBeAddedTags;
+	}
+
+	public void setToBeAddedTags(List<KbTagEntity> toBeAddedTags) {
+		this.toBeAddedTags = toBeAddedTags;
+	}
+
+	public KbTagEntity getToBeAddedTag() {
+		return toBeAddedTag;
+	}
+
+	public void setToBeAddedTag(KbTagEntity toBeAddedTag) {
+		this.toBeAddedTag = toBeAddedTag;
+	}
+
 }
