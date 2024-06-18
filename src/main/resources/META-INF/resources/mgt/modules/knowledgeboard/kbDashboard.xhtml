@@ -79,7 +79,7 @@
 									<i class="fas fa-tags" />
 									<h:outputText value=" #{KbMsg['KbQuestion.tags']}: " />
 									<ui:repeat value="#{question.tags}" var="tag">
-										<h:outputText id="tagbox" value="#{tag.name}" class="q-tag" />
+										<h:outputText id="tagbox" value="#{tag.name}" styleClass="q-tag" />
 										<p:tooltip for="tagbox" value="#{tag.description}" position="right" />
 									</ui:repeat>
 								</p:outputPanel>
