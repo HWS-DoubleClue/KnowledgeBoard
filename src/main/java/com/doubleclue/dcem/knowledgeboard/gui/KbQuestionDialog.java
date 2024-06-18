@@ -3,7 +3,6 @@ package com.doubleclue.dcem.knowledgeboard.gui;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -58,6 +57,9 @@ public class KbQuestionDialog extends DcemDialog {
 	KbQuestionView kbQuestionView;
 
 	@Inject
+	KbTagView kbTagView;
+
+	@Inject
 	KbDashboardView dashboardView;
 
 	@Inject
@@ -86,16 +88,15 @@ public class KbQuestionDialog extends DcemDialog {
 	private DualListModel<String> tagDualList;
 	private Map<String, KbTagEntity> tagMapping;
 	private List<SelectItem> categoriesSelectOne;
+	private List<KbCategoryEntity> adminCategories;
 	private List<KbTagEntity> toBeAddedTags;
 	private KbTagEntity toBeAddedTag;
+	private boolean categoryAdmin;
 
 	private boolean editMode;
 
 	@PostConstruct
 	public void init() {
-	}
-
-	public void prepareAddNewTag() {
 	}
 
 	@Override
@@ -109,6 +110,14 @@ public class KbQuestionDialog extends DcemDialog {
 			JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "question.dialog.invalid.questionContent");
 			return false;
 		}
+		List<String> duplicatedTagNames = findDuplicatedTags();
+		if (duplicatedTagNames.isEmpty() == false) {
+			JsfUtils.addErrorMessage(
+					JsfUtils.getStringSafely(KbModule.RESOURCE_NAME, "question.dialog.invalid.duplicatedTags") + " " + String.join(", ", duplicatedTagNames));
+			return false;
+		}
+		List<KbTagEntity> newTags = categoryAdmin ? toBeAddedTags : new ArrayList<KbTagEntity>();
+
 		questionEntity.setQuestionContent(questionBody);
 		questionEntity.setCategory(kbCategoryLogic.getCategoryById(categoryId));
 		questionEntity.setStatus(questionStatus);
@@ -116,7 +125,6 @@ public class KbQuestionDialog extends DcemDialog {
 		LocalDateTime currentTime = LocalDateTime.now();
 		questionEntity.setLastModifiedOn(currentTime);
 		questionEntity.setLastModifiedBy(operatorSessionBean.getDcemUser());
-
 		List<KbTagEntity> selectedTags = new ArrayList<KbTagEntity>();
 		for (String tagName : tagDualList.getTarget()) {
 			selectedTags.add(tagMapping.get(tagName));
@@ -128,7 +136,7 @@ public class KbQuestionDialog extends DcemDialog {
 			questionEntity.setCreationDate(currentTime);
 			questionEntity.setAuthor(operatorSessionBean.getDcemUser());
 
-			kbQuestionLogic.addOrUpdateQuestion(questionEntity, getAutoViewAction().getDcemAction());
+			kbQuestionLogic.addOrUpdateQuestionWithNewTags(questionEntity, newTags, getAutoViewAction().getDcemAction());
 
 			KbUserCategoryEntity operatorUserCategory = kbUserLogic.getOrCreateKbUserCategory(operatorSessionBean.getDcemUser(), questionEntity.getCategory());
 			operatorUserCategory.getFollowedQuestions().add(questionEntity);
@@ -139,9 +147,19 @@ public class KbQuestionDialog extends DcemDialog {
 			}
 			kbEmailLogic.notifyNewPost(questionEntity);
 		} else {
-			kbQuestionLogic.addOrUpdateQuestion(questionEntity, getAutoViewAction().getDcemAction());
+			kbQuestionLogic.addOrUpdateQuestionWithNewTags(questionEntity, newTags, getAutoViewAction().getDcemAction());
 		}
 		return true;
+	}
+
+	private List<String> findDuplicatedTags() throws Exception {
+		List<String> duplicatedTagNames = new ArrayList<String>();
+		for (KbTagEntity tag : toBeAddedTags) {
+			if (tagMapping.containsKey(tag.getName())) {
+				duplicatedTagNames.add(tag.getName());
+			}
+		}
+		return duplicatedTagNames;
 	}
 
 	@Override
@@ -153,8 +171,10 @@ public class KbQuestionDialog extends DcemDialog {
 
 		if (autoViewAction.getDcemAction().getAction().equals(DcemConstants.ACTION_ADD)
 				|| autoViewAction.getDcemAction().getAction().equals(KbConstants.KB_NEW_POST)) {
-			List<KbCategoryEntity> accessibleCategories;
+			categoryId = 0;
 			editMode = false;
+			categoryAdmin = false;
+			List<KbCategoryEntity> accessibleCategories;
 			if (viewNavigator.getActiveView().equals(kbQuestionView) && kbQuestionView.isViewManager()) {
 				accessibleCategories = kbCategoryLogic.getAllCategoriesWithOptionalAttribute(KbCategoryEntity.GRAPH_CATEGORIES_TAGS);
 			} else {
@@ -164,6 +184,7 @@ public class KbQuestionDialog extends DcemDialog {
 					throw new KbException(KbErrorCodes.NO_ACCESS_TO_CATEGORY, "Operating user does not have management rights for any category.");
 				}
 			}
+			loadAdminCategories();
 			questionBody = new KbTextContentEntity();
 			categoriesSelectOne.add(new SelectItem(null, JsfUtils.getStringSafely(KbModule.RESOURCE_NAME, "question.dialog.selectCategory")));
 			for (KbCategoryEntity category : accessibleCategories) {
@@ -181,7 +202,9 @@ public class KbQuestionDialog extends DcemDialog {
 							"Operating user does not have management rights for tags of category: " + questionEntity.getCategory().getName());
 				}
 			}
+			loadAdminCategories();
 			editMode = true;
+			categoryAdmin = adminCategories.contains(questionEntity.getCategory());
 			categoryId = questionEntity.getCategory().getId();
 			questionEntity = kbQuestionLogic.getQuestionWithOptionalAttribute(questionEntity.getId(), KbQuestionEntity.GRAPH_QUESTION_TAGS_AND_CONTENT);
 			questionBody = questionEntity.getQuestionContent();
@@ -204,6 +227,19 @@ public class KbQuestionDialog extends DcemDialog {
 			return;
 		}
 
+	}
+
+	private void loadAdminCategories() {
+		try {
+			if (kbTagView.isViewManager()) {
+				adminCategories = kbCategoryLogic.getAllCategoriesWithOptionalAttribute(null);
+			} else {
+				adminCategories = kbCategoryLogic.getAdminCategoriesWithOptionalAttribute(operatorSessionBean.getDcemUser().getId(), null);
+			}
+		} catch (Exception e) {
+			logger.error("Could not admin Categories for user : " + operatorSessionBean.getDcemUser().getDisplayName(), e);
+			JsfUtils.addWarnMessage(JsfUtils.getStringSafely(KbModule.RESOURCE_NAME, "error.global"));
+		}
 	}
 
 	@Override
@@ -231,22 +267,8 @@ public class KbQuestionDialog extends DcemDialog {
 		try {
 			List<KbTagEntity> tagList = kbTagLogic.getTagsByCategoryId(categoryId);
 			tagMapping = convertTagsToMap(tagList);
-
-			List<String> alreadyExistingCategoryTags = new ArrayList<String>();
-
-			Iterator<KbTagEntity> itr = toBeAddedTags.iterator();
-			while (itr.hasNext()) {
-				KbTagEntity addedTag = itr.next();
-				if (tagMapping.get(addedTag.getName()) != null) {
-					itr.remove();
-					alreadyExistingCategoryTags.add(addedTag.getName());
-				}
-			}
-			List<String> remainingCategoryTags = new ArrayList<String>();
-			remainingCategoryTags = convertTagsToStrings(tagList);
-			remainingCategoryTags.removeAll(alreadyExistingCategoryTags);
-			tagDualList = new DualListModel<String>(remainingCategoryTags, alreadyExistingCategoryTags);
-
+			tagDualList = new DualListModel<String>(convertTagsToStrings(tagList), new ArrayList<String>());
+			categoryAdmin = adminCategories.stream().anyMatch(category -> category.getId().equals(categoryId));
 		} catch (Exception e) {
 			logger.error("Could not get Tags from Category: " + categoryId, e);
 			JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "error.global");
@@ -255,7 +277,7 @@ public class KbQuestionDialog extends DcemDialog {
 
 	public void actionNewTag() {
 		toBeAddedTag.setName(toBeAddedTag.getName().trim());
-		if (toBeAddedTag.getName() != null && newTagAlreadyExists(toBeAddedTags, toBeAddedTag) == false && toBeAddedTag.getName().isEmpty() == false) {
+		if (toBeAddedTag.getName() != null && toBeAddedTag.getName().isEmpty() == false && newTagAlreadyExists(toBeAddedTags, toBeAddedTag) == false) {
 			toBeAddedTags.add(toBeAddedTag);
 		}
 		toBeAddedTag = new KbTagEntity();
@@ -268,6 +290,10 @@ public class KbQuestionDialog extends DcemDialog {
 			}
 		}
 		return false;
+	}
+
+	public void removeToBeAddedTag(KbTagEntity removeTag) {
+		toBeAddedTags.removeIf(tag -> tag.getName().equals(removeTag.getName()));
 	}
 
 	private List<String> convertTagsToStrings(List<KbTagEntity> tagList) {
@@ -304,6 +330,9 @@ public class KbQuestionDialog extends DcemDialog {
 		tagMapping = null;
 		categoriesSelectOne = null;
 		editMode = false;
+		toBeAddedTags = null;
+		toBeAddedTag = null;
+		adminCategories = null;
 	}
 
 	public int getCategoryId() {
@@ -391,4 +420,11 @@ public class KbQuestionDialog extends DcemDialog {
 		this.toBeAddedTag = toBeAddedTag;
 	}
 
+	public boolean isCategoryAdmin() {
+		return categoryAdmin;
+	}
+
+	public void setCategoryAdmin(boolean categoryAdmin) {
+		this.categoryAdmin = categoryAdmin;
+	}
 }

@@ -46,15 +46,13 @@ import com.doubleclue.dcem.knowledgeboard.logic.KbUtils;
 
 @NamedEntityGraphs({
 		@NamedEntityGraph(name = KbQuestionEntity.GRAPH_QUESTION_TAGS_AND_CONTENT, attributeNodes = { @NamedAttributeNode(value = "questionContent"),
-				@NamedAttributeNode(value = "category"), @NamedAttributeNode(value = "tags"), @NamedAttributeNode(value = "author", subgraph = "subgraph.author"),}, subgraphs = {
-						@NamedSubgraph(name = "subgraph.author", attributeNodes = {
-								@NamedAttributeNode(value = "dcemUserExt"), }) 
-						}),
+				@NamedAttributeNode(value = "category"), @NamedAttributeNode(value = "tags"),
+				@NamedAttributeNode(value = "author", subgraph = "subgraph.author"), }, subgraphs = {
+						@NamedSubgraph(name = "subgraph.author", attributeNodes = { @NamedAttributeNode(value = "dcemUserExt"), }) }),
 		@NamedEntityGraph(name = KbQuestionEntity.GRAPH_QUESTION_TAGS, attributeNodes = { @NamedAttributeNode(value = "tags"),
 				@NamedAttributeNode(value = "category"), }),
 		@NamedEntityGraph(name = KbQuestionEntity.GRAPH_QUESTION_REPLIES, attributeNodes = { @NamedAttributeNode(value = "replies"),
-				@NamedAttributeNode(value = "category"), }),
-})
+				@NamedAttributeNode(value = "category"), }), })
 
 @NamedQueries({
 		@NamedQuery(name = KbQuestionEntity.FIND_QUESTIONS_BY_IDS, query = "SELECT DISTINCT question FROM KbQuestionEntity question WHERE question.id in ?1 ORDER BY question.creationDate DESC"),
