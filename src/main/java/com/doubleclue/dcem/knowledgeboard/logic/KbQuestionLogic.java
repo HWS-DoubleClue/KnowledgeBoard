@@ -41,10 +41,13 @@ public class KbQuestionLogic {
 	@Inject
 	KbUserLogic kbUserLogic;
 
+	@Inject
+	KbTagLogic kbTagLogic;
+
 	public KbQuestionEntity getQuestionById(int id) throws Exception {
 		return em.find(KbQuestionEntity.class, id);
 	}
-	
+
 	public void detachEntity(EntityInterface entity) {
 		em.detach(entity);
 	}
@@ -58,6 +61,18 @@ public class KbQuestionLogic {
 			questionEntity = em.merge(questionEntity);
 		}
 		return questionEntity;
+	}
+
+	@DcemTransactional
+	public KbQuestionEntity addOrUpdateQuestionWithNewTags(KbQuestionEntity questionEntity, List<KbTagEntity> toBeAddedTags, DcemAction dcemAction) {
+		if (toBeAddedTags != null) {
+			for (KbTagEntity newTag : toBeAddedTags) {
+				newTag.setCategory(questionEntity.getCategory());
+				kbTagLogic.addOrUpdateTag(newTag, dcemAction);
+			}
+			questionEntity.getTags().addAll(toBeAddedTags);
+		}
+		return addOrUpdateQuestion(questionEntity, dcemAction);
 	}
 
 	public List<KbQuestionEntity> getAllQuestionsContainingOneOfTags(List<KbTagEntity> tags) throws Exception {

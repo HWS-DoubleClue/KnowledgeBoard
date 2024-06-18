@@ -9,7 +9,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
-import com.doubleclue.dcem.core.DcemConstants;
 import com.doubleclue.dcem.core.entities.DcemAction;
 import com.doubleclue.dcem.core.jpa.DcemTransactional;
 import com.doubleclue.dcem.core.logic.AuditingLogic;
@@ -42,9 +41,9 @@ public class KbTagLogic {
 	@DcemTransactional
 	public void addOrUpdateTag(KbTagEntity tagEntity, DcemAction dcemAction) {
 		auditingLogic.addAudit(dcemAction, tagEntity);
-		if (dcemAction.getAction().equals(DcemConstants.ACTION_ADD)) {
+		if (tagEntity.getId() == null) {
 			em.persist(tagEntity);
-		} else if (dcemAction.getAction().equals(DcemConstants.ACTION_EDIT) || dcemAction.getAction().equals(KbConstants.KB_SHOW_TAG_FOLLOWER)) {
+		} else {
 			em.merge(tagEntity);
 		}
 	}
@@ -70,7 +69,7 @@ public class KbTagLogic {
 		auditingLogic.addAudit(dcemAction, auditInformation.toString());
 	}
 
-	public List<KbTagEntity> getTagsByCategoryId(int categoryId) throws Exception { 
+	public List<KbTagEntity> getTagsByCategoryId(int categoryId) throws Exception {
 		TypedQuery<KbTagEntity> query = em.createNamedQuery(KbTagEntity.FIND_TAGS_BY_CATEGORY_ID, KbTagEntity.class);
 		query.setParameter(1, categoryId);
 		return query.getResultList();

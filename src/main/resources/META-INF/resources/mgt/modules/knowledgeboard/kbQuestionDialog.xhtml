@@ -2,21 +2,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml" 
-	xmlns:h="http://java.sun.com/jsf/html" 
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:ui="http://java.sun.com/jsf/facelets" 
-	xmlns:p="http://primefaces.org/ui" 
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 <ui:include src="/mgt/modules/dialogHead.xhtml" />
 
 <f:view locale="#{operatorSession.locale}">
 
 	<h:body class="dialogBody">
-		<span id="customheader"> 
-			<h:outputLabel class="far fa-question-circle dialogTitle"/>
-			<h:outputLabel value="#{viewNavigator.dialogTitle}" styleClass="dialogTitle"/>
+		<span id="customheader"> <h:outputLabel class="far fa-question-circle dialogTitle" /> <h:outputLabel value="#{viewNavigator.dialogTitle}"
+				styleClass="dialogTitle" />
 		</span>
 
 		<p:messages showSummary="true" showDetail="false" closable="true">
@@ -30,7 +25,7 @@
 					<p:selectOneMenu id="category" value="#{kbQuestionDialog.categoryId}" required="true" filter="true" disabled="#{kbQuestionDialog.editMode == true}"
 						styleClass="#{kbQuestionDialog.editMode == true ? 'selectOneChangeDisabled' : ''}" filterNormalize="true">
 						<f:selectItems value="#{kbQuestionDialog.categoriesSelectOne}" />
-						<p:ajax listener="#{kbQuestionDialog.actionUpdateTags}" update="updatePickList listSelectedTags" resetValues="true" />
+						<p:ajax listener="#{kbQuestionDialog.actionUpdateTags}" update="updatePickList listSelectedTags new-tags overlayForm:new-tag-overlay-panel" resetValues="true" />
 					</p:selectOneMenu>
 				</h:panelGrid>
 
@@ -51,30 +46,51 @@
 			</h:panelGrid>
 
 			<br />
-			<p:textEditor id="question" value="#{kbQuestionDialog.questionBody.content}" placeholder="#{KbMsg['question.dialog.enterYourText']}"
-				required="true" requiredMessage="#{KbMsg['question.dialog.requiredQuestionBody']}" />
+			<p:textEditor id="question" value="#{kbQuestionDialog.questionBody.content}" placeholder="#{KbMsg['question.dialog.enterYourText']}" required="true"
+				requiredMessage="#{KbMsg['question.dialog.requiredQuestionBody']}" />
 			<br />
 
-			<h:panelGroup id="updatePickList">
-				<p:commandButton id="displayTags" value="#{KbMsg['question.dialog.selectTags']}" type="button" style="margin-left: 1.5em; height: 2em;" icon="fas fa-tags" />
-				<p:overlayPanel for="displayTags">
-					<p:pickList id="tagPickList" value="#{kbQuestionDialog.tagDualList}" var="tag" itemLabel="#{tag}" itemValue="#{tag}" transferOnCheckboxClick="true"
-						showCheckbox="true" showSourceFilter="true" showTargetFilter="true" responsive="true" filterMatchMode="contains">
-						<p:ajax event="transfer" update="listSelectedTags" />
-						<f:facet name="sourceCaption">#{KbMsg['question.dialog.availableTags']}</f:facet>
-						<f:facet name="targetCaption">#{KbMsg['question.dialog.selectedTags']}</f:facet>
-					</p:pickList>
-				</p:overlayPanel>
-			</h:panelGroup>
+			<div class="ui-g">
+				<div class="ui-g-6">
+					<h:panelGroup id="updatePickList">
+						<p:commandButton id="displayTags" value="#{KbMsg['question.dialog.selectTags']}" type="button" style="margin-left: 0.2em; height: 2em;" icon="fas fa-tags" />
+						<p:overlayPanel for="displayTags">
+							<p:pickList id="tagPickList" value="#{kbQuestionDialog.tagDualList}" var="tag" itemLabel="#{tag}" itemValue="#{tag}" transferOnCheckboxClick="true"
+								showCheckbox="true" showSourceFilter="true" showTargetFilter="true" responsive="true" filterMatchMode="contains">
+								<p:ajax event="transfer" update="listSelectedTags listNewTags" />
+								<f:facet name="sourceCaption">#{KbMsg['question.dialog.availableTags']}</f:facet>
+								<f:facet name="targetCaption">#{KbMsg['question.dialog.selectedTags']}</f:facet>
+							</p:pickList>
+						</p:overlayPanel>
+					</h:panelGroup>
 
-			<p:spacer width="20" />
+					<p:spacer width="15" />
 
-			<h:panelGroup id="listSelectedTags">
-				<ui:repeat value="#{kbQuestionDialog.selectedTags}" var="tag">
-					<p:button value="#{tag}" disabled="true" style="opacity: 1 !important;"/>
-					<p:spacer width="5" height="30" />
-				</ui:repeat>
-			</h:panelGroup>
+					<h:panelGroup id="listSelectedTags">
+						<ui:repeat value="#{kbQuestionDialog.selectedTags}" var="tag">
+							<div class="q-tag">#{tag}</div>
+						</ui:repeat>
+					</h:panelGroup>
+				</div>
+				<div class="ui-g-6">
+					<h:panelGroup id="new-tags" >
+						<p:commandButton id="addNewTag" type="button" value="#{KbMsg['question.dialog.addNewTag']}" style="margin-left: 0.2em; height: 2em;"
+							icon="fa fa-solid fa-plus" disabled="#{kbQuestionDialog.categoryAdmin == false}" />
+						<p:spacer width="15" />
+						<h:panelGroup id="listNewTags" rendered="#{kbQuestionDialog.categoryAdmin}" >
+							<ui:repeat value="#{kbQuestionDialog.toBeAddedTags}" var="newTag">
+								<div class="q-tag">
+									#{newTag}
+									<p:commandLink id="removeTag" style="margin-left: 1em" immediate="true" action="#{kbQuestionDialog.removeToBeAddedTag(newTag)}"
+										update="questionForm:new-tags">
+										<i class="fa fa-regular fa-circle-xmark"></i>
+									</p:commandLink>
+								</div>
+							</ui:repeat>
+						</h:panelGroup>
+					</h:panelGroup>
+				</div>
+			</div>
 
 			<div style="position: fixed; bottom: 1em; width: 100%;">
 				<p:commandButton id="ok" style="width: 8em" icon="fa fa-check" value="#{CoreMsg['ok']}" action="#{autoDialog.actionOk}" />
@@ -84,6 +100,28 @@
 					action="#{viewNavigator.actionCloseDialog}" />
 			</div>
 		</h:form>
+
+		<h:form id="overlayForm">
+			<p:overlayPanel id="new-tag-overlay-panel" for="questionForm:addNewTag" showCloseIcon="true" widgetVar="overlayTagPanelVar">
+				<h:panelGrid id="addNewTagGrid" columns="2" cellpadding="2" cellspacing="2">
+
+					<p:outputLabel for="tagname" value="#{KbMsg['tag.dialog.tagname']}" />
+					<p:inputText id="tagname" value="#{kbQuestionDialog.toBeAddedTag.name}" required="true" maxlength="63" style="width: 18em;">
+					</p:inputText>
+					<p:outputLabel for="desc" value="#{KbMsg['KbTag.description']}" />
+					<p:inputTextarea id="desc" value="#{kbQuestionDialog.toBeAddedTag.description}" rows="4" required="false" maxlength="111" style="width: 18em; "
+						autoResize="false">
+					</p:inputTextarea>
+				</h:panelGrid>
+				<p:commandButton id="okNewTag" style="width: 8em" icon="fa fa-check" value="#{CoreMsg['ok']}" action="#{kbQuestionDialog.actionNewTag()}"
+					update="questionForm:listNewTags addNewTagGrid" process="@form">
+				</p:commandButton>
+				<p:spacer width="20" />
+
+			</p:overlayPanel>
+		</h:form>
+
+
 	</h:body>
 </f:view>
 </html>
