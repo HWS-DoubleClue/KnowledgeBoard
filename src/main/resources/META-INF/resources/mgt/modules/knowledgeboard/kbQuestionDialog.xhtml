@@ -82,7 +82,7 @@
 								<div class="q-tag">
 									#{newTag}
 									<p:commandLink id="removeTag" style="margin-left: 1em" immediate="true" action="#{kbQuestionDialog.removeToBeAddedTag(newTag)}"
-										update="questionForm:new-tags">
+										update="questionForm:new-tags overlayForm:new-tag-overlay-panel">
 										<i class="fa fa-regular fa-circle-xmark"></i>
 									</p:commandLink>
 								</div>
