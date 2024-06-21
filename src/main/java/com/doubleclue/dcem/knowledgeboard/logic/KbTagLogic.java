@@ -1,5 +1,6 @@
 package com.doubleclue.dcem.knowledgeboard.logic;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -30,6 +31,9 @@ public class KbTagLogic {
 
 	@Inject
 	KbQuestionLogic kbQuestionLogic;
+
+	@Inject
+	KbCategoryLogic kbCategoryLogic;
 
 	@Inject
 	KbUserLogic kbUserLogic;
@@ -69,9 +73,49 @@ public class KbTagLogic {
 		auditingLogic.addAudit(dcemAction, auditInformation.toString());
 	}
 
+	@DcemTransactional
+	public void mergeTags(DcemAction dcemAction, KbTagEntity mainTag, KbTagEntity mergingTag) throws Exception {
+		List<KbTagEntity> mergingTagList = new ArrayList<KbTagEntity>();
+		mergingTagList.add(mergingTag);
+		replaceTagInQuestions(mainTag, mergingTag);
+		replaceFollowerOfTag(mainTag, mergingTag);
+		removeTags(mergingTagList, dcemAction);
+		auditingLogic.addAudit(dcemAction, String.format("'%s' -> '%s'", mergingTag.getName(), mainTag.getName()));
+	}
+
+	private void replaceTagInQuestions(KbTagEntity mainTag, KbTagEntity mergingTag) throws Exception {
+		List<KbTagEntity> tagList = new ArrayList<KbTagEntity>();
+		tagList.add(mergingTag);
+		List<KbQuestionEntity> questions = kbQuestionLogic.getAllQuestionsContainingOneOfTags(tagList);
+		for (KbQuestionEntity question : questions) {
+			question.getTags().remove(mergingTag);
+			if (!question.getTags().contains(mainTag)) {
+				question.getTags().add(mainTag);
+			}
+		}
+	}
+
+	private void replaceFollowerOfTag(KbTagEntity mainTag, KbTagEntity mergingTag) throws Exception {
+		List<KbUserCategoryEntity> followers = kbUserLogic.getFollowerOfTag(mergingTag);
+		for (KbUserCategoryEntity follower : followers) {
+			follower.getFollowedTags().remove(mergingTag);
+			if (!follower.getFollowedTags().contains(mainTag)) {
+				follower.getFollowedTags().add(mainTag);
+			}
+		}
+	}
+
 	public List<KbTagEntity> getTagsByCategoryId(int categoryId) throws Exception {
 		TypedQuery<KbTagEntity> query = em.createNamedQuery(KbTagEntity.FIND_TAGS_BY_CATEGORY_ID, KbTagEntity.class);
 		query.setParameter(1, categoryId);
+		return query.getResultList();
+	}
+
+	public List<KbTagEntity> getTagsByNameAndCategoryId(String tagName, Integer categoryId, int max) throws Exception {
+		TypedQuery<KbTagEntity> query = em.createNamedQuery(KbTagEntity.FIND_TAGS_BY_NAME_AND_CATEGORY_ID, KbTagEntity.class);
+		query.setParameter(1, "%" + tagName.toLowerCase().trim() + "%");
+		query.setParameter(2, categoryId);
+		query.setMaxResults(max);
 		return query.getResultList();
 	}
 

@@ -18,6 +18,7 @@ public class KbConstants {
 	public static final String KB_NOTIFICATION_DIALOG = "/modules/knowledgeboard/kbNotificationDialog.xhtml";
 	public static final String KB_DASHBOARD_VIEW = "/modules/knowledgeboard/kbDashboard.xhtml";
 	public static final String KB_REPLY_DIALOG = "/modules/knowledgeboard/kbReplyDialog.xhtml";
+	public static final String KB_TAGS_MERGE_DIALOG = "/modules/knowledgeboard/kbTagMergeDialog.xhtml";
 
 	// Template and Text Resource Names
 	public static final String KB_EMAIL_REPLY_TEMPLATE = "kb.newReply.Notification";
@@ -41,6 +42,7 @@ public class KbConstants {
 	public static final String KB_ADD_REPLY = "addReply";
 	public static final String KB_EDIT_REPLY = "editReply";
 	public static final String KB_EDIT_QUESTION = "editQuestion";
+	public static final String KB_MERGE_TAGS = "mergeTags";
 
 	// EL-Method Names
 	public static final String KB_EL_METHOD_QUESTIONVIEW_GOTO_REPLYVIEW = "#{kbQuestionView.openQuestionDetails()}";
