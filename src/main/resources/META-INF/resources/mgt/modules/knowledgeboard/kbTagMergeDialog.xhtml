@@ -19,34 +19,37 @@
 		<h:form id="form" style="padding-bottom: 20px">
 			<h:panelGrid columns="2" cellpadding="10" cellspacing="4">
 				<h:outputText class="fa fa-exclamation-triangle" style=" font-size: 1.8em; padding-right: 10px; color: #005078" />
-				<h:outputText value="tag merge info" />
+				<h:outputText value="#{KbMsg['kbTagMergeDialog.mergeInfo']}" />
 			</h:panelGrid>
 			<p />
 			
-			<p:selectOneMenu id="category" value="#{tagMergeDialog.categoryId}" required="true" filter="true" filterNormalize="true">
-						<f:selectItems value="#{tagMergeDialog.categoriesSelectOne}" />
-						<p:ajax update="merging-tag-search main-skill-search" resetValues="true" />
-					</p:selectOneMenu>
+			<h:panelGrid columns="2" cellpadding="14" cellspacing="4">
+				<p:outputLabel for="@next" value="#{KbMsg['category']}" />
+				<p:selectOneMenu id="category" value="#{tagMergeDialog.categoryId}" required="true" filter="true" filterNormalize="true">
+					<f:selectItems value="#{tagMergeDialog.categoriesSelectOne}" />
+					<p:ajax update="merging-tag-search main-skill-search" resetValues="true" />
+				</p:selectOneMenu>
+			</h:panelGrid>
 
 			<h:panelGrid columns="3" cellpadding="10" cellspacing="4">
 				<h:panelGrid columns="2" cellpadding="4" cellspacing="4">
-					<p:outputLabel for="@next" value="merging tag" />
+					<p:outputLabel for="@next" value="#{KbMsg['kbTagMergeDialog.sourceTag']}" />
 					<p:autoComplete id="merging-tag-search" required="true" forceSelection="true" dropdown="true" value="#{tagMergeDialog.nameOfMergingTag}"
-						completeMethod="#{tagMergeDialog.actionCompleteTag}" effect="fade" size="30" queryDelay="500" emptyMessage="not found" />
+						completeMethod="#{tagMergeDialog.actionCompleteTag}" effect="fade" size="30" queryDelay="500" emptyMessage="#{KbMsg['error.noItemsFound']}" />
 				</h:panelGrid>
 
 				<h:outputText class="fa-solid fa-arrow-right" style="vertical-align: middle; font-size: 1.8em; padding-right: 6px; color: #005078" />
 
 				<h:panelGrid columns="2" cellpadding="4" cellspacing="4">
-					<p:outputLabel for="@next" value="main tag" />
+					<p:outputLabel for="@next" value="#{KbMsg['kbTagMergeDialog.targetTag']}" />
 					<p:autoComplete id="main-skill-search" required="true" forceSelection="true" dropdown="true" value="#{tagMergeDialog.nameOfMainTag}"
-						completeMethod="#{tagMergeDialog.actionCompleteTag}" effect="fade" size="30" queryDelay="500" emptyMessage="not found" />
+						completeMethod="#{tagMergeDialog.actionCompleteTag}" effect="fade" size="30" queryDelay="500" emptyMessage="#{KbMsg['error.noItemsFound']}" />
 				</h:panelGrid>
 			</h:panelGrid>
-
+			
 			<p></p>
 			<p></p>
-			<p:commandButton value="merge tags" style="margin:0.5rem 1rem;min-width: 8em" icon="fa fa-solid fa-arrow-right-to-bracket"
+			<p:commandButton value="#{KbMsg['kbTagMergeDialog.merge']}" style="margin:0.5rem 1rem;min-width: 8em" icon="fa fa-solid fa-arrow-right-to-bracket"
 				ajax="true" action="#{autoDialog.actionOk}" />
 			<p:commandButton id="closeDialog" value="#{CoreMsg['cancel']}" icon="fa fa-close" style="width: 8em" immediate="true"
 				action="#{viewNavigator.actionCloseDialog}" />

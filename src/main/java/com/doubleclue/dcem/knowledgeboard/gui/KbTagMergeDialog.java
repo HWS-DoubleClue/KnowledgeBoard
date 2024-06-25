@@ -2,6 +2,7 @@ package com.doubleclue.dcem.knowledgeboard.gui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
@@ -30,7 +31,7 @@ import com.doubleclue.dcem.knowledgeboard.logic.KbTagLogic;
 public class KbTagMergeDialog extends DcemDialog {
 
 	private static final long serialVersionUID = 1L;
-	// private ResourceBundle resourceBundle;
+	private ResourceBundle resourceBundle;
 
 	private Logger Logger = LogManager.getLogger(KbTagMergeDialog.class);
 
@@ -56,6 +57,7 @@ public class KbTagMergeDialog extends DcemDialog {
 
 	@PostConstruct
 	public void init() {
+		resourceBundle = JsfUtils.getBundle(KbModule.RESOURCE_NAME, operatorSessionBean.getLocale());
 	}
 
 	@Override
@@ -64,11 +66,11 @@ public class KbTagMergeDialog extends DcemDialog {
 		KbTagEntity mergingTag = kbTagLogic.getTagByNameAndCategoryId(nameOfMergingTag, categoryId);
 
 		if (mainTag == null || mergingTag == null) {
-			JsfUtils.addErrorMessage("nothing selected");
+			JsfUtils.addErrorMessage(resourceBundle, "kbTagMergeDialog.invalid.tagsNotSelected");
 			return false;
 		}
 		if (mergingTag.equals(mainTag)) {
-			JsfUtils.addErrorMessage("same tag");
+			JsfUtils.addErrorMessage(resourceBundle, "kbTagMergeDialog.invalid.mergeTagEqualsMainTag");
 			return false;
 		}
 		kbTagLogic.mergeTags(getAutoViewAction().getDcemAction(), mainTag, mergingTag);
@@ -97,19 +99,6 @@ public class KbTagMergeDialog extends DcemDialog {
 		}
 	}
 
-	// @Override
-	// public void actionConfirm() throws Exception {
-	// }
-
-	// public void actionUpdateTags() {
-	// try {
-	// kbTagLogic.getTagsByCategoryId(categoryId);
-	// } catch (Exception e) {
-	// logger.error("Could not get Tags from Category: " + categoryId, e);
-	// JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "error.global");
-	// }
-	// }
-
 	public List<String> actionCompleteTag(String name) {
 		List<String> filteredTagsAsString = new ArrayList<String>();
 		try {
@@ -119,7 +108,6 @@ public class KbTagMergeDialog extends DcemDialog {
 			}
 		} catch (Exception e) {
 			Logger.error("Could not create filtered tag list by search string: " + name, e);
-			// JsfUtils.addErrorMessage(JsfUtils.getStringSafely(resourceBundle, "error.global"));
 			JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "error.global");
 		}
 		return filteredTagsAsString;
@@ -133,7 +121,7 @@ public class KbTagMergeDialog extends DcemDialog {
 	}
 
 	public String getHeight() {
-		return "25em";
+		return "30em";
 	}
 
 	public int getCategoryId() {
