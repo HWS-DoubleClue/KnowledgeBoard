@@ -145,16 +145,16 @@ public class KbUserLogic {
 		em.persist(kbUserCategoryEntity);
 	}
 
+	@DcemTransactional
 	public KbUserCategoryEntity updateUserCategory(KbUserCategoryEntity kbUserCategoryEntity, DcemAction dcemAction) {
 		return updateUserCategory(kbUserCategoryEntity, dcemAction, true);
 	}
 	
-	
 	@DcemTransactional
 	public KbUserCategoryEntity updateUserCategory(KbUserCategoryEntity kbUserCategoryEntity, DcemAction dcemAction, boolean withAuditing) {
-		KbUserCategoryEntity oldEntity = getKbUserCategory(kbUserCategoryEntity.getKbUser().getId(), kbUserCategoryEntity.getCategory().getId());
 		if (withAuditing) {
 			try {
+				KbUserCategoryEntity oldEntity = getKbUserCategory(kbUserCategoryEntity.getKbUser().getId(), kbUserCategoryEntity.getCategory().getId());
 				String changes = CompareUtils.compareObjects(oldEntity, kbUserCategoryEntity);
 				auditingLogic.addAudit(dcemAction, changes);
 			} catch (CompareException e) {
