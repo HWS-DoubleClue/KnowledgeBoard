@@ -54,7 +54,7 @@ public class KbCategoryLogic implements Serializable {
 		auditingLogic.addAudit(dcemAction, auditInformation.toString());
 	}
 
-	public List<KbCategoryEntity> getAllCategoriesWithOptionalAttribute(String graphName) throws Exception {
+	public List<KbCategoryEntity> getAllCategoriesWithLazyAttribute(String graphName) throws Exception {
 		TypedQuery<KbCategoryEntity> query = em.createNamedQuery(KbCategoryEntity.FIND_ALL_CATEGORIES, KbCategoryEntity.class);
 		if (graphName != null) {
 			query.setHint("javax.persistence.fetchgraph", em.getEntityGraph(graphName));
@@ -62,7 +62,7 @@ public class KbCategoryLogic implements Serializable {
 		return query.getResultList();
 	}
 
-	public List<KbCategoryEntity> getAdminCategoriesWithOptionalAttribute(Integer userId, String graphName) throws Exception {
+	public List<KbCategoryEntity> getAdminCategoriesWithLazyAttribute(Integer userId, String graphName) throws Exception {
 		TypedQuery<KbCategoryEntity> query = em.createNamedQuery(KbCategoryEntity.FIND_ADMIN_CATEGORIES_OF_USER, KbCategoryEntity.class);
 		if (graphName != null) {
 			query.setHint("javax.persistence.fetchgraph", em.getEntityGraph(graphName));
@@ -70,7 +70,7 @@ public class KbCategoryLogic implements Serializable {
 		return query.setParameter(1, userId).getResultList();
 	}
 
-	public List<KbCategoryEntity> getAccessibleCategoriesWithOptionalAttribute(Integer userId, String graphName) throws Exception {
+	public List<KbCategoryEntity> getAccessibleCategoriesWithLazyAttribute(Integer userId, String graphName) throws Exception {
 		TypedQuery<KbCategoryEntity> query = em.createNamedQuery(KbCategoryEntity.FIND_ACCESSIBLE_CATEGORIES_OF_USER, KbCategoryEntity.class);
 		if (graphName != null) {
 			query.setHint("javax.persistence.fetchgraph", em.getEntityGraph(graphName));

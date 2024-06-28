@@ -32,6 +32,9 @@ public class KbTagLogic {
 	KbQuestionLogic kbQuestionLogic;
 
 	@Inject
+	KbCategoryLogic kbCategoryLogic;
+
+	@Inject
 	KbUserLogic kbUserLogic;
 
 	public KbTagEntity getTagById(Integer tagId) throws Exception {
@@ -69,9 +72,46 @@ public class KbTagLogic {
 		auditingLogic.addAudit(dcemAction, auditInformation.toString());
 	}
 
+	@DcemTransactional
+	public void mergeTags(DcemAction dcemAction, KbTagEntity mainTag, KbTagEntity mergingTag) throws Exception {
+		replaceTagInQuestions(mainTag, mergingTag);
+		replaceFollowerOfTag(mainTag, mergingTag);
+		em.remove(mergingTag);
+		auditingLogic.addAudit(dcemAction, String.format("'%s' -> '%s'", mergingTag.getName() + " (" + mergingTag.getCategory().getName() + ")",
+				mainTag.getName() + " (" + mainTag.getCategory().getName() + ")"));
+	}
+
+	private void replaceTagInQuestions(KbTagEntity mainTag, KbTagEntity mergingTag) throws Exception {
+		List<KbQuestionEntity> questions = kbQuestionLogic.getAllQuestionsContainingTag(mergingTag);
+		for (KbQuestionEntity question : questions) {
+			question.getTags().remove(mergingTag);
+			if (question.getTags().contains(mainTag) == false) {
+				question.getTags().add(mainTag);
+			}
+		}
+	}
+
+	private void replaceFollowerOfTag(KbTagEntity mainTag, KbTagEntity mergingTag) throws Exception {
+		List<KbUserCategoryEntity> followers = kbUserLogic.getFollowerOfTag(mergingTag);
+		for (KbUserCategoryEntity follower : followers) {
+			follower.getFollowedTags().remove(mergingTag);
+			if (follower.getFollowedTags().contains(mainTag) == false) {
+				follower.getFollowedTags().add(mainTag);
+			}
+		}
+	}
+
 	public List<KbTagEntity> getTagsByCategoryId(int categoryId) throws Exception {
 		TypedQuery<KbTagEntity> query = em.createNamedQuery(KbTagEntity.FIND_TAGS_BY_CATEGORY_ID, KbTagEntity.class);
 		query.setParameter(1, categoryId);
+		return query.getResultList();
+	}
+
+	public List<KbTagEntity> getTagsByNameAndCategoryId(String tagName, Integer categoryId, int max) throws Exception {
+		TypedQuery<KbTagEntity> query = em.createNamedQuery(KbTagEntity.FIND_TAGS_BY_NAME_AND_CATEGORY_ID, KbTagEntity.class);
+		query.setParameter(1, "%" + tagName.toLowerCase().trim() + "%");
+		query.setParameter(2, categoryId);
+		query.setMaxResults(max);
 		return query.getResultList();
 	}
 
