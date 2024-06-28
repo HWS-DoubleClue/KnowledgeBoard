@@ -23,6 +23,7 @@ import com.doubleclue.dcem.knowledgeboard.entities.KbCategoryEntity;
 import com.doubleclue.dcem.knowledgeboard.entities.KbTagEntity;
 import com.doubleclue.dcem.knowledgeboard.entities.KbUserCategoryEntity;
 import com.doubleclue.dcem.knowledgeboard.logic.KbCategoryLogic;
+import com.doubleclue.dcem.knowledgeboard.logic.KbConstants;
 import com.doubleclue.dcem.knowledgeboard.logic.KbModule;
 import com.doubleclue.dcem.knowledgeboard.logic.KbTagLogic;
 import com.doubleclue.dcem.knowledgeboard.logic.KbUserLogic;
@@ -66,8 +67,12 @@ public class KbTagDialog extends DcemDialog {
 	@Override
 	public boolean actionOk() throws Exception {
 		tagEntity.setName(tagEntity.getName().trim());        
-		if (tagEntity.getName().length() < 2) {
-			JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "question.dialog.invalid.title");
+		if (tagEntity.getName().isEmpty()) {
+			JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "tag.dialog.invalid.name");
+			return false;
+		}
+		if (KbUtils.isValidName(tagEntity.getName()) == false) {
+			JsfUtils.addErrorMessage(JsfUtils.getStringSafely(KbModule.RESOURCE_NAME, "kb.invalidCharacters") + ": " + KbConstants.SPECIAL_CHARACTERS);
 			return false;
 		}
 		if (editMode == false) {

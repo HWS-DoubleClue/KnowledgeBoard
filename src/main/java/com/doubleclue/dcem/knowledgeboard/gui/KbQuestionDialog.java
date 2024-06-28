@@ -127,7 +127,10 @@ public class KbQuestionDialog extends DcemDialog {
 		questionEntity.setLastModifiedBy(operatorSessionBean.getDcemUser());
 		List<KbTagEntity> selectedTags = new ArrayList<KbTagEntity>();
 		for (String tagName : tagDualList.getTarget()) {
-			selectedTags.add(tagMapping.get(tagName));
+			KbTagEntity selectedTag = tagMapping.get(tagName);
+			if (selectedTag != null) {
+				selectedTags.add(tagMapping.get(tagName));
+			}
 		}
 		questionEntity.setTags(selectedTags);
 
@@ -140,7 +143,7 @@ public class KbQuestionDialog extends DcemDialog {
 
 			KbUserCategoryEntity operatorUserCategory = kbUserLogic.getOrCreateKbUserCategory(operatorSessionBean.getDcemUser(), questionEntity.getCategory());
 			operatorUserCategory.getFollowedQuestions().add(questionEntity);
-			kbUserLogic.updateUserCategory(operatorUserCategory, this.getAutoViewAction().getDcemAction());
+			kbUserLogic.updateUserCategory(operatorUserCategory, this.getAutoViewAction().getDcemAction(), false);
 
 			if (viewNavigator.getActiveView().equals(dashboardView)) {
 				dashboardView.getCategoryMap().put(operatorUserCategory.getCategory(), operatorUserCategory);
@@ -276,13 +279,23 @@ public class KbQuestionDialog extends DcemDialog {
 
 	public void actionNewTag() {
 		toBeAddedTag.setName(toBeAddedTag.getName().trim());
-		if (toBeAddedTag.getName() != null && toBeAddedTag.getName().isEmpty() == false && newTagAlreadyExists(toBeAddedTags, toBeAddedTag) == false) {
-			toBeAddedTags.add(toBeAddedTag);
+		if (toBeAddedTag.getName().isEmpty()) {
+			JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "tag.dialog.invalid.name"); 
+			return;
 		}
-		toBeAddedTag = new KbTagEntity();
+		if (KbUtils.isValidName(toBeAddedTag.getName()) == false) {
+			JsfUtils.addErrorMessage(JsfUtils.getStringSafely(KbModule.RESOURCE_NAME, "kb.invalidCharacters") + ": " + KbConstants.SPECIAL_CHARACTERS);
+			return;
+		}
+		if (newTagAlreadyExists(toBeAddedTags, toBeAddedTag) == false) {
+			toBeAddedTags.add(toBeAddedTag);
+			toBeAddedTag = new KbTagEntity();
+		} else {
+			JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "question.dialog.invalid.duplicatedNewTags");
+		}
 	}
 
-	public boolean newTagAlreadyExists(List<KbTagEntity> tagList, KbTagEntity tag) {
+	private boolean newTagAlreadyExists(List<KbTagEntity> tagList, KbTagEntity tag) {
 		for (KbTagEntity newTag : tagList) {
 			if (newTag.getName().toLowerCase().equals(tag.getName().toLowerCase())) {
 				return true;

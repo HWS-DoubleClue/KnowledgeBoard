@@ -143,3 +143,17 @@ body .question-panel .ui-panel-titlebar-icon, body .question-panel .ui-panel-tit
 .text-editor-read-only.ui-texteditor .ql-container.ql-snow {
 	border: none;
 }
+
+.tag-button {
+	margin-left: 0.2em;
+	margin-top: 1em;
+	height: 2em;
+	margin-bottom: 1em;
+}
+
+.tag-list {
+	margin-left: 1em;
+	margin-top: 1em;
+	max-height: 7em;
+	overflow: auto;
+}

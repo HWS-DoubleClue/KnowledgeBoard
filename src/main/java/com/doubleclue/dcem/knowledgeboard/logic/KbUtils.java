@@ -82,4 +82,16 @@ public class KbUtils {
 		}
 		return false;
 	}
+	
+	public static boolean isValidName(String name) {
+		if (name == null) {
+			return false;
+		}
+		for (int i = 0; i < name.length(); i++) {
+			if (KbConstants.SPECIAL_CHARACTERS.contains(name.subSequence(i, i + 1))) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

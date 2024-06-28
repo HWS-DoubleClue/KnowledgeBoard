@@ -69,11 +69,13 @@ public class KbTagQuestionDialog extends DcemDialog {
 			int questionId = Integer.parseInt(parts[1]);
 			KbQuestionEntity kbQuestionEntity = kbQuestionLogic.getQuestionById(questionId);
 			if (kbQuestionEntity == null) {
-				JsfUtils.addErrorMessageToComponentId(JsfUtils.getStringSafely(resourceBundle, "tag.questionDialog.invalid.questionName"), "tagQuestionDialog:addTagDialogMsg");
+				JsfUtils.addErrorMessageToComponentId(JsfUtils.getStringSafely(resourceBundle, "tag.questionDialog.invalid.questionName"),
+						"tagQuestionDialog:addTagDialogMsg");
 				return;
 			}
 			if (kbQuestionEntity.getTags().contains(kbTagEntity)) {
-				JsfUtils.addErrorMessageToComponentId(JsfUtils.getStringSafely(resourceBundle, "tag.questionDialog.invalid.duplicateTag"), "tagQuestionDialog:addTagDialogMsg");
+				JsfUtils.addErrorMessageToComponentId(JsfUtils.getStringSafely(resourceBundle, "tag.questionDialog.invalid.duplicateTag"),
+						"tagQuestionDialog:addTagDialogMsg");
 				return;
 			}
 			kbQuestionEntity.getTags().add(kbTagEntity);
@@ -135,7 +137,8 @@ public class KbTagQuestionDialog extends DcemDialog {
 			}
 		} catch (Exception e) {
 			logger.error("Could not create filtered question list by search string: " + title + " of category: " + kbTagEntity.getCategory().getName(), e);
-			JsfUtils.addErrorMessageToComponentId(JsfUtils.getStringSafely(resourceBundle, "tag.questionDialog.error.questionComplete"), "tagQuestionDialog:addTagDialogMsg");
+			JsfUtils.addErrorMessageToComponentId(JsfUtils.getStringSafely(resourceBundle, "tag.questionDialog.error.questionComplete"),
+					"tagQuestionDialog:addTagDialogMsg");
 		}
 		return filteredQuestionsAsString;
 	}

@@ -145,14 +145,21 @@ public class KbUserLogic {
 		em.persist(kbUserCategoryEntity);
 	}
 
-	@DcemTransactional
 	public KbUserCategoryEntity updateUserCategory(KbUserCategoryEntity kbUserCategoryEntity, DcemAction dcemAction) {
+		return updateUserCategory(kbUserCategoryEntity, dcemAction, true);
+	}
+	
+	
+	@DcemTransactional
+	public KbUserCategoryEntity updateUserCategory(KbUserCategoryEntity kbUserCategoryEntity, DcemAction dcemAction, boolean withAuditing) {
 		KbUserCategoryEntity oldEntity = getKbUserCategory(kbUserCategoryEntity.getKbUser().getId(), kbUserCategoryEntity.getCategory().getId());
-		try {
-			String changes = CompareUtils.compareObjects(oldEntity, kbUserCategoryEntity);
-			auditingLogic.addAudit(dcemAction, changes);
-		} catch (CompareException e) {
-			logger.warn("Could not compare UserCategory", e);
+		if (withAuditing) {
+			try {
+				String changes = CompareUtils.compareObjects(oldEntity, kbUserCategoryEntity);
+				auditingLogic.addAudit(dcemAction, changes);
+			} catch (CompareException e) {
+				logger.warn("Could not compare UserCategory", e);
+			}
 		}
 		return em.merge(kbUserCategoryEntity);
 	}
@@ -245,7 +252,6 @@ public class KbUserLogic {
 		query.setParameter(1, kbUsers);
 		return query.getResultList();
 	}
-	
 
 	@DcemTransactional
 	public void createOrUpdateUserCategories(Collection<KbUserCategoryEntity> userCategories, KbUserEntity kbUserEntity) {
@@ -289,7 +295,8 @@ public class KbUserLogic {
 	}
 
 	private List<KbUserCategoryEntity> getUserCategoriesByDcemUsersAndCategory(List<DcemUser> users, KbCategoryEntity kbCategoryEntity) throws Exception {
-		TypedQuery<KbUserCategoryEntity> query = em.createNamedQuery(KbUserCategoryEntity.FIND_ALL_USERCATEGORIES_BY_USERS_AND_CATEGORY, KbUserCategoryEntity.class);
+		TypedQuery<KbUserCategoryEntity> query = em.createNamedQuery(KbUserCategoryEntity.FIND_ALL_USERCATEGORIES_BY_USERS_AND_CATEGORY,
+				KbUserCategoryEntity.class);
 		List<Integer> userIds = users.stream().map(user -> user.getId()).collect(Collectors.toList());
 		return query.setParameter(1, userIds).setParameter(2, kbCategoryEntity.getId()).getResultList();
 	}
