@@ -49,6 +49,9 @@ public class KbTagView extends DcemView {
 	@Inject
 	private KbTagQuestionDialog kbTagQuestionDialog;
 
+	@Inject
+	private KbTagMergeDialog kbTagMergeDialog;
+
 	private boolean viewManager;
 
 	@PostConstruct
@@ -61,6 +64,7 @@ public class KbTagView extends DcemView {
 		addAutoViewAction(DcemConstants.ACTION_DELETE, resourceBundle, kbTagDialog, DcemConstants.AUTO_CONFIRM_DIALOG_PATH);
 		addAutoViewAction(KbConstants.KB_SHOW_FOLLOWER, resourceBundle, kbTagFollowerDialog, KbConstants.KB_TAG_FOLLOWER_DIALOG);
 		addAutoViewAction(KbConstants.KB_SHOW_QUESTIONS, resourceBundle, kbTagQuestionDialog, KbConstants.KB_TAG_QUESTION_DIALOG);
+		addAutoViewAction(KbConstants.KB_MERGE_TAGS, resourceBundle, kbTagMergeDialog, KbConstants.KB_TAGS_MERGE_DIALOG);
 
 		viewManager = operatorSessionBean.isPermission(new DcemAction(subject, DcemConstants.ACTION_MANAGE));
 	}

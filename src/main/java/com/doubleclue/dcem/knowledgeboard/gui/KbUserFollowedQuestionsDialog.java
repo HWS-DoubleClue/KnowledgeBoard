@@ -83,7 +83,7 @@ public class KbUserFollowedQuestionsDialog extends DcemDialog {
 	@Override
 	public void show(DcemView dcemView, AutoViewAction autoViewAction) throws Exception {
 		kbUserEntity = (KbUserEntity) this.getActionObject();
-		userCategories = kbUserLogic.getUserCategoriesByUserIdWithOptionalAttribute(kbUserEntity.getId(), KbUserCategoryEntity.GRAPH_USER_FOLLOWED_QUESTIONS);
+		userCategories = kbUserLogic.getUserCategoriesByUserIdWithLazyAttribute(kbUserEntity.getId(), KbUserCategoryEntity.GRAPH_USER_FOLLOWED_QUESTIONS);
 		followedQuestions = new ArrayList<>();
 		for (KbUserCategoryEntity userCategory : userCategories) {
 			followedQuestions.addAll(userCategory.getFollowedQuestions());

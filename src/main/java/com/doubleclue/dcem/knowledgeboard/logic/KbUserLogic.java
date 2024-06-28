@@ -145,16 +145,16 @@ public class KbUserLogic {
 		em.persist(kbUserCategoryEntity);
 	}
 
+	@DcemTransactional
 	public KbUserCategoryEntity updateUserCategory(KbUserCategoryEntity kbUserCategoryEntity, DcemAction dcemAction) {
 		return updateUserCategory(kbUserCategoryEntity, dcemAction, true);
 	}
 	
-	
 	@DcemTransactional
 	public KbUserCategoryEntity updateUserCategory(KbUserCategoryEntity kbUserCategoryEntity, DcemAction dcemAction, boolean withAuditing) {
-		KbUserCategoryEntity oldEntity = getKbUserCategory(kbUserCategoryEntity.getKbUser().getId(), kbUserCategoryEntity.getCategory().getId());
 		if (withAuditing) {
 			try {
+				KbUserCategoryEntity oldEntity = getKbUserCategory(kbUserCategoryEntity.getKbUser().getId(), kbUserCategoryEntity.getCategory().getId());
 				String changes = CompareUtils.compareObjects(oldEntity, kbUserCategoryEntity);
 				auditingLogic.addAudit(dcemAction, changes);
 			} catch (CompareException e) {
@@ -231,7 +231,7 @@ public class KbUserLogic {
 		return query.getResultList();
 	}
 
-	public List<KbUserCategoryEntity> getUserCategoriesByUserIdWithOptionalAttribute(Integer userId, String graphName) {
+	public List<KbUserCategoryEntity> getUserCategoriesByUserIdWithLazyAttribute(Integer userId, String graphName) {
 		TypedQuery<KbUserCategoryEntity> query = em.createNamedQuery(KbUserCategoryEntity.FIND_ALL_CATEGORIES_OF_MEMBER, KbUserCategoryEntity.class);
 		if (graphName != null) {
 			query.setHint("javax.persistence.fetchgraph", em.getEntityGraph(graphName));
@@ -271,7 +271,7 @@ public class KbUserLogic {
 	public void deleteUserFromKb(DcemUser dcemUser) {
 		KbUserEntity kbUser = em.find(KbUserEntity.class, dcemUser.getId());
 		if (kbUser != null) {
-			removeUserCategories(getUserCategoriesByUserIdWithOptionalAttribute(dcemUser.getId(), null), null);
+			removeUserCategories(getUserCategoriesByUserIdWithLazyAttribute(dcemUser.getId(), null), null);
 			em.remove(kbUser);
 		}
 		kbReplyLogic.removeUserFromReplies(dcemUser);

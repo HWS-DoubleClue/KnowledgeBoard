@@ -60,13 +60,13 @@ public class KbNotificationDialog extends DcemDialog {
 	public void show(DcemView dcemView, AutoViewAction autoViewAction) throws Exception {
 		categoryMemberMap = new HashMap<KbCategoryEntity, KbUserCategoryEntity>();
 		kbUserEntity = kbUserLogic.getOrCreateKbUser(operatorSessionBean.getDcemUser());
-		accessibleCategories = kbCategoryLogic.getAccessibleCategoriesWithOptionalAttribute(operatorSessionBean.getDcemUser().getId(),
+		accessibleCategories = kbCategoryLogic.getAccessibleCategoriesWithLazyAttribute(operatorSessionBean.getDcemUser().getId(),
 				KbCategoryEntity.GRAPH_CATEGORIES_TAGS);
 		for (KbCategoryEntity category : accessibleCategories) {
 			categoryMemberMap.put(category, new KbUserCategoryEntity(null, category));
 			// Null is used as an identifier if the entity has to be persisted or merged!
 		}
-		List<KbUserCategoryEntity> kbUserCategories = kbUserLogic.getUserCategoriesByUserIdWithOptionalAttribute(operatorSessionBean.getDcemUser().getId(),
+		List<KbUserCategoryEntity> kbUserCategories = kbUserLogic.getUserCategoriesByUserIdWithLazyAttribute(operatorSessionBean.getDcemUser().getId(),
 				KbUserCategoryEntity.GRAPH_USER_FOLLOWED_TAGS);
 		for (KbUserCategoryEntity kbUserCategory : kbUserCategories) {
 			categoryMemberMap.put(kbUserCategory.getCategory(), kbUserCategory);
