@@ -224,7 +224,7 @@ public class KbUserLogic {
 		return query.getResultList();
 	}
 
-	public List<KbUserCategoryEntity> getUserCategoriesByUserIdWithOptionalAttribute(Integer userId, String graphName) {
+	public List<KbUserCategoryEntity> getUserCategoriesByUserIdWithLazyAttribute(Integer userId, String graphName) {
 		TypedQuery<KbUserCategoryEntity> query = em.createNamedQuery(KbUserCategoryEntity.FIND_ALL_CATEGORIES_OF_MEMBER, KbUserCategoryEntity.class);
 		if (graphName != null) {
 			query.setHint("javax.persistence.fetchgraph", em.getEntityGraph(graphName));
@@ -265,7 +265,7 @@ public class KbUserLogic {
 	public void deleteUserFromKb(DcemUser dcemUser) {
 		KbUserEntity kbUser = em.find(KbUserEntity.class, dcemUser.getId());
 		if (kbUser != null) {
-			removeUserCategories(getUserCategoriesByUserIdWithOptionalAttribute(dcemUser.getId(), null), null);
+			removeUserCategories(getUserCategoriesByUserIdWithLazyAttribute(dcemUser.getId(), null), null);
 			em.remove(kbUser);
 		}
 		kbReplyLogic.removeUserFromReplies(dcemUser);

@@ -91,14 +91,14 @@ public class KbDashboardView extends DcemView {
 			lazyQuestions.setSearchTerm(null);
 			categoryMap = new HashMap<KbCategoryEntity, KbUserCategoryEntity>();
 			kbUserEntity = kbUserLogic.getKbUser(operatorSessionBean.getDcemUser().getId());
-			accessibleCategories = kbCategoryLogic.getAccessibleCategoriesWithOptionalAttribute(operatorSessionBean.getDcemUser().getId(), null);
+			accessibleCategories = kbCategoryLogic.getAccessibleCategoriesWithLazyAttribute(operatorSessionBean.getDcemUser().getId(), null);
 			selectedCategories = new HashSet<KbCategoryEntity>(accessibleCategories);
 			for (KbCategoryEntity category : accessibleCategories) {
 				categoryMap.put(category, new KbUserCategoryEntity(null, category));
 				// Null is used as an identifier if the entity has to be persisted or merged!
 			}
 			if (kbUserEntity != null) {
-				List<KbUserCategoryEntity> kbUserCategories = kbUserLogic.getUserCategoriesByUserIdWithOptionalAttribute(
+				List<KbUserCategoryEntity> kbUserCategories = kbUserLogic.getUserCategoriesByUserIdWithLazyAttribute(
 						operatorSessionBean.getDcemUser().getId(), KbUserCategoryEntity.GRAPH_USER_FOLLOWED_QUESTIONS);
 				for (KbUserCategoryEntity kbUserCategory : kbUserCategories) {
 					categoryMap.put(kbUserCategory.getCategory(), kbUserCategory);

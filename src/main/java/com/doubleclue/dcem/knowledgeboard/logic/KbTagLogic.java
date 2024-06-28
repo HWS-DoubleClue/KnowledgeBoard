@@ -1,6 +1,5 @@
 package com.doubleclue.dcem.knowledgeboard.logic;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -75,21 +74,18 @@ public class KbTagLogic {
 
 	@DcemTransactional
 	public void mergeTags(DcemAction dcemAction, KbTagEntity mainTag, KbTagEntity mergingTag) throws Exception {
-		List<KbTagEntity> mergingTagList = new ArrayList<KbTagEntity>();
-		mergingTagList.add(mergingTag);
 		replaceTagInQuestions(mainTag, mergingTag);
 		replaceFollowerOfTag(mainTag, mergingTag);
-		removeTags(mergingTagList, dcemAction);
-		auditingLogic.addAudit(dcemAction, String.format("'%s' -> '%s'", mergingTag.getName(), mainTag.getName()));
+		em.remove(mergingTag);
+		auditingLogic.addAudit(dcemAction, String.format("'%s' -> '%s'", mergingTag.getName() + " (" + mergingTag.getCategory().getName() + ")",
+				mainTag.getName() + " (" + mainTag.getCategory().getName() + ")"));
 	}
 
 	private void replaceTagInQuestions(KbTagEntity mainTag, KbTagEntity mergingTag) throws Exception {
-		List<KbTagEntity> tagList = new ArrayList<KbTagEntity>();
-		tagList.add(mergingTag);
-		List<KbQuestionEntity> questions = kbQuestionLogic.getAllQuestionsContainingOneOfTags(tagList);
+		List<KbQuestionEntity> questions = kbQuestionLogic.getAllQuestionsContainingTag(mergingTag);
 		for (KbQuestionEntity question : questions) {
 			question.getTags().remove(mergingTag);
-			if (!question.getTags().contains(mainTag)) {
+			if (question.getTags().contains(mainTag) == false) {
 				question.getTags().add(mainTag);
 			}
 		}
@@ -99,7 +95,7 @@ public class KbTagLogic {
 		List<KbUserCategoryEntity> followers = kbUserLogic.getFollowerOfTag(mergingTag);
 		for (KbUserCategoryEntity follower : followers) {
 			follower.getFollowedTags().remove(mergingTag);
-			if (!follower.getFollowedTags().contains(mainTag)) {
+			if (follower.getFollowedTags().contains(mainTag) == false) {
 				follower.getFollowedTags().add(mainTag);
 			}
 		}

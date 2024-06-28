@@ -83,18 +83,17 @@ public class KbTagMergeDialog extends DcemDialog {
 		categoriesSelectOne = new ArrayList<SelectItem>();
 		nameOfMainTag = "";
 		nameOfMergingTag = "";
-		List<KbCategoryEntity> accessibleCategories;
+		List<KbCategoryEntity> adminCategories;
 		if (viewNavigator.getActiveView().equals(kbTagView) && kbTagView.isViewManager()) {
-			accessibleCategories = kbCategoryLogic.getAllCategoriesWithOptionalAttribute(KbCategoryEntity.GRAPH_CATEGORIES_TAGS);
+			adminCategories = kbCategoryLogic.getAllCategoriesWithLazyAttribute(KbCategoryEntity.GRAPH_CATEGORIES_TAGS);
 		} else {
-			accessibleCategories = kbCategoryLogic.getAccessibleCategoriesWithOptionalAttribute(operatorSessionBean.getDcemUser().getId(),
-					KbCategoryEntity.GRAPH_CATEGORIES_TAGS);
-			if (accessibleCategories.isEmpty()) {
+			adminCategories = kbCategoryLogic.getAdminCategoriesWithLazyAttribute(operatorSessionBean.getDcemUser().getId(), null);
+			if (adminCategories.isEmpty()) {
 				throw new KbException(KbErrorCodes.NO_ACCESS_TO_CATEGORY, "Operating user does not have management rights for any category.");
 			}
 		}
 		categoriesSelectOne.add(new SelectItem(null, JsfUtils.getStringSafely(KbModule.RESOURCE_NAME, "question.dialog.selectCategory")));
-		for (KbCategoryEntity category : accessibleCategories) {
+		for (KbCategoryEntity category : adminCategories) {
 			categoriesSelectOne.add(new SelectItem(category.getId(), category.getName()));
 		}
 	}
@@ -114,6 +113,9 @@ public class KbTagMergeDialog extends DcemDialog {
 	}
 
 	public void leavingDialog() {
+		categoriesSelectOne = null;
+		nameOfMainTag = null;
+		nameOfMergingTag = null;
 	}
 
 	public String getWidth() {

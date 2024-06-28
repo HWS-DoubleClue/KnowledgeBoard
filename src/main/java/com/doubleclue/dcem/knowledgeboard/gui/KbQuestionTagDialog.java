@@ -71,7 +71,7 @@ public class KbQuestionTagDialog extends DcemDialog {
 				JsfUtils.addErrorMessageToComponentId(JsfUtils.getStringSafely(resourceBundle, "question.tagDialog.invalid.duplicateTag"), "questionTagForm:addTagDialogMsg");
 				return;
 			}			
-			kbQuestionEntity = kbQuestionLogic.getQuestionWithOptionalAttribute(kbQuestionEntity.getId(),KbQuestionEntity.GRAPH_QUESTION_TAGS);
+			kbQuestionEntity = kbQuestionLogic.getQuestionWithLazyAttribute(kbQuestionEntity.getId(),KbQuestionEntity.GRAPH_QUESTION_TAGS);
 			kbQuestionEntity.getTags().add(kbTagEntity);
 			kbQuestionLogic.detachEntity(kbQuestionEntity);
 			kbQuestionLogic.addOrUpdateQuestion(kbQuestionEntity, this.getAutoViewAction().getDcemAction());
@@ -91,7 +91,7 @@ public class KbQuestionTagDialog extends DcemDialog {
 			return;
 		}
 		try {
-			kbQuestionEntity = kbQuestionLogic.getQuestionWithOptionalAttribute(kbQuestionEntity.getId(),KbQuestionEntity.GRAPH_QUESTION_TAGS);
+			kbQuestionEntity = kbQuestionLogic.getQuestionWithLazyAttribute(kbQuestionEntity.getId(),KbQuestionEntity.GRAPH_QUESTION_TAGS);
 			kbQuestionEntity.getTags().removeAll(selectedTags);
 			kbQuestionLogic.detachEntity(kbQuestionEntity);
 			kbQuestionLogic.addOrUpdateQuestion(kbQuestionEntity, this.getAutoViewAction().getDcemAction());
@@ -114,7 +114,7 @@ public class KbQuestionTagDialog extends DcemDialog {
 			throw new DcemException(DcemErrorCodes.INSUFFICIENT_ACCESS_RIGHTS,
 					"Operating user does not have management rights for tags of category: " + kbQuestionEntity.getCategory().getName());
 		}
-		kbQuestionEntity = kbQuestionLogic.getQuestionWithOptionalAttribute(kbQuestionEntity.getId(),KbQuestionEntity.GRAPH_QUESTION_TAGS);
+		kbQuestionEntity = kbQuestionLogic.getQuestionWithLazyAttribute(kbQuestionEntity.getId(),KbQuestionEntity.GRAPH_QUESTION_TAGS);
 	}
 
 	public List<String> actionCompleteTag(String searchTagName) {

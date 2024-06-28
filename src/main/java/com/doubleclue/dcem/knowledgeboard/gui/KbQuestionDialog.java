@@ -176,9 +176,9 @@ public class KbQuestionDialog extends DcemDialog {
 			categoryAdmin = false;
 			List<KbCategoryEntity> accessibleCategories;
 			if (viewNavigator.getActiveView().equals(kbQuestionView) && kbQuestionView.isViewManager()) {
-				accessibleCategories = kbCategoryLogic.getAllCategoriesWithOptionalAttribute(KbCategoryEntity.GRAPH_CATEGORIES_TAGS);
+				accessibleCategories = kbCategoryLogic.getAllCategoriesWithLazyAttribute(KbCategoryEntity.GRAPH_CATEGORIES_TAGS);
 			} else {
-				accessibleCategories = kbCategoryLogic.getAccessibleCategoriesWithOptionalAttribute(operatorSessionBean.getDcemUser().getId(),
+				accessibleCategories = kbCategoryLogic.getAccessibleCategoriesWithLazyAttribute(operatorSessionBean.getDcemUser().getId(),
 						KbCategoryEntity.GRAPH_CATEGORIES_TAGS);
 				if (accessibleCategories.isEmpty()) {
 					throw new KbException(KbErrorCodes.NO_ACCESS_TO_CATEGORY, "Operating user does not have management rights for any category.");
@@ -206,7 +206,7 @@ public class KbQuestionDialog extends DcemDialog {
 			editMode = true;
 			categoryAdmin = adminCategories.contains(questionEntity.getCategory());
 			categoryId = questionEntity.getCategory().getId();
-			questionEntity = kbQuestionLogic.getQuestionWithOptionalAttribute(questionEntity.getId(), KbQuestionEntity.GRAPH_QUESTION_TAGS_AND_CONTENT);
+			questionEntity = kbQuestionLogic.getQuestionWithLazyAttribute(questionEntity.getId(), KbQuestionEntity.GRAPH_QUESTION_TAGS_AND_CONTENT);
 			questionBody = questionEntity.getQuestionContent();
 			questionStatus = questionEntity.getStatus();
 			categoriesSelectOne.add(new SelectItem(questionEntity.getCategory().getId(), questionEntity.getCategory().getName()));
@@ -232,9 +232,9 @@ public class KbQuestionDialog extends DcemDialog {
 	private void loadAdminCategories() {
 		try {
 			if (kbTagView.isViewManager()) {
-				adminCategories = kbCategoryLogic.getAllCategoriesWithOptionalAttribute(null);
+				adminCategories = kbCategoryLogic.getAllCategoriesWithLazyAttribute(null);
 			} else {
-				adminCategories = kbCategoryLogic.getAdminCategoriesWithOptionalAttribute(operatorSessionBean.getDcemUser().getId(), null);
+				adminCategories = kbCategoryLogic.getAdminCategoriesWithLazyAttribute(operatorSessionBean.getDcemUser().getId(), null);
 			}
 		} catch (Exception e) {
 			logger.error("Could not admin Categories for user : " + operatorSessionBean.getDcemUser().getDisplayName(), e);

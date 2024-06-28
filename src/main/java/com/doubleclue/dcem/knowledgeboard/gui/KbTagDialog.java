@@ -84,9 +84,9 @@ public class KbTagDialog extends DcemDialog {
 		if (autoViewAction.getDcemAction().getAction().equals(DcemConstants.ACTION_ADD)) {
 			editMode = false;
 			if (kbTagView.isViewManager()) {
-				editableCategories = kbCategoryLogic.getAllCategoriesWithOptionalAttribute(null);
+				editableCategories = kbCategoryLogic.getAllCategoriesWithLazyAttribute(null);
 			} else {
-				editableCategories = kbCategoryLogic.getAdminCategoriesWithOptionalAttribute(operatorSessionBean.getDcemUser().getId(), null);
+				editableCategories = kbCategoryLogic.getAdminCategoriesWithLazyAttribute(operatorSessionBean.getDcemUser().getId(), null);
 				if (editableCategories.size() == 0) {
 					throw new DcemException(DcemErrorCodes.INSUFFICIENT_ACCESS_RIGHTS, "Operating user does not have management rights for any category.");
 				}

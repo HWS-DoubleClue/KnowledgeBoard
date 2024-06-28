@@ -1,5 +1,6 @@
 package com.doubleclue.dcem.knowledgeboard.logic;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +76,10 @@ public class KbQuestionLogic {
 		return addOrUpdateQuestion(questionEntity, dcemAction);
 	}
 
+	public List<KbQuestionEntity> getAllQuestionsContainingTag(KbTagEntity kbTagEntity) throws Exception {
+		return getAllQuestionsContainingOneOfTags(Arrays.asList(kbTagEntity));
+	}
+
 	public List<KbQuestionEntity> getAllQuestionsContainingOneOfTags(List<KbTagEntity> tags) throws Exception {
 		TypedQuery<KbQuestionEntity> query = em.createNamedQuery(KbQuestionEntity.FIND_ALL_QUESTIONS_CONTAINING_TAGS, KbQuestionEntity.class);
 		query.setParameter(1, tags);
@@ -107,7 +112,7 @@ public class KbQuestionLogic {
 		auditingLogic.addAudit(dcemAction, auditInformation.toString());
 	}
 
-	public KbQuestionEntity getQuestionWithOptionalAttribute(Integer questionId, String graphName) throws Exception {
+	public KbQuestionEntity getQuestionWithLazyAttribute(Integer questionId, String graphName) throws Exception {
 		Map<String, Object> properties = new HashMap<>();
 		if (graphName != null) {
 			EntityGraph<?> entityGraph = em.getEntityGraph(graphName);
