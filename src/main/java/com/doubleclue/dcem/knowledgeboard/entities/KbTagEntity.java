@@ -28,7 +28,6 @@ import com.doubleclue.dcem.knowledgeboard.entities.enums.KbTagStatus;
 @NamedQueries({
 		@NamedQuery(name = KbTagEntity.FIND_TAGS_BY_CATEGORY_ID, query = "SELECT tag FROM KbTagEntity tag WHERE tag.category.id = ?1 ORDER BY tag.name"),
 		@NamedQuery(name = KbTagEntity.FIND_TAG_BY_NAME_AND_CATEGORY_ID, query = "SELECT tag FROM KbTagEntity tag WHERE tag.name = ?1 AND tag.category.id = ?2"),
-		// TODO refactor name (autocomplete)
 		@NamedQuery(name = KbTagEntity.FIND_TAGS_BY_NAME_AND_CATEGORY_ID, query = "SELECT tag FROM KbTagEntity tag WHERE LOWER(tag.name) LIKE ?1 AND tag.category.id = ?2"),
 		@NamedQuery(name = KbTagEntity.FIND_TAGS_BY_QUESTION, query = "SELECT tag FROM KbQuestionEntity question JOIN question.tags tag WHERE question.id = ?1"),
 		@NamedQuery(name = KbTagEntity.FIND_TAGS_FROM_CATEGORY_NOT_CONTAINED_IN_QUESTION_AND_AUTOCOMPLETE_NAME, query = "SELECT tag FROM KbTagEntity tag WHERE tag.category = ?1"
