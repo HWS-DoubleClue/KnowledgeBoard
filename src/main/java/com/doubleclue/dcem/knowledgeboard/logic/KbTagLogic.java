@@ -126,15 +126,13 @@ public class KbTagLogic {
 	}
 
 	public KbTagEntity getTagByNameAndCategoryId(String tagName, Integer categoryId) throws Exception {
-		KbTagEntity result;
 		try {
 			TypedQuery<KbTagEntity> query = em.createNamedQuery(KbTagEntity.FIND_TAG_BY_NAME_AND_CATEGORY_ID, KbTagEntity.class);
 			query.setParameter(1, tagName);
 			query.setParameter(2, categoryId);
-			result = query.getSingleResult();
+			return query.getSingleResult();
 		} catch (NoResultException e) {
-			result = null;
+			return null;
 		}
-		return result;
 	}
 }
