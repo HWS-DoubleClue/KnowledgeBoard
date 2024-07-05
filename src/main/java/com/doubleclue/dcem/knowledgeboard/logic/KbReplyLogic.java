@@ -55,7 +55,7 @@ public class KbReplyLogic {
 	@DcemTransactional
 	public void removeReply(KbReplyEntity kbReplyEntity, DcemAction dcemAction) throws Exception {
 		kbReplyEntity = em.merge(kbReplyEntity);
-		KbQuestionEntity kbQuestionEntity = kbQuestionLogic.getQuestionWithOptionalAttribute(kbReplyEntity.getQuestion().getId(),
+		KbQuestionEntity kbQuestionEntity = kbQuestionLogic.getQuestionWithLazyAttribute(kbReplyEntity.getQuestion().getId(),
 				KbQuestionEntity.GRAPH_QUESTION_REPLIES);
 		kbQuestionEntity.removeReply(kbReplyEntity);
 		em.merge(kbQuestionEntity);

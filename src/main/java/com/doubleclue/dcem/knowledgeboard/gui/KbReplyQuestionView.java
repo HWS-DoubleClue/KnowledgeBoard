@@ -97,7 +97,7 @@ public class KbReplyQuestionView extends DcemView {
 	public void reload() {
 		if (kbQuestionEntity != null) {
 			try {
-				kbQuestionEntity = kbQuestionLogic.getQuestionWithOptionalAttribute(kbQuestionEntity.getId(), KbQuestionEntity.GRAPH_QUESTION_TAGS_AND_CONTENT);
+				kbQuestionEntity = kbQuestionLogic.getQuestionWithLazyAttribute(kbQuestionEntity.getId(), KbQuestionEntity.GRAPH_QUESTION_TAGS_AND_CONTENT);
 				if (kbQuestionEntity == null) {
 					JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "dashboard.error.questionNotFound");
 				} else {

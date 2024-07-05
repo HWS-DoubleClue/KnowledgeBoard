@@ -26,13 +26,13 @@ import com.doubleclue.dcem.core.gui.DcemGui;
 import com.doubleclue.dcem.knowledgeboard.entities.enums.KbTagStatus;
 
 @NamedQueries({
-	@NamedQuery(name = KbTagEntity.FIND_TAGS_BY_CATEGORY_ID, query = "SELECT tag FROM KbTagEntity tag WHERE tag.category.id = ?1 ORDER BY tag.name"),
-	@NamedQuery(name = KbTagEntity.FIND_TAG_BY_NAME_AND_CATEGORY_ID, query = "SELECT tag FROM KbTagEntity tag WHERE tag.name = ?1 AND tag.category.id = ?2 "),
-	@NamedQuery(name = KbTagEntity.FIND_TAGS_BY_QUESTION, query = "SELECT tag FROM KbQuestionEntity question JOIN question.tags tag WHERE question.id = ?1 "),
-	@NamedQuery(name = KbTagEntity.FIND_TAGS_FROM_CATEGORY_NOT_CONTAINED_IN_QUESTION_AND_AUTOCOMPLETE_NAME, query = "SELECT tag FROM KbTagEntity tag WHERE tag.category = ?1 "
-			+ "AND tag NOT IN (SELECT tag FROM KbQuestionEntity question JOIN question.tags tag WHERE question = ?2) "
-			+ "AND LOWER(tag.name) LIKE ?3 ORDER BY tag.name ASC"),
-	})
+		@NamedQuery(name = KbTagEntity.FIND_TAGS_BY_CATEGORY_ID, query = "SELECT tag FROM KbTagEntity tag WHERE tag.category.id = ?1 ORDER BY tag.name"),
+		@NamedQuery(name = KbTagEntity.FIND_TAG_BY_NAME_AND_CATEGORY_ID, query = "SELECT tag FROM KbTagEntity tag WHERE tag.name = ?1 AND tag.category.id = ?2"),
+		@NamedQuery(name = KbTagEntity.FIND_TAGS_BY_NAME_AND_CATEGORY_ID, query = "SELECT tag FROM KbTagEntity tag WHERE LOWER(tag.name) LIKE ?1 AND tag.category.id = ?2"),
+		@NamedQuery(name = KbTagEntity.FIND_TAGS_BY_QUESTION, query = "SELECT tag FROM KbQuestionEntity question JOIN question.tags tag WHERE question.id = ?1"),
+		@NamedQuery(name = KbTagEntity.FIND_TAGS_FROM_CATEGORY_NOT_CONTAINED_IN_QUESTION_AND_AUTOCOMPLETE_NAME, query = "SELECT tag FROM KbTagEntity tag WHERE tag.category = ?1"
+				+ "AND tag NOT IN (SELECT tag FROM KbQuestionEntity question JOIN question.tags tag WHERE question = ?2)"
+				+ "AND LOWER(tag.name) LIKE ?3 ORDER BY tag.name ASC"), })
 
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -41,6 +41,7 @@ public class KbTagEntity extends EntityInterface {
 
 	public static final String FIND_TAGS_BY_CATEGORY_ID = "knowledgeboard.tag.findTagsByCategoryId";
 	public static final String FIND_TAG_BY_NAME_AND_CATEGORY_ID = "knowledgeboard.tag.findTagByNameAndCategoryId";
+	public static final String FIND_TAGS_BY_NAME_AND_CATEGORY_ID = "knowledgeboard.tag.findTagsByNameAndCategoryId";
 	public static final String FIND_TAGS_BY_QUESTION = "knowledgeboard.tag.findTagsByQuestion";
 	public static final String FIND_TAGS_FROM_CATEGORY_NOT_CONTAINED_IN_QUESTION_AND_AUTOCOMPLETE_NAME = "knowledgeboard.tag.findTagsFromCategoryNotContainedInQuestionAndAutoCompleteName";
 
@@ -58,7 +59,7 @@ public class KbTagEntity extends EntityInterface {
 	@ManyToOne
 	@JoinColumn(name = "category_id", foreignKey = @ForeignKey(name = "FK_KB_TAGS_CATEGORY"), nullable = false, updatable = false)
 	private KbCategoryEntity category;
-	
+
 	@Enumerated(EnumType.ORDINAL)
 	@Column(name = "dc_status", nullable = false)
 	private KbTagStatus status = KbTagStatus.Approved;
