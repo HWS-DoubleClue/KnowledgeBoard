@@ -87,9 +87,10 @@ body .autocompleteChangedDisabled .ui-state-disabled {
 }
 
 body .selectOneChangeDisabled .ui-selectonemenu-label {
-	opacity: 0.80;
+	/* 	opacity: 0.80;
 	font-weight: bold;
-	color: var(--primary-text-color);
+	color: var(--primary-text-color); */
+	
 }
 
 body .tagButtonChangedDisabled .ui-state-disabled {
@@ -151,9 +152,37 @@ body .question-panel .ui-panel-titlebar-icon, body .question-panel .ui-panel-tit
 	margin-bottom: 1em;
 }
 
+.text-editor.ui-texteditor .ql-container .ql-editor {
+	min-height: calc(75vh - 11em);
+}
+
 .tag-list {
+	max-height: 5em;
+	overflow: none;
+}
+
+.kb-dialog-wrap {
+	height: calc(100vh - 5em);
+	display: block;
+	padding-right: 0.5rem;
+	overflow-y: auto;
+}
+
+.kb-select-one-menu {
+	min-width: 6em;
+	max-width: 20em;
 	margin-left: 1em;
+	margin-top: 0.75em;
+}
+
+.kb-question-category {
+	margin-left: 0.5em;
+	font-weight: bold;
+}
+
+.kb-input-title.ui-inputfield {
+	width: 100em;
 	margin-top: 1em;
-	max-height: 7em;
-	overflow: auto;
+	margin-bottom: 1em;
+	margin-left: 1em;
 }

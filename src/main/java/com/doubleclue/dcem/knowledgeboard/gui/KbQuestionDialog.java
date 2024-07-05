@@ -280,7 +280,7 @@ public class KbQuestionDialog extends DcemDialog {
 	public void actionNewTag() {
 		toBeAddedTag.setName(toBeAddedTag.getName().trim());
 		if (toBeAddedTag.getName().isEmpty()) {
-			JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "tag.dialog.invalid.name"); 
+			JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "tag.dialog.invalid.name");
 			return;
 		}
 		if (KbUtils.isValidName(toBeAddedTag.getName()) == false) {
@@ -329,7 +329,7 @@ public class KbQuestionDialog extends DcemDialog {
 	}
 
 	public String getHeight() {
-		return "85vh";
+		return "90vh";
 	}
 
 	public void leavingDialog() {
