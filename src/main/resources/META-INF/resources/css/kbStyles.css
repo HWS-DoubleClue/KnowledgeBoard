@@ -86,13 +86,6 @@ body .autocompleteChangedDisabled .ui-state-disabled {
 	font-weight: bold;
 }
 
-body .selectOneChangeDisabled .ui-selectonemenu-label {
-	/* 	opacity: 0.80;
-	font-weight: bold;
-	color: var(--primary-text-color); */
-	
-}
-
 body .tagButtonChangedDisabled .ui-state-disabled {
 	opacity: 1;
 }
@@ -181,7 +174,7 @@ body .question-panel .ui-panel-titlebar-icon, body .question-panel .ui-panel-tit
 }
 
 .kb-input-title.ui-inputfield {
-	width: 100em;
+	width: 85%;
 	margin-top: 1em;
 	margin-bottom: 1em;
 	margin-left: 1em;

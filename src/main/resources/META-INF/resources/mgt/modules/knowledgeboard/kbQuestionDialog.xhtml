@@ -37,8 +37,7 @@
 
 				<br />
 				<p:outputLabel for="title" value="#{KbMsg['question.dialog.title']}" />
-				<p:inputText id="title" styleClass="kb-input-title" value="#{kbQuestionDialog.questionEntity.title}" size="120" required="true"
-					maxlength="111">
+				<p:inputText id="title" styleClass="kb-input-title" value="#{kbQuestionDialog.questionEntity.title}" size="120" required="true" maxlength="111">
 				</p:inputText>
 
 				<p:textEditor id="question" value="#{kbQuestionDialog.questionBody.content}" placeholder="#{KbMsg['question.dialog.enterYourText']}" required="true"
@@ -47,7 +46,7 @@
 
 				<h:panelGroup id="updatePickList">
 					<p:commandButton id="displayTags" value="#{KbMsg['question.dialog.selectTags']}" type="button" styleClass="tag-button" icon="fas fa-tags" />
-					<p:overlayPanel for="displayTags">
+					<p:overlayPanel for="displayTags" showCloseIcon="true">
 						<p:pickList id="tagPickList" value="#{kbQuestionDialog.tagDualList}" var="tag" itemLabel="#{tag}" itemValue="#{tag}" transferOnCheckboxClick="true"
 							showCheckbox="true" showSourceFilter="true" showTargetFilter="true" responsive="true" filterMatchMode="contains" escapeValue="false">
 							<p:ajax event="transfer" update="listSelectedTags" />
