@@ -21,10 +21,10 @@ public class KbUtils {
 	public static String parseHtmlToString(String html) {
 		return Jsoup.parse(html).text();
 	}
-	
+
 	public static boolean invalidTextContent(String text) throws Exception {
 		if (text == null) {
-			return false;
+			return true;
 		}
 		String zeroWidthNoBreakSpace = new String("\ufeff".getBytes("UTF-16"), "UTF-16"); // Primefaces gives a weird empty string...
 		String htmlReducedText = parseHtmlToString(text).trim();
@@ -82,7 +82,7 @@ public class KbUtils {
 		}
 		return false;
 	}
-	
+
 	public static boolean isValidName(String name) {
 		if (name == null) {
 			return false;

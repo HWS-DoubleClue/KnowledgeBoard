@@ -255,6 +255,19 @@ public class KbReplyQuestionView extends DcemView {
 		leavingView();
 		viewNavigator.setActiveView(KbModule.MODULE_ID + DcemConstants.MODULE_VIEW_SPLITTER + kbDashboardView.getSubject().getViewName());
 	}
+	
+	public StreamedContent getUserPhoto(DcemUser dcemUser) {
+		if (dcemUser == null) {
+			return JsfUtils.getDefaultUserImage();
+		}
+		byte[] image = dcemUser.getPhoto();
+		if (image != null) {
+			InputStream in = new ByteArrayInputStream(image);
+			return DefaultStreamedContent.builder().contentType("image/png").stream(() -> in).build();
+		} else {
+			return JsfUtils.getDefaultUserImage();
+		}
+	}
 
 	public KbQuestionEntity getKbQuestionEntity() {
 		return kbQuestionEntity;
@@ -270,18 +283,5 @@ public class KbReplyQuestionView extends DcemView {
 
 	public void setReplyText(String replyText) {
 		this.replyText = replyText;
-	}
-
-	public StreamedContent getUserPhoto(DcemUser dcemUser) {
-		if (dcemUser == null) {
-			return JsfUtils.getDefaultUserImage();
-		}
-		byte[] image = dcemUser.getPhoto();
-		if (image != null) {
-			InputStream in = new ByteArrayInputStream(image);
-			return DefaultStreamedContent.builder().contentType("image/png").stream(() -> in).build();
-		} else {
-			return JsfUtils.getDefaultUserImage();
-		}
 	}
 }

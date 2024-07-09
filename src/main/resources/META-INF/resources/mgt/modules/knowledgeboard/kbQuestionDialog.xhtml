@@ -41,7 +41,7 @@
 				</p:inputText>
 
 				<p:textEditor id="question" value="#{kbQuestionDialog.questionBody.content}" placeholder="#{KbMsg['question.dialog.enterYourText']}" required="true"
-					styleClass="text-editor" requiredMessage="#{KbMsg['question.dialog.requiredQuestionBody']}" />
+					styleClass="kb-text-editor" requiredMessage="#{KbMsg['question.dialog.requiredQuestionBody']}" />
 
 
 				<h:panelGroup id="updatePickList">
@@ -100,7 +100,6 @@
 				<p:commandButton id="okNewTag" styleClass="dialog-button" icon="fa fa-check" value="#{CoreMsg['ok']}" action="#{kbQuestionDialog.actionNewTag()}"
 					update="questionForm:listSelectedTags addNewTagGrid" process="@form">
 				</p:commandButton>
-				<p:spacer width="20" />
 			</p:overlayPanel>
 		</h:form>
 	</h:body>

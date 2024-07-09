@@ -37,9 +37,9 @@
 			</p:overlayPanel>
 
 			<p:defaultCommand target="searchField" />
-			<p:inputText id="searchText" value="#{kbDashboardView.filterText}" size="40" style="margin-left: 1.5em" />
+			<p:inputText id="searchText" value="#{kbDashboardView.filterText}" size="40" styleClass="kb-search-bar" />
 			<p:commandButton id="searchField" value="#{KbMsg['dashboard.view.search']}" update="questions" actionListener="#{kbDashboardView.actionSearch}"
-				icon="fa fa-magnifying-glass" />
+				icon="fa fa-magnifying-glass" styleClass="kb-search-button" />
 
 			<p:commandButton id="manageCategories" styleClass="actionButton" style="float:right" value="#{KbMsg['AUTO_ACTION.manageNotifications']}"
 				rendered="#{kbDashboardView.newPostAction != null}" action="#{viewNavigator.setActiveDialog(kbDashboardView.notificationAction)}"
