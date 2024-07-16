@@ -94,6 +94,7 @@ public class KbQuestionDialog extends DcemDialog {
 	private boolean categoryAdmin;
 
 	private boolean editMode;
+	private boolean notifyAllMembers;
 
 	@PostConstruct
 	public void init() {
@@ -148,7 +149,7 @@ public class KbQuestionDialog extends DcemDialog {
 			if (viewNavigator.getActiveView().equals(dashboardView)) {
 				dashboardView.getCategoryMap().put(operatorUserCategory.getCategory(), operatorUserCategory);
 			}
-			kbEmailLogic.notifyNewPost(questionEntity);
+			kbEmailLogic.notifyNewPost(questionEntity, notifyAllMembers && categoryAdmin);
 		} else {
 			kbQuestionLogic.addOrUpdateQuestionWithNewTags(questionEntity, newTags, getAutoViewAction().getDcemAction());
 		}
@@ -167,6 +168,7 @@ public class KbQuestionDialog extends DcemDialog {
 
 	@Override
 	public void show(DcemView dcemView, AutoViewAction autoViewAction) throws Exception {
+		notifyAllMembers = false;
 		questionEntity = (KbQuestionEntity) dcemView.getActionObject();
 		categoriesSelectOne = new ArrayList<SelectItem>();
 		toBeAddedTags = new ArrayList<KbTagEntity>();
@@ -265,12 +267,13 @@ public class KbQuestionDialog extends DcemDialog {
 		tagDualList = new DualListModel<String>(convertTagsToStrings(tagList), convertTagsToStrings(currentTags));
 	}
 
-	public void actionUpdateTags() {
+	public void actionUpdateCategory() {
 		try {
 			List<KbTagEntity> tagList = kbTagLogic.getTagsByCategoryId(categoryId);
 			tagMapping = convertTagsToMap(tagList);
 			tagDualList = new DualListModel<String>(convertTagsToStrings(tagList), new ArrayList<String>());
 			categoryAdmin = adminCategories.stream().anyMatch(category -> category.getId().equals(categoryId));
+			notifyAllMembers = notifyAllMembers && categoryAdmin;
 		} catch (Exception e) {
 			logger.error("Could not get Tags from Category: " + categoryId, e);
 			JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "error.global");
@@ -438,5 +441,13 @@ public class KbQuestionDialog extends DcemDialog {
 
 	public void setCategoryAdmin(boolean categoryAdmin) {
 		this.categoryAdmin = categoryAdmin;
+	}
+
+	public boolean isNotifyAllMembers() {
+		return notifyAllMembers;
+	}
+
+	public void setNotifyAllMembers(boolean notifyAllMembers) {
+		this.notifyAllMembers = notifyAllMembers;
 	}
 }

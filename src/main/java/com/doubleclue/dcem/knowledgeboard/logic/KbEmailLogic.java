@@ -27,22 +27,35 @@ public class KbEmailLogic {
 	EntityManager em;
 
 	@Inject
-	KbModule kbModule;
-	
-	@Inject
-	DcemApplicationBean dcemApplicationBean;
+	private KbModule kbModule;
 
 	@Inject
-	TaskExecutor taskExecutor;
+	private DcemApplicationBean dcemApplicationBean;
+
+	@Inject
+	private KbUserLogic kbUserLogic;
+
+	@Inject
+	private TaskExecutor taskExecutor;
 
 	public void notifyNewPost(KbQuestionEntity kbQuestionEntity) throws Exception {
+		notifyNewPost(kbQuestionEntity, false);
+	}
+
+	public void notifyNewPost(KbQuestionEntity kbQuestionEntity, boolean toAllMembers) throws Exception {
 		if (kbModule.getModulePreferences().isTurnOffEmailNotification() == false) {
 			Map<String, Object> data = new HashMap<>();
+			List<DcemUser> dcemUser = new ArrayList<DcemUser>();
 			data.put("title", kbQuestionEntity.getTitle());
 			data.put("Author", kbQuestionEntity.getAuthor().getDisplayNameOrLoginId());
 			data.put("Category", kbQuestionEntity.getCategory().getName());
 			data.put("TenantManagementUrl", dcemApplicationBean.getDcemManagementUrl(null));
-			List<DcemUser> dcemUser = retrieveDcemUser(getTagFollower(kbQuestionEntity));
+			if (toAllMembers) {
+				List<KbUserCategoryEntity> categoryMembers = kbUserLogic.getUserCategoriesByCategory(kbQuestionEntity.getCategory());
+				dcemUser = retrieveDcemUser(categoryMembers);
+			} else {
+				dcemUser = retrieveDcemUser(getTagFollower(kbQuestionEntity));
+			}
 			dcemUser.remove(kbQuestionEntity.getAuthor());
 			taskExecutor.execute(new EmailTask(dcemUser, data, KbConstants.KB_EMAIL_QUESTION_TEMPLATE, KbConstants.KB_EMAIL_QUESTION_SUBJECT, null));
 		}

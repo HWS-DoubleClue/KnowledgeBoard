@@ -19,30 +19,39 @@
 				<p:messages showSummary="true" showDetail="false" closable="true">
 					<p:autoUpdate />
 				</p:messages>
-				<p:outputLabel for="category" value="#{KbMsg['question.dialog.category']}:" />
-				<p:selectOneMenu autoWidth="false" id="category" value="#{kbQuestionDialog.categoryId}" required="#{kbQuestionDialog.editMode == false}"
-					rendered="#{kbQuestionDialog.editMode == false}" styleClass="kb-select-one-menu" filter="true" filterMatchMode="contains" filterNormalize="true">
-					<f:selectItems value="#{kbQuestionDialog.categoriesSelectOne}" />
-					<p:ajax listener="#{kbQuestionDialog.actionUpdateTags}" update="updatePickList listSelectedTags overlayForm:new-tag-overlay-panel" resetValues="true" />
-				</p:selectOneMenu>
-				<h:outputText rendered="#{kbQuestionDialog.editMode}" styleClass="kb-question-category" value="#{kbQuestionDialog.questionEntity.category.name}"></h:outputText>
 
-				<p:spacer width="30" height="30" />
+				<h:panelGroup id="top-menu">
+					<div class="kb-title">
+						<p:outputLabel for="category" value="#{KbMsg['question.dialog.category']}:" styleClass="kb-title-label" />
+						<p:selectOneMenu autoWidth="false" id="category" value="#{kbQuestionDialog.categoryId}" required="#{kbQuestionDialog.editMode == false}"
+							rendered="#{kbQuestionDialog.editMode == false}" styleClass="kb-select-one-menu" filter="true" filterMatchMode="contains" filterNormalize="true">
+							<f:selectItems value="#{kbQuestionDialog.categoriesSelectOne}" />
+							<p:ajax event="change" listener="#{kbQuestionDialog.actionUpdateCategory}"
+								update="updatePickList listSelectedTags overlayForm:new-tag-overlay-panel top-menu" />
+						</p:selectOneMenu>
+						<h:outputText rendered="#{kbQuestionDialog.editMode}" styleClass="kb-question-category-edit" value="#{kbQuestionDialog.questionEntity.category.name}" />
 
-				<p:outputLabel for="questionStatus" value="#{KbMsg['questionStatus']}" />
-				<p:selectOneMenu id="questionStatus" value="#{kbQuestionDialog.questionStatus}" required="true" filter="true" styleClass="kb-select-one-menu"
-					autoWidth="false">
-					<f:selectItems value="#{kbQuestionDialog.questionStatusSelection}" />
-				</p:selectOneMenu>
+						<p:outputLabel for="questionStatus" value="#{KbMsg['questionStatus']}" styleClass="kb-question-label" />
+						<p:selectOneMenu id="questionStatus" value="#{kbQuestionDialog.questionStatus}" required="true" filter="true" styleClass="kb-select-one-menu"
+							autoWidth="false">
+							<f:selectItems value="#{kbQuestionDialog.questionStatusSelection}" />
+						</p:selectOneMenu>
 
-				<br />
-				<p:outputLabel for="title" value="#{KbMsg['question.dialog.title']}" />
-				<p:inputText id="title" styleClass="kb-input-title" value="#{kbQuestionDialog.questionEntity.title}" size="120" required="true" maxlength="111">
-				</p:inputText>
+						<h:outputLabel for="notifyAllSwitch" value="#{KbMsg['question.dialog.notifyAllMembers']}:" rendered="#{kbQuestionDialog.categoryAdmin}"
+							styleClass="kb-question-label" />
+						<p:toggleSwitch id="notifyAllSwitch" value="#{kbQuestionDialog.notifyAllMembers}" styleClass="kb-question-toggle-switch"
+							rendered="#{kbQuestionDialog.categoryAdmin}">
+							<p:ajax event="change" />
+						</p:toggleSwitch>
+					</div>
+					<div class="kb-title">
+						<p:outputLabel for="title" value="#{KbMsg['question.dialog.title']}" styleClass="kb-title-label" />
+						<p:inputText id="title" value="#{kbQuestionDialog.questionEntity.title}" styleClass="kb-input-title" required="true" maxlength="128" />
+					</div>
+				</h:panelGroup>
 
 				<p:textEditor id="question" value="#{kbQuestionDialog.questionBody.content}" placeholder="#{KbMsg['question.dialog.enterYourText']}" required="true"
 					styleClass="kb-text-editor" requiredMessage="#{KbMsg['question.dialog.requiredQuestionBody']}" />
-
 
 				<h:panelGroup id="updatePickList">
 					<p:commandButton id="displayTags" value="#{KbMsg['question.dialog.selectTags']}" type="button" styleClass="tag-button" icon="fas fa-tags" />
