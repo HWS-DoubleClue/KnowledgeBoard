@@ -22,7 +22,7 @@
 
 				<h:panelGroup id="top-menu">
 					<div class="kb-title">
-						<p:outputLabel for="category" value="#{KbMsg['question.dialog.category']}:" styleClass="kb-title-label" />
+						<p:outputLabel for="category" value="#{KbMsg['question.dialog.category']}" styleClass="kb-title-label" />
 						<p:selectOneMenu autoWidth="false" id="category" value="#{kbQuestionDialog.categoryId}" required="#{kbQuestionDialog.editMode == false}"
 							rendered="#{kbQuestionDialog.editMode == false}" styleClass="kb-select-one-menu" filter="true" filterMatchMode="contains" filterNormalize="true">
 							<f:selectItems value="#{kbQuestionDialog.categoriesSelectOne}" />

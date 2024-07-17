@@ -11,6 +11,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Size;
 
 import com.doubleclue.dcem.core.entities.EntityInterface;
+import com.doubleclue.dcem.core.gui.validators.NotNullOrEmptyString;
 import com.doubleclue.dcem.knowledgeboard.logic.KbUtils;
 
 @Entity
@@ -24,7 +25,7 @@ public class KbTextContentEntity extends EntityInterface {
 	private Integer id;
 
 	@Column(name = "content", nullable = false, length = 1024 * 1024)
-	@Size(min = 10, max = 1024 * 1024)
+	@Size(min = 10, max = 1024 * 1024, message = "Content: {javax.validation.constraints.Size.message}")
 	private String content;
 
 	@Version
