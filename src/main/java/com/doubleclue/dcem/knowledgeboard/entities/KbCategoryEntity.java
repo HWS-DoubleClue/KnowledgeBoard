@@ -59,13 +59,13 @@ public class KbCategoryEntity extends EntityInterface {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@Size(min = 2, max = 63)
+	@Size(min = 2, max = 63, message = "Name: {javax.validation.constraints.Size.message}")
 	@DcemGui(sortOrder = SortOrder.ASCENDING)
 	@Column(name = "dc_name", nullable = false, length = 63)
 	private String name;
 
 	@DcemGui
-	@Size(max = 111)
+	@Size(max = 111, message = "Description: {javax.validation.constraints.Size.message}")
 	@Column(name = "description", length = 111)
 	private String description;
 

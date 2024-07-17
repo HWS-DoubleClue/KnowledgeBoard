@@ -12,7 +12,6 @@ import com.doubleclue.dcem.core.DcemConstants;
 import com.doubleclue.dcem.core.gui.AutoViewAction;
 import com.doubleclue.dcem.core.gui.DcemDialog;
 import com.doubleclue.dcem.core.gui.DcemView;
-import com.doubleclue.dcem.core.gui.JsfUtils;
 import com.doubleclue.dcem.core.logic.OperatorSessionBean;
 import com.doubleclue.dcem.knowledgeboard.entities.KbCategoryEntity;
 import com.doubleclue.dcem.knowledgeboard.logic.KbCategoryLogic;
@@ -46,10 +45,6 @@ public class KbCategoryDialog extends DcemDialog {
 	@Override
 	public boolean actionOk() throws Exception {
 		categoryEntity.setName(categoryEntity.getName().trim());
-		if (categoryEntity.getName().length() < 2) {
-			JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "category.dialog.invalid.name");
-			return false;
-		}
 		if (categoryEntity.getDescription() != null) {
 			categoryEntity.setDescription(categoryEntity.getDescription().trim());
 		}

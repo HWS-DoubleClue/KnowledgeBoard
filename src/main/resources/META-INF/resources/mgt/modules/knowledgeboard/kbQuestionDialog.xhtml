@@ -37,8 +37,8 @@
 							<f:selectItems value="#{kbQuestionDialog.questionStatusSelection}" />
 						</p:selectOneMenu>
 
-						<h:outputLabel for="notifyAllSwitch" value="#{KbMsg['question.dialog.notifyAllMembers']}:" rendered="#{not kbQuestionDialog.editMode and kbQuestionDialog.categoryAdmin}"
-							styleClass="kb-question-label" />
+						<h:outputLabel for="notifyAllSwitch" value="#{KbMsg['question.dialog.notifyAllMembers']}:"
+							rendered="#{not kbQuestionDialog.editMode and kbQuestionDialog.categoryAdmin}" styleClass="kb-question-label" />
 						<p:toggleSwitch id="notifyAllSwitch" value="#{kbQuestionDialog.notifyAllMembers}" styleClass="kb-question-toggle-switch"
 							rendered="#{not kbQuestionDialog.editMode and kbQuestionDialog.categoryAdmin}">
 						</p:toggleSwitch>
@@ -50,7 +50,7 @@
 				</div>
 
 				<p:textEditor id="question" value="#{kbQuestionDialog.questionBody.content}" placeholder="#{KbMsg['question.dialog.enterYourText']}" required="true"
-					styleClass="kb-text-editor" requiredMessage="#{KbMsg['question.dialog.requiredQuestionBody']}"  />
+					styleClass="kb-text-editor" requiredMessage="#{KbMsg['question.dialog.requiredQuestionBody']}" />
 
 				<h:panelGroup id="updatePickList">
 					<p:commandButton id="displayTags" value="#{KbMsg['question.dialog.selectTags']}" type="button" styleClass="tag-button" icon="fas fa-tags" />

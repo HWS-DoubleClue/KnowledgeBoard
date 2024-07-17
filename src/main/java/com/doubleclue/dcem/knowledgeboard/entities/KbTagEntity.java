@@ -51,7 +51,7 @@ public class KbTagEntity extends EntityInterface {
 	private Integer id;
 
 	@DcemGui(sortOrder = SortOrder.ASCENDING)
-	@Size(min = 1, max = 63)
+	@Size(min = 1, max = 63, message = "Name: {javax.validation.constraints.Size.message}")
 	@Column(name = "dc_name", nullable = false, length = 63)
 	private String name;
 
@@ -65,7 +65,7 @@ public class KbTagEntity extends EntityInterface {
 	private KbTagStatus status = KbTagStatus.Approved;
 
 	@DcemGui
-	@Size(max = 111)
+	@Size(max = 111, message = "Description: {javax.validation.constraints.Size.message}")
 	@Column(name = "description", length = 111)
 	private String description;
 

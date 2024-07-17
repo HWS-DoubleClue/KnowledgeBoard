@@ -67,10 +67,6 @@ public class KbTagDialog extends DcemDialog {
 	@Override
 	public boolean actionOk() throws Exception {
 		tagEntity.setName(tagEntity.getName().trim());        
-		if (tagEntity.getName().isEmpty()) {
-			JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "tag.dialog.invalid.name");
-			return false;
-		}
 		if (KbUtils.isValidName(tagEntity.getName()) == false) {
 			JsfUtils.addErrorMessage(JsfUtils.getStringSafely(KbModule.RESOURCE_NAME, "kb.invalidCharacters") + ": " + KbConstants.SPECIAL_CHARACTERS);
 			return false;

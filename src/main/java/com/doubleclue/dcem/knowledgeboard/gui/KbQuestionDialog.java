@@ -275,7 +275,7 @@ public class KbQuestionDialog extends DcemDialog {
 
 	public void actionNewTag() {
 		toBeAddedTag.setName(toBeAddedTag.getName().trim());
-		if (toBeAddedTag.getName().isEmpty()) {
+		if (toBeAddedTag.getName().isEmpty() && toBeAddedTag.getName().length() < 2) {
 			JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "tag.dialog.invalid.name");
 			return;
 		}
