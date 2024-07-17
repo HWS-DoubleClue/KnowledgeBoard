@@ -103,14 +103,6 @@ public class KbQuestionDialog extends DcemDialog {
 	@Override
 	public boolean actionOk() throws Exception {
 		questionEntity.setTitle(questionEntity.getTitle().trim());
-		if (questionEntity.getTitle().length() < 2) {
-			JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "question.dialog.invalid.title");
-			return false;
-		}
-		if (KbUtils.invalidTextContent(questionBody.getContent())) {
-			JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "question.dialog.invalid.questionContent");
-			return false;
-		}
 		List<String> duplicatedTagNames = findDuplicatedTags();
 		if (duplicatedTagNames.isEmpty() == false) {
 			JsfUtils.addErrorMessage(

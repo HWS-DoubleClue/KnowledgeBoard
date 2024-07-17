@@ -48,10 +48,6 @@ public class KbReplyDialog extends DcemDialog {
 	}
 
 	public boolean actionOk() throws Exception {
-		if (KbUtils.invalidTextContent(replyContent)) {
-			JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "reply.dialog.invalid.replyContent");
-			return false;
-		}
 		kbReplyEntity.getReplyContent().setContent(replyContent);
 		kbReplyEntity.setLastModifiedOn(LocalDateTime.now());
 		kbReplyEntity.setLastModifiedBy(operatorSessionBean.getDcemUser());

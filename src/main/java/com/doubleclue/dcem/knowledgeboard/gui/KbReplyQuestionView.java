@@ -78,7 +78,6 @@ public class KbReplyQuestionView extends DcemView {
 	private AutoViewAction addReply;
 	private AutoViewAction editReply;
 	private AutoViewAction removeReply;
-	// private boolean viewManager;
 
 	private KbQuestionEntity kbQuestionEntity;
 	private String replyText;
@@ -134,10 +133,6 @@ public class KbReplyQuestionView extends DcemView {
 
 	public void actionCreateReply() {
 		try {
-			if (KbUtils.invalidTextContent(replyText)) {
-				JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "reply.dialog.invalid.replyContent");
-				return;
-			}
 			LocalDateTime localDate = LocalDateTime.now();
 			KbReplyEntity kbReplyEntity = new KbReplyEntity();
 			kbReplyEntity.setQuestion(kbQuestionEntity);

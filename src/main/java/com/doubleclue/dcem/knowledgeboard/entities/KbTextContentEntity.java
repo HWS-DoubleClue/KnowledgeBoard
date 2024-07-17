@@ -7,6 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Version;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Size;
 
 import com.doubleclue.dcem.core.entities.EntityInterface;
 import com.doubleclue.dcem.knowledgeboard.logic.KbUtils;
@@ -22,6 +24,7 @@ public class KbTextContentEntity extends EntityInterface {
 	private Integer id;
 
 	@Column(name = "content", nullable = false, length = 1024 * 1024)
+	@Size(min = 10, max = 1024 * 1024)
 	private String content;
 
 	@Version
