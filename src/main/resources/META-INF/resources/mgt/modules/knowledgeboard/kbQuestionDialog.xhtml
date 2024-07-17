@@ -26,7 +26,7 @@
 						<p:selectOneMenu autoWidth="false" id="category" value="#{kbQuestionDialog.categoryId}" required="#{kbQuestionDialog.editMode == false}"
 							rendered="#{kbQuestionDialog.editMode == false}" styleClass="kb-select-one-menu" filter="true" filterMatchMode="contains" filterNormalize="true">
 							<f:selectItems value="#{kbQuestionDialog.categoriesSelectOne}" />
-							<p:ajax event="change" listener="#{kbQuestionDialog.actionUpdateCategory}"
+							<p:ajax event="change" listener="#{kbQuestionDialog.actionUpdateCategory}" process="top-menu" partialSubmit="true"
 								update="updatePickList listSelectedTags overlayForm:new-tag-overlay-panel top-menu" />
 						</p:selectOneMenu>
 						<h:outputText rendered="#{kbQuestionDialog.editMode}" styleClass="kb-question-category-edit" value="#{kbQuestionDialog.questionEntity.category.name}" />
@@ -37,18 +37,17 @@
 							<f:selectItems value="#{kbQuestionDialog.questionStatusSelection}" />
 						</p:selectOneMenu>
 
-						<h:outputLabel for="notifyAllSwitch" value="#{KbMsg['question.dialog.notifyAllMembers']}:" rendered="#{kbQuestionDialog.categoryAdmin}"
+						<h:outputLabel for="notifyAllSwitch" value="#{KbMsg['question.dialog.notifyAllMembers']}:" rendered="#{not kbQuestionDialog.editMode and kbQuestionDialog.categoryAdmin}"
 							styleClass="kb-question-label" />
 						<p:toggleSwitch id="notifyAllSwitch" value="#{kbQuestionDialog.notifyAllMembers}" styleClass="kb-question-toggle-switch"
-							rendered="#{kbQuestionDialog.categoryAdmin}">
-							<p:ajax event="change" />
+							rendered="#{not kbQuestionDialog.editMode and kbQuestionDialog.categoryAdmin}">
 						</p:toggleSwitch>
 					</div>
-					<div class="kb-title">
-						<p:outputLabel for="title" value="#{KbMsg['question.dialog.title']}" styleClass="kb-title-label" />
-						<p:inputText id="title" value="#{kbQuestionDialog.questionEntity.title}" styleClass="kb-input-title" required="true" maxlength="128" />
-					</div>
 				</h:panelGroup>
+				<div class="kb-title">
+					<p:outputLabel for="title" value="#{KbMsg['question.dialog.title']}" styleClass="kb-title-label" />
+					<p:inputText id="title" value="#{kbQuestionDialog.questionEntity.title}" styleClass="kb-input-title" required="true" maxlength="128" />
+				</div>
 
 				<p:textEditor id="question" value="#{kbQuestionDialog.questionBody.content}" placeholder="#{KbMsg['question.dialog.enterYourText']}" required="true"
 					styleClass="kb-text-editor" requiredMessage="#{KbMsg['question.dialog.requiredQuestionBody']}" />
@@ -72,7 +71,7 @@
 					<h:panelGroup id="listSelectedTags">
 						<div id="selected-tag-list" class="tag-list">
 							<h:outputText value=" #{KbMsg['KbQuestion.tags']}: "
-								rendered="#{not empty kbQuestionDialog.tagDualList.getTarget() || not empty kbQuestionDialog.toBeAddedTags}" />
+								rendered="#{not empty kbQuestionDialog.tagDualList.getTarget() or not empty kbQuestionDialog.toBeAddedTags}" />
 							<ui:repeat value="#{kbQuestionDialog.toBeAddedTags}" var="newTag">
 								<div class="q-tag">
 									#{newTag}

@@ -191,6 +191,7 @@ public class KbQuestionDialog extends DcemDialog {
 			}
 			loadAdminCategories();
 			questionBody = new KbTextContentEntity();
+			questionStatus = KbQuestionStatus.Open;
 			categoriesSelectOne.add(new SelectItem(null, JsfUtils.getStringSafely(KbModule.RESOURCE_NAME, "question.dialog.selectCategory")));
 			for (KbCategoryEntity category : accessibleCategories) {
 				categoriesSelectOne.add(new SelectItem(category.getId(), category.getName()));

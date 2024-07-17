@@ -206,8 +206,9 @@ body .question-panel .ui-panel-titlebar-icon, body .question-panel .ui-panel-tit
 }
 
 .kb-question-category-edit {
-	margin-left: 1em;
+	font-size: 1.2em;
 	font-weight: bold;
+	margin-left: 0.7em;
 }
 
 .kb-question-label {
