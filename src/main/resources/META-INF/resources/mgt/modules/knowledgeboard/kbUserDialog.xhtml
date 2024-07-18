@@ -3,7 +3,8 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:dc="http://java.sun.com/jsf/composite/dcemComponents">
 
 <ui:include src="/mgt/modules/dialogHead.xhtml" />
 
@@ -18,17 +19,21 @@
 		</p:messages>
 
 		<h:form id="kbuserUserForm">
-			<h:panelGrid columns="2" cellpadding="4" cellspacing="4">
+			<h:panelGrid id="kb-user-search" columns="3" cellpadding="4" cellspacing="4" rendered="#{kbUserDialog.editMode == false}">
+				<p:outputLabel for="autoUser" value="#{CoreMsg['loginId']}" />
 
-				<p:outputLabel for="@next" value="#{CoreMsg['loginId']}" rendered="#{kbUserDialog.editMode == false}" />
-				<p:autoComplete id="userSearch" required="true" forceSelection="true" dropdown="true" scrollHeight="150" value="#{kbUserDialog.loginId}"
-					completeMethod="#{kbUserDialog.actionCompleteUser}" effect="fade" size="27" queryDelay="500" styleClass="autocompleteChangedDisabled"
-					rendered="#{kbUserDialog.editMode == false}" />
+				<p:avatar dynamicColor="true" size="large" shape="circle" style="margin-left: 0.4em;">
+					<p:graphicImage value="#{kbUserDialog.userPhoto}" stream="false" />
+				</p:avatar>
 
-				<p:outputLabel for="@next" value="#{CoreMsg['loginId']}" rendered="#{kbUserDialog.editMode == true}" />
-				<h:outputText id="user-name" value="#{kbUserDialog.kbUserEntity.dcemUser.displayName}" rendered="#{kbUserDialog.editMode == true}" />
+				<dc:autoCompleteUser id="autoUser" userValue="#{kbUserDialog.dcemUser}" required="true" userListener="#{kbUserDialog.userListener}"
+					updateComponents="kbuserUserForm:kb-user-search" />
+
 			</h:panelGrid>
 			<h:panelGrid columns="2" cellpadding="4" cellspacing="4">
+				<p:outputLabel for="@next" value="#{CoreMsg['loginId']}" rendered="#{kbUserDialog.editMode == true}" />
+				<h:outputText id="user-name" value="#{kbUserDialog.kbUserEntity.dcemUser.displayName}" rendered="#{kbUserDialog.editMode == true}" />
+
 				<p:outputLabel for="@next" value="#{KbMsg['user.dialog.notificationsDisabled']} " />
 				<p:selectBooleanCheckbox id="emailNotifications" value="#{kbUserDialog.kbUserEntity.notificationDisabled}" />
 			</h:panelGrid>

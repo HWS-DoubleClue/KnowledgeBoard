@@ -1,5 +1,7 @@
 package com.doubleclue.dcem.knowledgeboard.gui;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -11,6 +13,8 @@ import javax.inject.Named;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 import com.doubleclue.dcem.core.DcemConstants;
 import com.doubleclue.dcem.core.entities.DcemUser;
@@ -48,7 +52,8 @@ public class KbUserDialog extends DcemDialog {
 
 	private ResourceBundle resourceBundle;
 	private KbUserEntity kbUserEntity;
-	private String loginId;
+	private DcemUser dcemUser;
+	private byte[] image;
 	private boolean editMode;
 
 	@PostConstruct
@@ -60,7 +65,6 @@ public class KbUserDialog extends DcemDialog {
 	public boolean actionOk() throws Exception {
 		try {
 			if (editMode == false) {
-				DcemUser dcemUser = userLogic.getDistinctUser(loginId);
 				if (dcemUser == null) {
 					JsfUtils.addErrorMessage(resourceBundle, "user.dialog.invalid.userName");
 					return false;
@@ -77,27 +81,26 @@ public class KbUserDialog extends DcemDialog {
 			}
 			return true;
 		} catch (Exception e) {
-			logger.error("User: " + loginId + " could not be added or edited as knowledgeboarduser", e);
+			logger.error("User: " + dcemUser.getDisplayName() + " could not be added or edited as knowledgeboarduser", e);
 			JsfUtils.addErrorMessage(resourceBundle, "error.global");
 			return false;
-		} finally {
-			kbUserEntity = new KbUserEntity();
-			loginId = null;
 		}
 	}
 
 	@Override
-	public void show(DcemView dcemView, AutoViewAction autoViewAction) throws Exception { 
+	public void show(DcemView dcemView, AutoViewAction autoViewAction) throws Exception {
 		if (autoViewAction.getDcemAction().getAction().equals(DcemConstants.ACTION_DELETE)) {
 			return;
 		}
 		kbUserEntity = (KbUserEntity) this.getActionObject();
 		if (autoViewAction.getDcemAction().getAction().equals(DcemConstants.ACTION_EDIT)) {
+			dcemUser = userLogic.getUser(kbUserEntity.getId());
+			image = dcemUser.getPhoto();
 			editMode = true;
-			loginId = kbUserEntity.getDcemUser().getLoginId();
 		} else {
 			editMode = false;
-			loginId = null;
+			dcemUser = null;
+			image = null;
 		}
 	}
 
@@ -111,22 +114,15 @@ public class KbUserDialog extends DcemDialog {
 		kbUserLogic.removeKbUsers(kbUsers, getAutoViewAction().getDcemAction());
 	}
 
-	public List<String> actionCompleteUser(String name) {
-		List<String> userNames = userLogic.getCompleteUserList(name, 30);
-		if (userNames == null) {
-			JsfUtils.addErrorMessageToComponentId(JsfUtils.getStringSafely(resourceBundle, "user.dialog.error.userComplete"), "userDialog:userDialogMsg");
-		}
-		return userNames;
-	}
-
 	public void leavingDialog() {
 		kbUserEntity = null;
-		loginId = null;
+		dcemUser = null;
+		image = null;
 		editMode = false;
 	}
 
 	public String getWidth() {
-		return "30em";
+		return "35em";
 	}
 
 	public String getHeight() {
@@ -136,20 +132,13 @@ public class KbUserDialog extends DcemDialog {
 		return "15em";
 	}
 
+
 	public KbUserEntity getKbUserEntity() {
 		return kbUserEntity;
 	}
 
 	public void setKbUserEntity(KbUserEntity kbUserEntity) {
 		this.kbUserEntity = kbUserEntity;
-	}
-
-	public String getLoginId() {
-		return loginId;
-	}
-
-	public void setLoginId(String loginId) {
-		this.loginId = loginId;
 	}
 
 	public boolean isEditMode() {
@@ -160,4 +149,37 @@ public class KbUserDialog extends DcemDialog {
 		this.editMode = editMode;
 	}
 
+	public void userListener() {
+		if (dcemUser != null)
+			this.image = dcemUser.getPhoto();
+	}
+
+	public StreamedContent getUserPhoto() {
+		try {
+			if (image == null) {
+				return JsfUtils.getDefaultUserImage();
+			} else {
+				InputStream in = new ByteArrayInputStream(image);
+				return DefaultStreamedContent.builder().contentType("image/png").stream(() -> in).build();
+			}
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public DcemUser getDcemUser() {
+		return dcemUser;
+	}
+
+	public void setDcemUser(DcemUser dcemUser) {
+		this.dcemUser = dcemUser;
+	}
+
+	public byte[] getImage() {
+		return image;
+	}
+
+	public void setImage(byte[] image) {
+		this.image = image;
+	}
 }

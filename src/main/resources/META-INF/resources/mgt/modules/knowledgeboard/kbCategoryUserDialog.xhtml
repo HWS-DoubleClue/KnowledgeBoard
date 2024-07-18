@@ -3,13 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:dc="http://java.sun.com/jsf/composite/dcemComponents">
 
 <ui:include src="/mgt/modules/dialogHead.xhtml" />
 
 <f:view locale="#{operatorSession.locale}">
 	<h:body class="dialogBody" style="height: 32em !important; width: 73em !important;">
-		<span id="customheader"> <h:outputLabel class="fa fa-users dialogTitle" /> <h:outputLabel value="#{viewNavigator.dialogTitle}" styleClass="dialogTitle" />
+		<span id="customheader"> <h:outputLabel class="fa fa-users dialogTitle" /> <h:outputLabel value="#{viewNavigator.dialogTitle}"
+				styleClass="dialogTitle" />
 		</span>
 		<p:messages showSummary="true" showDetail="false" closable="true" globalOnly="true">
 			<p:autoUpdate />
@@ -25,8 +27,8 @@
 					<p:commandButton id="addMember" icon="fa fa-user-plus" value="#{KbMsg['category.memberDialog.addMember']}" ajax="true"
 						oncomplete="PF('addMemberDialog').show();" action="#{kbCategoryMemberDialog.actionAddMember}" update="categoryMemberDialog:addEditDialog" />
 					<p:spacer width="30" />
-					<p:commandButton id="addGroup" icon="fa fa-users" value="#{KbMsg['category.memberDialog.addGroup']}" ajax="true"
-						oncomplete="PF('addGroupDialog').show();" update="categoryGroupDialog:groupDialog" />
+					<p:commandButton id="addGroup" icon="fa fa-users" value="#{KbMsg['category.memberDialog.addGroup']}" ajax="true" oncomplete="PF('addGroupDialog').show();"
+						update="categoryGroupDialog:groupDialog" />
 					<p:spacer width="30" />
 					<p:commandButton id="editMember" icon="fa fa-user-pen" value="#{KbMsg['category.memberDialog.editMember']}" ajax="true"
 						action="#{kbCategoryMemberDialog.actionEditMember}" update="categoryMemberDialog:addEditDialog" />
@@ -100,7 +102,7 @@
 					value="#{KbMsg['category.memberDialog.totalMember']}: #{kbCategoryMemberDialog.members.size()}" />
 			</h:panelGroup>
 		</h:form>
-		
+
 		<h:form id="categoryMemberDialog">
 			<p:dialog widgetVar="addMemberDialog" modal="true" id="addEditDialog" style="min-width: 35em;max-width: 35em;min-height: 30em;max-height: 30em;">
 				<f:facet name="header">
@@ -113,22 +115,27 @@
 					<p:autoUpdate />
 				</p:messages>
 				<h:panelGroup id="memberDialog">
-					<h:panelGrid columns="2" cellpadding="4">
-						<p:outputLabel for="memberSearch" value="#{CoreMsg['loginId']}: " rendered="#{kbCategoryMemberDialog.editMode == false}"/>
-						<p:autoComplete id="memberSearch" required="true" forceSelection="true" dropdown="true" value="#{kbCategoryMemberDialog.userLoginId}"
-							disabled="#{kbCategoryMemberDialog.editMode == true}" completeMethod="#{kbCategoryMemberDialog.actionCompleteMember}" effect="fade" size="30"
-							queryDelay="500" styleClass="autocompleteChangedDisabled" scrollHeight="250" rendered="#{kbCategoryMemberDialog.editMode == false}" />
-							
-						<p:outputLabel for="memberDisplay" value="#{CoreMsg['loginId']}: " rendered="#{kbCategoryMemberDialog.editMode == true}" />
-						<h:outputText id="memberDisplay" value="#{kbCategoryMemberDialog.member.kbUser.dcemUser.displayName}" rendered="#{kbCategoryMemberDialog.editMode == true}" />
-							
+					<h:panelGrid id="kb-user-search" columns="3" cellpadding="4" rendered="#{kbCategoryMemberDialog.editMode == false}">
+						<p:outputLabel for="autoUser" value="#{CoreMsg['loginId']}" />
+
+						<p:avatar dynamicColor="true" size="large" shape="circle" style="margin-left: 0.4em;">
+							<p:graphicImage value="#{kbCategoryMemberDialog.getUserPhoto()}" stream="false" />
+						</p:avatar>
+
+						<dc:autoCompleteUser id="autoUser" userValue="#{kbCategoryMemberDialog.dcemUser}" required="true" userListener="#{kbCategoryMemberDialog.userListener}"
+							updateComponents="categoryMemberDialog:kb-user-search" />
+					</h:panelGrid>
+					<h:panelGrid id="kb-user-edit" columns="2" cellpadding="4" rendered="#{kbCategoryMemberDialog.editMode == true}">
+						<p:outputLabel for="memberDisplay" value="#{CoreMsg['loginId']}: " />
+						<h:outputText id="memberDisplay" value="#{kbCategoryMemberDialog.member.kbUser.dcemUser.displayName}" />
 					</h:panelGrid>
 
 					<h:panelGrid columns="1" cellpadding="4" cellspacing="4">
 						<p:selectBooleanCheckbox value="#{kbCategoryMemberDialog.member.admin}" itemLabel="#{KbMsg['category.memberDialog.admin']}" />
 						<p:selectBooleanCheckbox value="#{kbCategoryMemberDialog.member.followingAllTags}" itemLabel="#{KbMsg['category.memberDialog.followsAllTags']}" />
 						<p:selectBooleanCheckbox value="#{kbCategoryMemberDialog.member.hiddenInDashboard}" itemLabel="#{KbMsg['category.memberDialog.hiddenInDashboard']}" />
-						<p:selectBooleanCheckbox value="#{kbCategoryMemberDialog.member.disabled}" itemLabel="#{KbMsg['category.memberDialog.disabled']}" rendered="#{kbCategoryMemberDialog.editMode == true}" />
+						<p:selectBooleanCheckbox value="#{kbCategoryMemberDialog.member.disabled}" itemLabel="#{KbMsg['category.memberDialog.disabled']}"
+							rendered="#{kbCategoryMemberDialog.editMode == true}" />
 					</h:panelGrid>
 				</h:panelGroup>
 				<p />
@@ -139,7 +146,7 @@
 				<p />
 			</p:dialog>
 		</h:form>
-		
+
 		<h:form id="categoryGroupDialog">
 			<p:dialog widgetVar="addGroupDialog" modal="true" id="groupDialog">
 				<f:facet name="header">
@@ -158,7 +165,7 @@
 				</h:panelGroup>
 				<p />
 				<p:commandButton id="actionAddMember" value="#{KbMsg['category.memberDialog.save']}" ajax="true" icon="fa fa-save"
-					action="#{kbCategoryMemberDialog.actionAddGroup}" update="categoryMemberForm:memberTable categoryMemberForm:memberCount memberDialogGroup"  />
+					action="#{kbCategoryMemberDialog.actionAddGroup}" update="categoryMemberForm:memberTable categoryMemberForm:memberCount memberDialogGroup" />
 				<p:spacer width="12" />
 				<p:commandButton id="closeDialog2" value="#{CoreMsg['close']}" icon="fa fa-close" immediate="true" onclick="PF('addGroupDialog').hide();" />
 				<p />
