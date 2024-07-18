@@ -94,6 +94,7 @@ public class KbQuestionDialog extends DcemDialog {
 	private boolean categoryAdmin;
 
 	private boolean editMode;
+	private boolean notifyAllMembers;
 
 	@PostConstruct
 	public void init() {
@@ -102,14 +103,6 @@ public class KbQuestionDialog extends DcemDialog {
 	@Override
 	public boolean actionOk() throws Exception {
 		questionEntity.setTitle(questionEntity.getTitle().trim());
-		if (questionEntity.getTitle().length() < 2) {
-			JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "question.dialog.invalid.title");
-			return false;
-		}
-		if (KbUtils.invalidTextContent(questionBody.getContent())) {
-			JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "question.dialog.invalid.questionContent");
-			return false;
-		}
 		List<String> duplicatedTagNames = findDuplicatedTags();
 		if (duplicatedTagNames.isEmpty() == false) {
 			JsfUtils.addErrorMessage(
@@ -148,7 +141,7 @@ public class KbQuestionDialog extends DcemDialog {
 			if (viewNavigator.getActiveView().equals(dashboardView)) {
 				dashboardView.getCategoryMap().put(operatorUserCategory.getCategory(), operatorUserCategory);
 			}
-			kbEmailLogic.notifyNewPost(questionEntity);
+			kbEmailLogic.notifyNewPost(questionEntity, notifyAllMembers && categoryAdmin);
 		} else {
 			kbQuestionLogic.addOrUpdateQuestionWithNewTags(questionEntity, newTags, getAutoViewAction().getDcemAction());
 		}
@@ -167,6 +160,7 @@ public class KbQuestionDialog extends DcemDialog {
 
 	@Override
 	public void show(DcemView dcemView, AutoViewAction autoViewAction) throws Exception {
+		notifyAllMembers = false;
 		questionEntity = (KbQuestionEntity) dcemView.getActionObject();
 		categoriesSelectOne = new ArrayList<SelectItem>();
 		toBeAddedTags = new ArrayList<KbTagEntity>();
@@ -189,6 +183,7 @@ public class KbQuestionDialog extends DcemDialog {
 			}
 			loadAdminCategories();
 			questionBody = new KbTextContentEntity();
+			questionStatus = KbQuestionStatus.Open;
 			categoriesSelectOne.add(new SelectItem(null, JsfUtils.getStringSafely(KbModule.RESOURCE_NAME, "question.dialog.selectCategory")));
 			for (KbCategoryEntity category : accessibleCategories) {
 				categoriesSelectOne.add(new SelectItem(category.getId(), category.getName()));
@@ -265,12 +260,13 @@ public class KbQuestionDialog extends DcemDialog {
 		tagDualList = new DualListModel<String>(convertTagsToStrings(tagList), convertTagsToStrings(currentTags));
 	}
 
-	public void actionUpdateTags() {
+	public void actionUpdateCategory() {
 		try {
 			List<KbTagEntity> tagList = kbTagLogic.getTagsByCategoryId(categoryId);
 			tagMapping = convertTagsToMap(tagList);
 			tagDualList = new DualListModel<String>(convertTagsToStrings(tagList), new ArrayList<String>());
 			categoryAdmin = adminCategories.stream().anyMatch(category -> category.getId().equals(categoryId));
+			notifyAllMembers = notifyAllMembers && categoryAdmin;
 		} catch (Exception e) {
 			logger.error("Could not get Tags from Category: " + categoryId, e);
 			JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "error.global");
@@ -279,8 +275,8 @@ public class KbQuestionDialog extends DcemDialog {
 
 	public void actionNewTag() {
 		toBeAddedTag.setName(toBeAddedTag.getName().trim());
-		if (toBeAddedTag.getName().isEmpty()) {
-			JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "tag.dialog.invalid.name"); 
+		if (toBeAddedTag.getName().isEmpty() && toBeAddedTag.getName().length() < 2) {
+			JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "tag.dialog.invalid.name");
 			return;
 		}
 		if (KbUtils.isValidName(toBeAddedTag.getName()) == false) {
@@ -329,7 +325,7 @@ public class KbQuestionDialog extends DcemDialog {
 	}
 
 	public String getHeight() {
-		return "85vh";
+		return "90vh";
 	}
 
 	public void leavingDialog() {
@@ -438,5 +434,13 @@ public class KbQuestionDialog extends DcemDialog {
 
 	public void setCategoryAdmin(boolean categoryAdmin) {
 		this.categoryAdmin = categoryAdmin;
+	}
+
+	public boolean isNotifyAllMembers() {
+		return notifyAllMembers;
+	}
+
+	public void setNotifyAllMembers(boolean notifyAllMembers) {
+		this.notifyAllMembers = notifyAllMembers;
 	}
 }

@@ -108,8 +108,8 @@ public class KbQuestionEntity extends EntityInterface {
 	private Integer id;
 
 	@DcemGui
-	@Size(max = 111)
-	@Column(name = "dc_title", length = 111, nullable = false)
+	@Size(min = 2, max = 256, message = "Title: {javax.validation.constraints.Size.message}")
+	@Column(name = "dc_title", length = 256, nullable = false)
 	private String title;
 
 	@DcemGui

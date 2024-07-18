@@ -86,12 +86,6 @@ body .autocompleteChangedDisabled .ui-state-disabled {
 	font-weight: bold;
 }
 
-body .selectOneChangeDisabled .ui-selectonemenu-label {
-	opacity: 0.80;
-	font-weight: bold;
-	color: var(--primary-text-color);
-}
-
 body .tagButtonChangedDisabled .ui-state-disabled {
 	opacity: 1;
 }
@@ -134,16 +128,6 @@ body .question-panel .ui-panel-titlebar-icon, body .question-panel .ui-panel-tit
 	z-index: 1;
 }
 
-.text-editor-read-only.ui-texteditor .ql-container .ql-editor {
-	background: transparent;
-	height: auto;
-	color: var(--primary-text-color);
-}
-
-.text-editor-read-only.ui-texteditor .ql-container.ql-snow {
-	border: none;
-}
-
 .tag-button {
 	margin-left: 0.2em;
 	margin-top: 1em;
@@ -151,9 +135,86 @@ body .question-panel .ui-panel-titlebar-icon, body .question-panel .ui-panel-tit
 	margin-bottom: 1em;
 }
 
+.kb-text-editor-read-only.ui-texteditor .ql-container .ql-editor {
+	background: transparent;
+	height: auto;
+	color: var(--primary-text-color);
+}
+
+.kb-text-editor-read-only.ui-texteditor .ql-container.ql-snow {
+	border: none;
+}
+
+.kb-text-editor.ui-texteditor .ql-container .ql-editor {
+	min-height: calc(75vh - 11em);
+}
+
 .tag-list {
-	margin-left: 1em;
+	max-height: 5em;
+	overflow: none;
+}
+
+.kb-dialog-wrap {
+	height: calc(100vh - 5em);
+	display: block;
+	padding-right: 0.5rem;
+	overflow-y: auto;
+}
+
+.kb-input-title.ui-inputfield {
+	width: 95.5vw;
 	margin-top: 1em;
-	max-height: 7em;
-	overflow: auto;
+	margin-bottom: 1em;
+	margin-left: 1em;
+}
+
+.kb-title {
+	display: flex;
+	align-items: center;
+}
+
+.kb-title-label {
+	width: 5em;
+}
+
+.kb-reply-text-editor.ui-texteditor .ql-container .ql-editor {
+	min-height: 40vh;
+}
+
+.kb-reply-button {
+	margin-top: 1em;
+	margin-bottom: 1em;
+	width: auto;
+}
+
+.kb-search-bar.ui-inputfield {
+	margin-left: 1.5em;
+	margin-top: 1px;
+}
+
+.kb-search-button.ui-button-text-icon-left.ui-corner-all {
+	height: 29px;
+	margin-left: -2px;
+	border-bottom-left-radius: 0px;
+	border-top-left-radius: 0px;
+}
+
+.kb-select-one-menu {
+	min-width: 6em;
+	max-width: 20em;
+	margin-left: 1em;
+}
+
+.kb-question-category-edit {
+	font-size: 1.2em;
+	font-weight: bold;
+	margin-left: 0.7em;
+}
+
+.kb-question-label {
+	margin-left: 2.5em;
+}
+
+.kb-question-toggle-switch {
+	margin-left: 1em;
 }

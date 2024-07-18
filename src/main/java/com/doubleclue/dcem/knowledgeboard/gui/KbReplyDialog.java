@@ -41,16 +41,14 @@ public class KbReplyDialog extends DcemDialog {
 	KbReplyQuestionView kbReplyQuestionView;
 
 	private KbReplyEntity kbReplyEntity;
+	private String replyContent;
 
 	@PostConstruct
 	public void init() {
 	}
 
 	public boolean actionOk() throws Exception {
-		if (kbReplyEntity.getReplyContent().getContent() == null || KbUtils.parseHtmlToString(kbReplyEntity.getReplyContent().getContent()).trim().isEmpty()) {
-			JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "reply.dialog.invalid.replyContent");
-			return false;
-		}
+		kbReplyEntity.getReplyContent().setContent(replyContent);
 		kbReplyEntity.setLastModifiedOn(LocalDateTime.now());
 		kbReplyEntity.setLastModifiedBy(operatorSessionBean.getDcemUser());
 		kbReplyLogic.addOrUpdateReply(kbReplyEntity, getAutoViewAction().getDcemAction());
@@ -60,6 +58,7 @@ public class KbReplyDialog extends DcemDialog {
 	@Override
 	public void show(DcemView dcemView, AutoViewAction autoViewAction) throws Exception {
 		kbReplyEntity = (KbReplyEntity) dcemView.getActionObject();
+		replyContent = kbReplyEntity.getReplyContent().getContent();
 	}
 
 	@Override
@@ -88,5 +87,13 @@ public class KbReplyDialog extends DcemDialog {
 	@Override
 	public String getWidth() {
 		return "85vw";
+	}
+
+	public String getReplyContent() {
+		return replyContent;
+	}
+
+	public void setReplyContent(String replyContent) {
+		this.replyContent = replyContent;
 	}
 }

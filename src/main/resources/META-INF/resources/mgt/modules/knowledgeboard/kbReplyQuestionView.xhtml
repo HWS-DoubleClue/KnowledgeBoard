@@ -36,9 +36,8 @@ img {
 					<div class="ui-g">
 						<div style="word-wrap: break-word;" class="ui-g-9">
 							<div class="ui-g-12">
-								<!-- <h:outputText value="#{kbReplyQuestionView.kbQuestionEntity.questionContent.content}" escape="false" /> -->
 								<p:textEditor value="#{kbReplyQuestionView.kbQuestionEntity.questionContent.content}" readonly="true" toolbarVisible="false"
-									styleClass="text-editor-read-only"></p:textEditor>
+									styleClass="kb-text-editor-read-only"></p:textEditor>
 							</div>
 							<div class="ui-g-12 tag-box">
 								<p:outputPanel rendered="#{not empty kbReplyQuestionView.kbQuestionEntity.tags}" style="font-size:0.85em">
@@ -101,15 +100,14 @@ img {
 								<p:commandLink icon="pi pi-pencil" styleClass="ui-panel-titlebar-icon " style="margin-bottom: 10px" action="#{kbReplyQuestionView.editReply(reply)}"
 									rendered="#{kbReplyQuestionView.hasReplyEditPermission(reply)}">
 									<h:outputText styleClass="ui-icon pi pi-pencil" />
-									<p:ajax event="dialogReturn" update="replies" />
+									<p:ajax event="dialogReturn" update="replies" listener="#{kbReplyQuestionView.reload()}" />
 								</p:commandLink>
 
 							</f:facet>
 							<div class="ui-g">
 								<div class="ui-g-9">
 									<div class="ui-g-12" style="word-wrap: break-word">
-										<!-- <h:outputText value="#{reply.replyContent.content}" escape="false" /> -->
-										<p:textEditor value="#{reply.replyContent.content}" readonly="true" toolbarVisible="false" styleClass="text-editor-read-only"></p:textEditor>
+										<p:textEditor value="#{reply.replyContent.content}" readonly="true" toolbarVisible="false" styleClass="kb-text-editor-read-only"></p:textEditor>
 									</div>
 								</div>
 								<div class="ui-g-3" style="border-left: 2px solid lightgray; font-size: 0.8em">
@@ -148,9 +146,12 @@ img {
 						<h:outputText value="#{KbMsg['reply.view.addReply']}" />
 					</div>
 					<p:spacer height="25" />
-					<p:textEditor value="#{kbReplyQuestionView.replyText}" style="margin-bottom:5em"></p:textEditor>
-					<p:commandButton value="#{KbMsg['reply.view.toReply']}" action="#{kbReplyQuestionView.actionCreateReply()}" style="margin-bottom:1em; width: auto"
-						update="replyForm" icon="fas fa-reply" />
+					<p:textEditor value="#{kbReplyQuestionView.replyText}" styleClass="kb-reply-text-editor">
+						<p:ajax event="blur" process="@this" partialSubmit="true"></p:ajax>
+						<p:ajax event="focus" process="@this" partialSubmit="true"></p:ajax>
+					</p:textEditor>
+					<p:commandButton value="#{KbMsg['reply.view.toReply']}" action="#{kbReplyQuestionView.actionCreateReply()}" styleClass="kb-reply-button" update="replyForm"
+						icon="fa fa-slid fa-add" />
 				</h:panelGroup>
 				<p:spacer height="25" />
 			</h:form>
