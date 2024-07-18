@@ -49,8 +49,11 @@
 					<p:inputText id="title" value="#{kbQuestionDialog.questionEntity.title}" styleClass="kb-input-title" required="true" maxlength="128" />
 				</div>
 
-				<p:textEditor id="question" value="#{kbQuestionDialog.questionBody.content}" placeholder="#{KbMsg['question.dialog.enterYourText']}" required="true"
-					styleClass="kb-text-editor" requiredMessage="#{KbMsg['question.dialog.requiredQuestionBody']}" />
+				<p:textEditor id="question" value="#{kbQuestionDialog.questionBody.content}" placeholder="#{KbMsg['question.dialog.enterYourText']}" required="#{not empty param[actionOk.clientId]}"
+					styleClass="kb-text-editor" requiredMessage="#{KbMsg['question.dialog.requiredQuestionBody']}" >
+				<p:ajax event="blur" process="@this" partialSubmit="true" ></p:ajax>	
+				<p:ajax event="focus" process="@this" partialSubmit="true" ></p:ajax>	
+				</p:textEditor>
 
 				<h:panelGroup id="updatePickList">
 					<p:commandButton id="displayTags" value="#{KbMsg['question.dialog.selectTags']}" type="button" styleClass="tag-button" icon="fas fa-tags" />
@@ -89,7 +92,7 @@
 				</div>
 			</div>
 
-			<p:commandButton id="ok" styleClass="dialog-button" icon="fa fa-check" value="#{CoreMsg['ok']}" action="#{autoDialog.actionOk}" />
+			<p:commandButton id="ok" styleClass="dialog-button" icon="fa fa-check" value="#{CoreMsg['ok']}" action="#{autoDialog.actionOk}" binding="#{actionOk}" />
 			<p:spacer width="20" />
 			<p:commandButton id="closeDialog" styleClass="dialog-button" value="#{CoreMsg['cancel']}" icon="fa fa-close" immediate="true"
 				action="#{viewNavigator.actionCloseDialog}" />
