@@ -173,9 +173,7 @@ body .question-panel .ui-panel-titlebar-icon, body .question-panel .ui-panel-tit
 	align-items: center;
 }
 
-.kb-title-label {
-	width: 5em;
-}
+
 
 .kb-reply-text-editor.ui-texteditor .ql-container .ql-editor {
 	min-height: 40vh;

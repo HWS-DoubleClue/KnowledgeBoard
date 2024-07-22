@@ -17,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
+import com.doubleclue.dcem.admin.gui.MfaLoginView;
 import com.doubleclue.dcem.core.DcemConstants;
 import com.doubleclue.dcem.core.entities.DcemUser;
 import com.doubleclue.dcem.core.gui.AutoViewAction;
@@ -43,6 +44,9 @@ import com.doubleclue.dcem.knowledgeboard.subjects.KbReplyQuestionSubject;
 public class KbReplyQuestionView extends DcemView {
 
 	private static final Logger logger = LogManager.getLogger(KbQuestionLogic.class);
+
+	private static final String QUESTION_ID = "questionId=";
+	
 
 	@Inject
 	KbModule kbModule;
@@ -73,6 +77,12 @@ public class KbReplyQuestionView extends DcemView {
 	
 	@Inject
 	AuditingLogic auditingLogic;
+	
+	@Inject
+	MfaLoginView loginView;
+	
+	@Inject
+	KbQuestionLogic questionLogic;
 
 	private AutoViewAction editQuestion;
 	private AutoViewAction addReply;
@@ -94,6 +104,19 @@ public class KbReplyQuestionView extends DcemView {
 
 	@Override
 	public void reload() {
+		String urlParam = loginView.getMgtUrlParams();
+		if (urlParam != null && urlParam.startsWith (QUESTION_ID)) {
+			try {
+				String questionId = urlParam.substring(QUESTION_ID.length());
+				kbQuestionEntity = new KbQuestionEntity();
+				kbQuestionEntity.setId(Integer.parseInt(questionId));
+				loginView.setMgtUrlParams(null);
+				// TODO
+				// CHECK USER ACCESS RIGHTS 
+			} catch (Exception e) {
+				logger.warn(e.getMessage(), e);
+			}
+		}	
 		if (kbQuestionEntity != null) {
 			try {
 				kbQuestionEntity = kbQuestionLogic.getQuestionWithLazyAttribute(kbQuestionEntity.getId(), KbQuestionEntity.GRAPH_QUESTION_TAGS_AND_CONTENT);
@@ -278,5 +301,10 @@ public class KbReplyQuestionView extends DcemView {
 
 	public void setReplyText(String replyText) {
 		this.replyText = replyText;
+	}
+	
+	@Override
+	public String getUrlParameters() {
+		return QUESTION_ID + kbQuestionEntity.getId().toString(); 
 	}
 }
