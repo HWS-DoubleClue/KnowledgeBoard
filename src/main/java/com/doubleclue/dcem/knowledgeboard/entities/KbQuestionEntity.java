@@ -30,6 +30,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Version;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cache;
@@ -108,7 +110,7 @@ public class KbQuestionEntity extends EntityInterface {
 	private Integer id;
 
 	@DcemGui
-	@Size(min = 2, max = 256, message = "Title: {javax.validation.constraints.Size.message}")
+	@Size(min = 2, max = 256)
 	@Column(name = "dc_title", length = 256, nullable = false)
 	private String title;
 
