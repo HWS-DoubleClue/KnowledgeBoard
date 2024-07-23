@@ -16,146 +16,152 @@ img {
 			<h:form id="replyForm">
 				<p:commandButton value="#{KbMsg['kbDashboardView']}" action="#{kbReplyQuestionView.closeQuestion()}" style="margin-bottom:1em; width: auto"
 					icon="fa fa-solid fa-circle-chevron-left" />
-				<p:panel id="questionPanel" toggleable="true" styleClass="question-panel">
-					<f:facet name="actions">
-						<p:commandLink icon="pi pi-pencil" styleClass="ui-panel-titlebar-icon " style="margin-bottom: 10px; margin-top: 10px;"
-							action="#{kbReplyQuestionView.editQuestion()}" rendered="#{kbReplyQuestionView.hasQuestionEditPermission()}">
-							<h:outputText styleClass="ui-icon pi pi-pencil" />
-							<p:ajax event="dialogReturn" update="replyForm" listener="#{kbReplyQuestionView.reload()}" />
-						</p:commandLink>
-					</f:facet>
-					<f:facet name="header">
+				<h:panelGroup rendered="#{kbReplyQuestionView.kbQuestionEntity != null}">
+					<p:panel id="questionPanel" toggleable="true" styleClass="question-panel">
+						<f:facet name="actions">
+							<p:commandLink icon="pi pi-pencil" styleClass="ui-panel-titlebar-icon " style="margin-bottom: 10px; margin-top: 10px;"
+								action="#{kbReplyQuestionView.editQuestion()}" rendered="#{kbReplyQuestionView.hasQuestionEditPermission()}">
+								<h:outputText styleClass="ui-icon pi pi-pencil" />
+								<p:ajax event="dialogReturn" update="replyForm" listener="#{kbReplyQuestionView.reload()}" />
+							</p:commandLink>
+						</f:facet>
+						<f:facet name="header">
 								#{kbReplyQuestionView.kbQuestionEntity.title}
 								<h:outputText value="(ID: #{kbReplyQuestionView.kbQuestionEntity.id} " style="font-size: 0.6em" />
-						<p:spacer width="3" />
-						<i class="far fa-folder-open" style="font-size: 0.7em" />
-						<p:spacer width="3" />
-						<h:outputText id="categorylabel" value=" #{kbReplyQuestionView.kbQuestionEntity.category.name})" style="font-size: 0.6em" />
-						<p:tooltip style="font-size: 0.6em" for="categorylabel" value="#{kbReplyQuestionView.kbQuestionEntity.category.description}" position="right" />
-					</f:facet>
-					<div class="ui-g">
-						<div style="word-wrap: break-word;" class="ui-g-9">
-							<div class="ui-g-12">
-								<p:textEditor value="#{kbReplyQuestionView.kbQuestionEntity.questionContent.content}" readonly="true" toolbarVisible="false"
-									styleClass="kb-text-editor-read-only"></p:textEditor>
+							<p:spacer width="3" />
+							<i class="far fa-folder-open" style="font-size: 0.7em" />
+							<p:spacer width="3" />
+							<h:outputText id="categorylabel" value=" #{kbReplyQuestionView.kbQuestionEntity.category.name})" style="font-size: 0.6em" />
+							<p:tooltip style="font-size: 0.6em" for="categorylabel" value="#{kbReplyQuestionView.kbQuestionEntity.category.description}" position="right" />
+						</f:facet>
+						<div class="ui-g">
+							<div style="word-wrap: break-word;" class="ui-g-9">
+								<div class="ui-g-12">
+									<p:textEditor value="#{kbReplyQuestionView.kbQuestionEntity.questionContent.content}" readonly="true" toolbarVisible="false"
+										styleClass="kb-text-editor-read-only"></p:textEditor>
+								</div>
+								<div class="ui-g-12 tag-box">
+									<p:outputPanel rendered="#{not empty kbReplyQuestionView.kbQuestionEntity.tags}" style="font-size:0.85em">
+										<i class="fas fa-tags" />
+										<h:outputText value=" #{KbMsg['KbQuestion.tags']}: " />
+										<ui:repeat value="#{kbReplyQuestionView.kbQuestionEntity.tags}" var="tag">
+											<h:outputText id="tagbox" value="#{tag.name}" class="q-tag" />
+											<p:tooltip for="tagbox" value="#{tag.description}" position="right" />
+										</ui:repeat>
+									</p:outputPanel>
+								</div>
 							</div>
-							<div class="ui-g-12 tag-box">
-								<p:outputPanel rendered="#{not empty kbReplyQuestionView.kbQuestionEntity.tags}" style="font-size:0.85em">
-									<i class="fas fa-tags" />
-									<h:outputText value=" #{KbMsg['KbQuestion.tags']}: " />
-									<ui:repeat value="#{kbReplyQuestionView.kbQuestionEntity.tags}" var="tag">
-										<h:outputText id="tagbox" value="#{tag.name}" class="q-tag" />
-										<p:tooltip for="tagbox" value="#{tag.description}" position="right" />
-									</ui:repeat>
-								</p:outputPanel>
-							</div>
-						</div>
-						<div class="ui-g-3" style="border-left: 2px solid lightgray; font-size: 0.8em">
-							<div class="ui-g-12">
-								<h:outputText
-									value="#{KbMsg['KbQuestion.author']}: #{kbReplyQuestionView.kbQuestionEntity.author == null ? KbMsg['dashboard.view.deletedAuthor'] : kbReplyQuestionView.kbQuestionEntity.author.displayName}" />
-								<p:spacer width="20" />
-								<p:avatar style=" vertical-align: middle;" styleClass="p-mr-2" size="xlarge" shape="circle">
-									<p:graphicImage value="#{kbReplyQuestionView.getUserPhoto(kbReplyQuestionView.kbQuestionEntity.author)}" stream="false" />
-								</p:avatar>
-							</div>
-							<div class="ui-g-12">
-								<h:outputText value="#{KbMsg['KbQuestion.status']}: #{kbReplyQuestionView.kbQuestionEntity.status.name()}" />
-							</div>
-							<div class="ui-g-12">
-								<h:outputText value="#{KbMsg['KbQuestion.creationDate']}: " />
-								<h:outputText value="#{kbReplyQuestionView.kbQuestionEntity.creationDate}" converter="dcem.LocalDateTimeConverter" />
-							</div>
-							<p:card rendered="#{kbReplyQuestionView.kbQuestionEntity.lastModifiedOn != kbReplyQuestionView.kbQuestionEntity.creationDate}">
+							<div class="ui-g-3" style="border-left: 2px solid lightgray; font-size: 0.8em">
 								<div class="ui-g-12">
 									<h:outputText
-										value="#{KbMsg['KbQuestion.lastModifiedBy']}: #{kbReplyQuestionView.kbQuestionEntity.lastModifiedBy == null ? KbMsg['dashboard.view.deletedAuthor'] : kbReplyQuestionView.kbQuestionEntity.lastModifiedBy.displayName}" />
+										value="#{KbMsg['KbQuestion.author']}: #{kbReplyQuestionView.kbQuestionEntity.author == null ? KbMsg['dashboard.view.deletedAuthor'] : kbReplyQuestionView.kbQuestionEntity.author.displayName}" />
+									<p:spacer width="20" />
+									<p:avatar style=" vertical-align: middle;" styleClass="p-mr-2" size="xlarge" shape="circle">
+										<p:graphicImage value="#{kbReplyQuestionView.getUserPhoto(kbReplyQuestionView.kbQuestionEntity.author)}" stream="false" />
+									</p:avatar>
 								</div>
 								<div class="ui-g-12">
-									<h:outputText value="#{KbMsg['KbQuestion.lastModifiedOn']}: " />
-									<h:outputText value="#{kbReplyQuestionView.kbQuestionEntity.lastModifiedOn}" converter="dcem.LocalDateTimeConverter" />
+									<h:outputText value="#{KbMsg['KbQuestion.status']}: #{kbReplyQuestionView.kbQuestionEntity.status.name()}" />
 								</div>
-							</p:card>
-						</div>
-					</div>
-				</p:panel>
-				<p:spacer height="30" />
-				<div style="font-size: 1.7em; color: #0075B1;">
-					<h:outputText id="replyCount"
-						value="#{kbReplyQuestionView.kbQuestionEntity.replies.size()} #{kbReplyQuestionView.kbQuestionEntity.replies.size()==1 ? KbMsg['reply.view.reply'] : KbMsg['reply.view.replies']} " />
-				</div>
-				<p:spacer height="25" />
-				<p:dataView id="replies" var="reply" value="#{kbReplyQuestionView.kbQuestionEntity.replies}" layout="list" emptyMessage="">
-					<p:dataViewListItem>
-						<p:panel toggleable="true"
-							header="#{kbReplyQuestionView.kbQuestionEntity.replies.indexOf(reply)+1}# #{KbMsg['reply.view.replyFrom']} '#{reply.author == null ? KbMsg['dashboard.view.deletedAuthor'] : reply.author.displayName}'">
-							<f:facet name="actions">
-
-								<p:commandLink icon="pi pi-trash" styleClass="ui-panel-titlebar-icon " style="margin-bottom: 10px" action="#{kbReplyQuestionView.deleteReply(reply)}"
-									rendered="#{kbReplyQuestionView.hasReplyDeletePermission(reply)}">
-									<h:outputText styleClass="ui-icon pi pi-trash" />
-									<p:ajax event="dialogReturn" update="replies replyForm:replyCount" listener="#{kbReplyQuestionView.reload()}" />
-								</p:commandLink>
-
-								<p:commandLink icon="pi pi-pencil" styleClass="ui-panel-titlebar-icon " style="margin-bottom: 10px" action="#{kbReplyQuestionView.editReply(reply)}"
-									rendered="#{kbReplyQuestionView.hasReplyEditPermission(reply)}">
-									<h:outputText styleClass="ui-icon pi pi-pencil" />
-									<p:ajax event="dialogReturn" update="replies" listener="#{kbReplyQuestionView.reload()}" />
-								</p:commandLink>
-
-							</f:facet>
-							<div class="ui-g">
-								<div class="ui-g-9">
-									<div class="ui-g-12" style="word-wrap: break-word">
-										<p:textEditor value="#{reply.replyContent.content}" readonly="true" toolbarVisible="false" styleClass="kb-text-editor-read-only"></p:textEditor>
-									</div>
+								<div class="ui-g-12">
+									<h:outputText value="#{KbMsg['KbQuestion.creationDate']}: " />
+									<h:outputText value="#{kbReplyQuestionView.kbQuestionEntity.creationDate}" converter="dcem.LocalDateTimeConverter" />
 								</div>
-								<div class="ui-g-3" style="border-left: 2px solid lightgray; font-size: 0.8em">
-
+								<p:card rendered="#{kbReplyQuestionView.kbQuestionEntity.lastModifiedOn != kbReplyQuestionView.kbQuestionEntity.creationDate}">
 									<div class="ui-g-12">
 										<h:outputText
-											value="#{KbMsg['dashboard.view.questionAuthor']} #{reply.author == null ? KbMsg['dashboard.view.deletedAuthor'] : reply.author.displayName}" />
-										<p:spacer width="20" />
-										<p:avatar style=" vertical-align: middle;" styleClass="p-mr-2" size="xlarge" shape="circle">
-											<p:graphicImage value="#{kbReplyQuestionView.getUserPhoto(reply.author)}" stream="false" />
-										</p:avatar>
+											value="#{KbMsg['KbQuestion.lastModifiedBy']}: #{kbReplyQuestionView.kbQuestionEntity.lastModifiedBy == null ? KbMsg['dashboard.view.deletedAuthor'] : kbReplyQuestionView.kbQuestionEntity.lastModifiedBy.displayName}" />
 									</div>
 									<div class="ui-g-12">
-										<h:outputText value="#{KbMsg['KbReply.creationDate']}: " />
-										<h:outputText value="#{reply.creationDate}" converter="dcem.LocalDateTimeConverter" />
+										<h:outputText value="#{KbMsg['KbQuestion.lastModifiedOn']}: " />
+										<h:outputText value="#{kbReplyQuestionView.kbQuestionEntity.lastModifiedOn}" converter="dcem.LocalDateTimeConverter" />
 									</div>
-									<p:card rendered="#{reply.lastModifiedOn != reply.creationDate}">
-										<div class="ui-g-12">
-											<h:outputText
-												value="#{KbMsg['KbReply.lastModifiedBy']}: #{reply.lastModifiedBy == null ? KbMsg['dashboard.view.deletedAuthor'] : reply.lastModifiedBy.displayName}" />
-										</div>
-										<div class="ui-g-12">
-											<h:outputText value="#{KbMsg['KbReply.lastModifiedOn']}: " />
-											<h:outputText value="#{reply.lastModifiedOn}" converter="dcem.LocalDateTimeConverter" />
-										</div>
-									</p:card>
-								</div>
+								</p:card>
 							</div>
-
-						</p:panel>
-					</p:dataViewListItem>
-				</p:dataView>
-				<h:panelGroup rendered="#{kbReplyQuestionView.hasReplyPermission()}">
+						</div>
+					</p:panel>
 					<p:spacer height="30" />
-					<div style="font-size: 2em; color: #0075B1">
-						<h:outputText value="#{KbMsg['reply.view.addReply']}" />
+					<div style="font-size: 1.7em; color: #0075B1;">
+						<h:outputText id="replyCount"
+							value="#{kbReplyQuestionView.kbQuestionEntity.replies.size()} #{kbReplyQuestionView.kbQuestionEntity.replies.size()==1 ? KbMsg['reply.view.reply'] : KbMsg['reply.view.replies']} " />
 					</div>
 					<p:spacer height="25" />
-					<p:textEditor value="#{kbReplyQuestionView.replyText}" styleClass="kb-reply-text-editor">
-						<p:ajax event="blur" process="@this" partialSubmit="true"></p:ajax>
-						<p:ajax event="focus" process="@this" partialSubmit="true"></p:ajax>
-					</p:textEditor>
-					<p:commandButton value="#{KbMsg['reply.view.toReply']}" action="#{kbReplyQuestionView.actionCreateReply()}" styleClass="kb-reply-button" update="replyForm"
-						icon="fa fa-slid fa-add" />
+					<p:dataView id="replies" var="reply" value="#{kbReplyQuestionView.kbQuestionEntity.replies}" layout="list" emptyMessage="">
+						<p:dataViewListItem>
+							<p:panel toggleable="true"
+								header="#{kbReplyQuestionView.kbQuestionEntity.replies.indexOf(reply)+1}# #{KbMsg['reply.view.replyFrom']} '#{reply.author == null ? KbMsg['dashboard.view.deletedAuthor'] : reply.author.displayName}'">
+								<f:facet name="actions">
+
+									<p:commandLink icon="pi pi-trash" styleClass="ui-panel-titlebar-icon " style="margin-bottom: 10px" action="#{kbReplyQuestionView.deleteReply(reply)}"
+										rendered="#{kbReplyQuestionView.hasReplyDeletePermission(reply)}">
+										<h:outputText styleClass="ui-icon pi pi-trash" />
+										<p:ajax event="dialogReturn" update="replies replyForm:replyCount" listener="#{kbReplyQuestionView.reload()}" />
+									</p:commandLink>
+
+									<p:commandLink icon="pi pi-pencil" styleClass="ui-panel-titlebar-icon " style="margin-bottom: 10px" action="#{kbReplyQuestionView.editReply(reply)}"
+										rendered="#{kbReplyQuestionView.hasReplyEditPermission(reply)}">
+										<h:outputText styleClass="ui-icon pi pi-pencil" />
+										<p:ajax event="dialogReturn" update="replies" listener="#{kbReplyQuestionView.reload()}" />
+									</p:commandLink>
+
+								</f:facet>
+								<div class="ui-g">
+									<div class="ui-g-9">
+										<div class="ui-g-12" style="word-wrap: break-word">
+											<p:textEditor value="#{reply.replyContent.content}" readonly="true" toolbarVisible="false" styleClass="kb-text-editor-read-only"></p:textEditor>
+										</div>
+									</div>
+									<div class="ui-g-3" style="border-left: 2px solid lightgray; font-size: 0.8em">
+
+										<div class="ui-g-12">
+											<h:outputText
+												value="#{KbMsg['dashboard.view.questionAuthor']} #{reply.author == null ? KbMsg['dashboard.view.deletedAuthor'] : reply.author.displayName}" />
+											<p:spacer width="20" />
+											<p:avatar style=" vertical-align: middle;" styleClass="p-mr-2" size="xlarge" shape="circle">
+												<p:graphicImage value="#{kbReplyQuestionView.getUserPhoto(reply.author)}" stream="false" />
+											</p:avatar>
+										</div>
+										<div class="ui-g-12">
+											<h:outputText value="#{KbMsg['KbReply.creationDate']}: " />
+											<h:outputText value="#{reply.creationDate}" converter="dcem.LocalDateTimeConverter" />
+										</div>
+										<p:card rendered="#{reply.lastModifiedOn != reply.creationDate}">
+											<div class="ui-g-12">
+												<h:outputText
+													value="#{KbMsg['KbReply.lastModifiedBy']}: #{reply.lastModifiedBy == null ? KbMsg['dashboard.view.deletedAuthor'] : reply.lastModifiedBy.displayName}" />
+											</div>
+											<div class="ui-g-12">
+												<h:outputText value="#{KbMsg['KbReply.lastModifiedOn']}: " />
+												<h:outputText value="#{reply.lastModifiedOn}" converter="dcem.LocalDateTimeConverter" />
+											</div>
+										</p:card>
+									</div>
+								</div>
+
+							</p:panel>
+						</p:dataViewListItem>
+					</p:dataView>
+					<h:panelGroup rendered="#{kbReplyQuestionView.hasReplyPermission()}">
+						<p:spacer height="30" />
+						<div style="font-size: 2em; color: #0075B1">
+							<h:outputText value="#{KbMsg['reply.view.addReply']}" />
+						</div>
+						<p:spacer height="25" />
+						<p:textEditor value="#{kbReplyQuestionView.replyText}" styleClass="kb-reply-text-editor">
+							<p:ajax event="blur" process="@this" partialSubmit="true"></p:ajax>
+							<p:ajax event="focus" process="@this" partialSubmit="true"></p:ajax>
+						</p:textEditor>
+						<p:commandButton value="#{KbMsg['reply.view.toReply']}" action="#{kbReplyQuestionView.actionCreateReply()}" styleClass="kb-reply-button"
+							update="replyForm" icon="fa fa-slid fa-add" />
+					</h:panelGroup>
+					<p:spacer height="25" />
 				</h:panelGroup>
-				<p:spacer height="25" />
+				<p:growl showSummary="true" showDetail="false" closable="true">
+					<p:autoUpdate />
+				</p:growl>
 			</h:form>
 		</div>
+
 
 	</f:view>
 </ui:composition>

@@ -4,11 +4,15 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -19,6 +23,7 @@ import org.primefaces.model.StreamedContent;
 
 import com.doubleclue.dcem.admin.gui.MfaLoginView;
 import com.doubleclue.dcem.core.DcemConstants;
+import com.doubleclue.dcem.core.entities.DcemAction;
 import com.doubleclue.dcem.core.entities.DcemUser;
 import com.doubleclue.dcem.core.gui.AutoViewAction;
 import com.doubleclue.dcem.core.gui.DcemView;
@@ -29,6 +34,7 @@ import com.doubleclue.dcem.knowledgeboard.entities.KbReplyEntity;
 import com.doubleclue.dcem.knowledgeboard.entities.KbTextContentEntity;
 import com.doubleclue.dcem.knowledgeboard.entities.KbUserCategoryEntity;
 import com.doubleclue.dcem.knowledgeboard.entities.enums.KbQuestionStatus;
+import com.doubleclue.dcem.knowledgeboard.logic.KbCategoryLogic;
 import com.doubleclue.dcem.knowledgeboard.logic.KbConstants;
 import com.doubleclue.dcem.knowledgeboard.logic.KbEmailLogic;
 import com.doubleclue.dcem.knowledgeboard.logic.KbModule;
@@ -36,6 +42,7 @@ import com.doubleclue.dcem.knowledgeboard.logic.KbQuestionLogic;
 import com.doubleclue.dcem.knowledgeboard.logic.KbReplyLogic;
 import com.doubleclue.dcem.knowledgeboard.logic.KbUserLogic;
 import com.doubleclue.dcem.knowledgeboard.logic.KbUtils;
+import com.doubleclue.dcem.knowledgeboard.subjects.KbQuestionSubject;
 import com.doubleclue.dcem.knowledgeboard.subjects.KbReplyQuestionSubject;
 
 @SuppressWarnings("serial")
@@ -46,7 +53,6 @@ public class KbReplyQuestionView extends DcemView {
 	private static final Logger logger = LogManager.getLogger(KbQuestionLogic.class);
 
 	private static final String QUESTION_ID = "questionId=";
-	
 
 	@Inject
 	KbModule kbModule;
@@ -55,10 +61,16 @@ public class KbReplyQuestionView extends DcemView {
 	KbReplyQuestionSubject kbReplyQuestionSubject;
 
 	@Inject
+	KbQuestionSubject kbQuestionSubject;
+
+	@Inject
 	KbDashboardView kbDashboardView;
 
 	@Inject
 	KbQuestionLogic kbQuestionLogic;
+
+	@Inject
+	KbCategoryLogic kbCategoryLogic;
 
 	@Inject
 	KbQuestionDialog kbQuestionDialog;
@@ -74,13 +86,13 @@ public class KbReplyQuestionView extends DcemView {
 
 	@Inject
 	KbEmailLogic kbEmailLogic;
-	
+
 	@Inject
 	AuditingLogic auditingLogic;
-	
+
 	@Inject
 	MfaLoginView loginView;
-	
+
 	@Inject
 	KbQuestionLogic questionLogic;
 
@@ -104,37 +116,56 @@ public class KbReplyQuestionView extends DcemView {
 
 	@Override
 	public void reload() {
-		String urlParam = loginView.getMgtUrlParams();
-		if (urlParam != null && urlParam.startsWith (QUESTION_ID)) {
+		Map<String, String> mapParam = loginView.getShareUrlParams();
+		loginView.setMgtUrlParams(null);
+		if (mapParam != null) {
 			try {
-				String questionId = urlParam.substring(QUESTION_ID.length());
 				kbQuestionEntity = new KbQuestionEntity();
-				kbQuestionEntity.setId(Integer.parseInt(questionId));
-				loginView.setMgtUrlParams(null);
-				// TODO
-				// CHECK USER ACCESS RIGHTS 
+				kbQuestionEntity.setId(Integer.parseInt(mapParam.get(QUESTION_ID)));
 			} catch (Exception e) {
-				logger.warn(e.getMessage(), e);
+				logger.debug("Could not parse link to question id", e);
+				JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "dashboard.error.questionNotFound");
+				closeQuestion();
+				return;
 			}
-		}	
+		}
 		if (kbQuestionEntity != null) {
 			try {
 				kbQuestionEntity = kbQuestionLogic.getQuestionWithLazyAttribute(kbQuestionEntity.getId(), KbQuestionEntity.GRAPH_QUESTION_TAGS_AND_CONTENT);
 				if (kbQuestionEntity == null) {
 					JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "dashboard.error.questionNotFound");
-				} else {
-					List<KbReplyEntity> replies = kbReplyLogic.getRepliesByQuestion(kbQuestionEntity);
-					kbQuestionEntity.setReplies(replies);
+					closeQuestion();
+					return;
 				}
+				if (hasViewRights(kbQuestionEntity) == false) {
+					closeQuestion();
+					JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "dashboard.error.noAccessFound");
+					return;
+				}
+				List<KbReplyEntity> replies = kbReplyLogic.getRepliesByQuestion(kbQuestionEntity);
+				kbQuestionEntity.setReplies(replies);
+
 				loadLazyPhoto(kbQuestionEntity);
 			} catch (Exception e) {
-				viewNavigator.setActiveView(KbModule.MODULE_ID + DcemConstants.MODULE_VIEW_SPLITTER + kbDashboardView.getSubject().getViewName());
 				logger.error("Could not get question details of question: " + kbQuestionEntity.getId(), e);
+				closeQuestion();
 				JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "error.global");
 			}
 		} else {
-			viewNavigator.setActiveView(KbModule.MODULE_ID + DcemConstants.MODULE_VIEW_SPLITTER + kbDashboardView.getSubject().getViewName());
+			closeQuestion();
 		}
+	}
+
+	private boolean hasViewRights(KbQuestionEntity question) throws Exception {
+		boolean questionViewManager = operatorSessionBean.isPermission(new DcemAction(kbQuestionSubject, DcemConstants.ACTION_MANAGE));
+		if (questionViewManager == true) {
+			return true;
+		}
+		KbUserCategoryEntity operatorUserCategory = kbUserLogic.getKbUserCategory(operatorSessionBean.getDcemUser().getId(), question.getCategory().getId());
+		if (operatorUserCategory != null) {
+			return operatorUserCategory.isDisabled() == false;
+		}
+		return question.getCategory().isPublicCategory();
 	}
 
 	private void loadLazyPhoto(KbQuestionEntity kbQuestionEntity) {
@@ -273,7 +304,7 @@ public class KbReplyQuestionView extends DcemView {
 		leavingView();
 		viewNavigator.setActiveView(KbModule.MODULE_ID + DcemConstants.MODULE_VIEW_SPLITTER + kbDashboardView.getSubject().getViewName());
 	}
-	
+
 	public StreamedContent getUserPhoto(DcemUser dcemUser) {
 		if (dcemUser == null) {
 			return JsfUtils.getDefaultUserImage();
@@ -302,9 +333,14 @@ public class KbReplyQuestionView extends DcemView {
 	public void setReplyText(String replyText) {
 		this.replyText = replyText;
 	}
-	
+
 	@Override
-	public String getUrlParameters() {
-		return QUESTION_ID + kbQuestionEntity.getId().toString(); 
+	public Map<String, String> getShareUrlParameters() {
+		if (kbQuestionEntity == null || kbQuestionEntity.getId() == null) {
+			return null;
+		}
+		Map<String, String> map = new HashMap<>();
+		map.put(QUESTION_ID, kbQuestionEntity.getId().toString());
+		return map;
 	}
 }
