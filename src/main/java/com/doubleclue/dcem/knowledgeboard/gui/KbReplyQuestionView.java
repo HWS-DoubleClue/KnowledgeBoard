@@ -52,7 +52,7 @@ public class KbReplyQuestionView extends DcemView {
 
 	private static final Logger logger = LogManager.getLogger(KbQuestionLogic.class);
 
-	private static final String QUESTION_ID = "questionId=";
+	private static final String QUESTION_ID = "questionId";
 
 	@Inject
 	KbModule kbModule;
