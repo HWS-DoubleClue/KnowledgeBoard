@@ -120,13 +120,16 @@ public class KbReplyQuestionView extends DcemView {
 		loginView.setMgtUrlParams(null);
 		if (mapParam != null) {
 			try {
+				int urlId = Integer.parseInt(mapParam.get(QUESTION_ID));
 				kbQuestionEntity = new KbQuestionEntity();
-				kbQuestionEntity.setId(Integer.parseInt(mapParam.get(QUESTION_ID)));
+				kbQuestionEntity.setId(urlId);
 			} catch (Exception e) {
 				logger.debug("Could not parse link to question id", e);
-				JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "dashboard.error.questionNotFound");
-				closeQuestion();
-				return;
+				if (kbQuestionEntity == null) {
+					JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "dashboard.error.questionNotFound");
+					closeQuestion();
+					return;
+				}
 			}
 		}
 		if (kbQuestionEntity != null) {
