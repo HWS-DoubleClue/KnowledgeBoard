@@ -238,6 +238,9 @@ public class KbReplyQuestionView extends DcemView {
 		try {
 			KbUserCategoryEntity operatorUserCategory = kbUserLogic.getKbUserCategory(operatorSessionBean.getDcemUser().getId(),
 					kbQuestionEntity.getCategory().getId());
+			if (kbQuestionEntity.getCategory().isPublicCategory() && operatorUserCategory == null) {
+				return true;
+			}
 			return KbUtils.hasActionRights(operatorSessionBean, operatorUserCategory, addReply);
 		} catch (Exception e) {
 			logger.error("Could not check edit permission for user: " + operatorSessionBean.getDcemUser().getLoginId() + " and question: "
