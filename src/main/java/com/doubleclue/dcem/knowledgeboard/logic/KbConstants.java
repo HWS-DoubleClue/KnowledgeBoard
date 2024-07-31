@@ -46,7 +46,8 @@ public class KbConstants {
 
 	// EL-Method Names
 	public static final String KB_EL_METHOD_QUESTIONVIEW_GOTO_REPLYVIEW = "#{kbQuestionView.openQuestionDetails()}";
-	
+
 	public static final String SPECIAL_CHARACTERS = "&;<=>[]^`{|}";
+	public static final String QUESTION_ID = "questionId";
 
 }

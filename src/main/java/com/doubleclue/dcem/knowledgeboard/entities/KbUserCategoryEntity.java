@@ -64,7 +64,7 @@ import com.doubleclue.dcem.core.entities.EntityInterface;
 		@NamedQuery(name = KbUserCategoryEntity.FIND_ALL_FOLLOWER_OF_QUESTION_FOR_EMAILTASK, query = "SELECT userCategory FROM KbUserCategoryEntity userCategory "
 				+ "JOIN userCategory.kbUser kbUser "
 				+ "WHERE ?1 MEMBER OF userCategory.followedQuestions AND kbUser.notificationDisabled = False AND userCategory.disabled = False "),
-		@NamedQuery(name = KbUserCategoryEntity.FIND_ALL_FOLLOWER_OF_TAGS_FOR_EMAILTASK, query = "SELECT userCategory FROM KbUserCategoryEntity userCategory "
+		@NamedQuery(name = KbUserCategoryEntity.FIND_ALL_FOLLOWER_OF_TAGS_FOR_EMAILTASK, query = "SELECT DISTINCT userCategory FROM KbUserCategoryEntity userCategory "
 				+ "JOIN userCategory.kbUser kbUser JOIN userCategory.category category LEFT JOIN userCategory.followedTags tag "
 				+ "WHERE category = ?1 AND (userCategory.followingAllTags = True OR tag IN ?2) AND kbUser.notificationDisabled = False AND userCategory.disabled = False "),
 

@@ -11,6 +11,7 @@ import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import com.doubleclue.dcem.core.DcemConstants;
 import com.doubleclue.dcem.core.entities.DcemUser;
 import com.doubleclue.dcem.core.gui.DcemApplicationBean;
 import com.doubleclue.dcem.core.tasks.EmailTask;
@@ -18,6 +19,8 @@ import com.doubleclue.dcem.core.tasks.TaskExecutor;
 import com.doubleclue.dcem.knowledgeboard.entities.KbQuestionEntity;
 import com.doubleclue.dcem.knowledgeboard.entities.KbReplyEntity;
 import com.doubleclue.dcem.knowledgeboard.entities.KbUserCategoryEntity;
+import com.doubleclue.dcem.knowledgeboard.gui.KbReplyQuestionView;
+import com.doubleclue.utils.KaraUtils;
 
 @ApplicationScoped
 @Named("kbEmailLogic")
@@ -38,6 +41,9 @@ public class KbEmailLogic {
 	@Inject
 	private TaskExecutor taskExecutor;
 
+	@Inject
+	private KbReplyQuestionView kbReplyQuestionView;
+
 	public void notifyNewPost(KbQuestionEntity kbQuestionEntity) throws Exception {
 		notifyNewPost(kbQuestionEntity, false);
 	}
@@ -49,7 +55,7 @@ public class KbEmailLogic {
 			data.put("title", kbQuestionEntity.getTitle());
 			data.put("Author", kbQuestionEntity.getAuthor().getDisplayNameOrLoginId());
 			data.put("Category", kbQuestionEntity.getCategory().getName());
-			data.put("TenantManagementUrl", dcemApplicationBean.getDcemManagementUrl(null));
+			data.put("TenantManagementUrl", getUrlLink(kbQuestionEntity));
 			if (toAllMembers) {
 				List<KbUserCategoryEntity> categoryMembers = kbUserLogic.getUserCategoriesByCategory(kbQuestionEntity.getCategory());
 				dcemUser = retrieveDcemUser(categoryMembers);
@@ -66,7 +72,7 @@ public class KbEmailLogic {
 			Map<String, Object> data = new HashMap<>();
 			data.put("title", kbQuestionEntity.getTitle());
 			data.put("Author", kbReplyEntity.getAuthor().getDisplayNameOrLoginId());
-			data.put("TenantManagementUrl", dcemApplicationBean.getDcemManagementUrl(null));
+			data.put("TenantManagementUrl", getUrlLink(kbQuestionEntity));
 			List<DcemUser> dcemUser = retrieveDcemUser(getQuestionFollower(kbQuestionEntity));
 			dcemUser.remove(kbReplyEntity.getAuthor());
 			taskExecutor.execute(new EmailTask(dcemUser, data, KbConstants.KB_EMAIL_REPLY_TEMPLATE, KbConstants.KB_EMAIL_REPLY_SUBJECT, null));
@@ -95,4 +101,12 @@ public class KbEmailLogic {
 		return query.getResultList();
 	}
 
+	public String getUrlLink(KbQuestionEntity kbQuestionEntity) throws Exception {
+		String url = dcemApplicationBean.getDcemManagementUrl(null) + "/" + DcemConstants.PRE_LOGIN_PAGE + DcemConstants.URL_VIEW + kbModule.getId()
+				+ DcemConstants.MODULE_VIEW_SPLITTER + kbReplyQuestionView.getSubject().getViewName();
+		Map<String, String> map = new HashMap<>();
+		map.put(KbConstants.QUESTION_ID, kbQuestionEntity.getId().toString());
+		url = url + DcemConstants.URL_PARAMS + KaraUtils.mapToUrlParamString(map);
+		return url;
+	}
 }

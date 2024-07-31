@@ -52,8 +52,6 @@ public class KbReplyQuestionView extends DcemView {
 
 	private static final Logger logger = LogManager.getLogger(KbQuestionLogic.class);
 
-	private static final String QUESTION_ID = "questionId=";
-
 	@Inject
 	KbModule kbModule;
 
@@ -121,7 +119,7 @@ public class KbReplyQuestionView extends DcemView {
 		if (mapParam != null) {
 			try {
 				kbQuestionEntity = new KbQuestionEntity();
-				kbQuestionEntity.setId(Integer.parseInt(mapParam.get(QUESTION_ID)));
+				kbQuestionEntity.setId(Integer.parseInt(mapParam.get(KbConstants.QUESTION_ID)));
 			} catch (Exception e) {
 				logger.debug("Could not parse link to question id", e);
 				JsfUtils.addErrorMessage(KbModule.RESOURCE_NAME, "dashboard.error.questionNotFound");
@@ -340,7 +338,7 @@ public class KbReplyQuestionView extends DcemView {
 			return null;
 		}
 		Map<String, String> map = new HashMap<>();
-		map.put(QUESTION_ID, kbQuestionEntity.getId().toString());
+		map.put(KbConstants.QUESTION_ID, kbQuestionEntity.getId().toString());
 		return map;
 	}
 }
