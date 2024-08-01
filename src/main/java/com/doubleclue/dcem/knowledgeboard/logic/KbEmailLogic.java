@@ -14,6 +14,7 @@ import javax.persistence.TypedQuery;
 import com.doubleclue.dcem.core.DcemConstants;
 import com.doubleclue.dcem.core.entities.DcemUser;
 import com.doubleclue.dcem.core.gui.DcemApplicationBean;
+import com.doubleclue.dcem.core.gui.ViewNavigator;
 import com.doubleclue.dcem.core.tasks.EmailTask;
 import com.doubleclue.dcem.core.tasks.TaskExecutor;
 import com.doubleclue.dcem.knowledgeboard.entities.KbQuestionEntity;
@@ -29,6 +30,9 @@ public class KbEmailLogic {
 	@Inject
 	EntityManager em;
 
+	@Inject
+	private ViewNavigator viewNavigator;
+	
 	@Inject
 	private KbModule kbModule;
 
@@ -102,11 +106,8 @@ public class KbEmailLogic {
 	}
 
 	public String getUrlLink(KbQuestionEntity kbQuestionEntity) throws Exception {
-		String url = dcemApplicationBean.getDcemManagementUrl(null) + "/" + DcemConstants.PRE_LOGIN_PAGE + DcemConstants.URL_VIEW + kbModule.getId()
-				+ DcemConstants.MODULE_VIEW_SPLITTER + kbReplyQuestionView.getSubject().getViewName();
 		Map<String, String> map = new HashMap<>();
 		map.put(KbConstants.QUESTION_ID, kbQuestionEntity.getId().toString());
-		url = url + DcemConstants.URL_PARAMS + KaraUtils.mapToUrlParamString(map);
-		return url;
+		return viewNavigator.createUrlLink(kbReplyQuestionView, map);
 	}
 }
