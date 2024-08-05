@@ -119,6 +119,15 @@
 									<h:outputText value="#{question.lastModifiedOn}" converter="dcem.LocalDateTimeConverter" />
 								</div>
 							</p:card>
+
+
+							<p:card rendered="#{question.numberOfReplies != 0}">
+								<div class="ui-g-12">
+									<h:outputText value="#{KbMsg['KbQuestion.lastRepliedOn']}: " />
+									<h:outputText value="#{kbDashboardView.getYoungestReplyDate(question)}" converter="dcem.LocalDateTimeConverter" />
+								</div>
+							</p:card>
+
 						</div>
 					</div>
 				</p:dataViewListItem>

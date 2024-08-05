@@ -36,7 +36,9 @@ import com.doubleclue.dcem.knowledgeboard.logic.KbUtils;
 		@NamedQuery(name = KbReplyEntity.FIND_ALL_REPLIES_CONTAINING_DCEMUSER, query = "SELECT reply FROM KbReplyEntity reply WHERE reply.author = ?1 OR reply.lastModifiedBy = ?1"),
 		@NamedQuery(name = KbReplyEntity.FIND_ALL_REPLIES_FROM_QUESTION, query = "SELECT reply FROM KbReplyEntity reply WHERE reply.question = ?1 ORDER BY reply.creationDate ASC"),
 		@NamedQuery(name = KbReplyEntity.REMOVE_USER_FROM_REPLY_AUTHOR, query = "UPDATE KbReplyEntity reply SET reply.author = null WHERE reply.author = ?1"),
-		@NamedQuery(name = KbReplyEntity.REMOVE_USER_FROM_REPLY_LASTMODIFIED, query = "UPDATE KbReplyEntity reply SET reply.lastModifiedBy = null WHERE reply.lastModifiedBy = ?1"), })
+		@NamedQuery(name = KbReplyEntity.REMOVE_USER_FROM_REPLY_LASTMODIFIED, query = "UPDATE KbReplyEntity reply SET reply.lastModifiedBy = null WHERE reply.lastModifiedBy = ?1"),
+		@NamedQuery(name = KbReplyEntity.GET_YOUNGEST_REPLY_OF_QUESTION, query = "SELECT MAX(reply.creationDate) FROM KbReplyEntity reply WHERE question = ?1"),
+		})
 
 @Entity
 @Table(name = "kb_replies")
@@ -47,6 +49,7 @@ public class KbReplyEntity extends EntityInterface {
 	public static final String FIND_ALL_REPLIES_FROM_QUESTION = "knowledgeboard.reply.findAllRepliesFromQuestion";
 	public static final String REMOVE_USER_FROM_REPLY_AUTHOR = "knowledgeboard.reply.removeUserFromReplyAuthor";
 	public static final String REMOVE_USER_FROM_REPLY_LASTMODIFIED = "knowledgeboard.reply.removeUserFromReplyLastmodified";
+	public static final String GET_YOUNGEST_REPLY_OF_QUESTION = "knowledgeboard.reply.getYoungestReplyOfQuestion";
 
 	@Id
 	@Column(name = "dc_id")
