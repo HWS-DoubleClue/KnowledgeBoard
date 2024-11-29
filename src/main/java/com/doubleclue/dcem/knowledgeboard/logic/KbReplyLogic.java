@@ -1,5 +1,6 @@
 package com.doubleclue.dcem.knowledgeboard.logic;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -67,5 +68,11 @@ public class KbReplyLogic {
 	public void removeUserFromReplies(DcemUser dcemUser) {
 		em.createQuery("UPDATE KbReplyEntity reply SET reply.author = null WHERE reply.author = ?1").setParameter(1, dcemUser).executeUpdate();
 		em.createQuery("UPDATE KbReplyEntity reply SET reply.lastModifiedBy = null WHERE reply.lastModifiedBy = ?1").setParameter(1, dcemUser).executeUpdate();
+	}
+	
+	public LocalDateTime getYoungestReplyCreationDate(KbQuestionEntity question) throws Exception {
+		LocalDateTime youngestReplyDate =  (LocalDateTime) em.createNamedQuery(KbReplyEntity.GET_YOUNGEST_REPLY_OF_QUESTION).setParameter(1, question)
+				.getSingleResult();
+		return youngestReplyDate;
 	}
 }

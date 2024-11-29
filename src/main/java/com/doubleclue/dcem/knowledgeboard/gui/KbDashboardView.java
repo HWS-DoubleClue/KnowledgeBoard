@@ -2,6 +2,7 @@ package com.doubleclue.dcem.knowledgeboard.gui;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,6 +31,7 @@ import com.doubleclue.dcem.knowledgeboard.entities.KbUserEntity;
 import com.doubleclue.dcem.knowledgeboard.logic.KbCategoryLogic;
 import com.doubleclue.dcem.knowledgeboard.logic.KbConstants;
 import com.doubleclue.dcem.knowledgeboard.logic.KbModule;
+import com.doubleclue.dcem.knowledgeboard.logic.KbReplyLogic;
 import com.doubleclue.dcem.knowledgeboard.logic.KbUserLogic;
 import com.doubleclue.dcem.knowledgeboard.model.LazyQuestionModel;
 import com.doubleclue.dcem.knowledgeboard.subjects.KbDashboardSubject;
@@ -66,6 +68,9 @@ public class KbDashboardView extends DcemView {
 	@Inject
 	private LazyQuestionModel lazyQuestions;
 
+	@Inject
+	private KbReplyLogic kbReplyLogic;
+
 	private String filterText;
 	private KbUserEntity kbUserEntity;
 	private HashMap<KbCategoryEntity, KbUserCategoryEntity> categoryMap;
@@ -98,8 +103,8 @@ public class KbDashboardView extends DcemView {
 				// Null is used as an identifier if the entity has to be persisted or merged!
 			}
 			if (kbUserEntity != null) {
-				List<KbUserCategoryEntity> kbUserCategories = kbUserLogic.getUserCategoriesByUserIdWithLazyAttribute(
-						operatorSessionBean.getDcemUser().getId(), KbUserCategoryEntity.GRAPH_USER_FOLLOWED_QUESTIONS);
+				List<KbUserCategoryEntity> kbUserCategories = kbUserLogic.getUserCategoriesByUserIdWithLazyAttribute(operatorSessionBean.getDcemUser().getId(),
+						KbUserCategoryEntity.GRAPH_USER_FOLLOWED_QUESTIONS);
 				for (KbUserCategoryEntity kbUserCategory : kbUserCategories) {
 					categoryMap.put(kbUserCategory.getCategory(), kbUserCategory);
 					if (kbUserCategory.isHiddenInDashboard() == true) {
@@ -255,5 +260,15 @@ public class KbDashboardView extends DcemView {
 			}
 		}
 		return adminOfAnyCategory;
+	}
+
+	public LocalDateTime getYoungestReplyDate(KbQuestionEntity question) {
+		try {
+			LocalDateTime replyDate = kbReplyLogic.getYoungestReplyCreationDate(question);
+			return replyDate;
+		} catch (Exception e) {
+			logger.error("", e);
+			return null;
+		}
 	}
 }
